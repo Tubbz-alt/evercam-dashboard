@@ -4,7 +4,7 @@ FactoryBot.define do
 
     association :vendor, factory: :vendor
     sequence(:name) { |n| "name#{n}" }
-    config({})
+    config { ({}) }
   end
 end
 
