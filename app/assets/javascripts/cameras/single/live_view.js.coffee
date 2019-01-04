@@ -11,6 +11,7 @@ timoutWarning = 120000
 warningTimer = undefined
 timeoutTimer = undefined
 zoom_level = 0
+mobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)
 
 controlButtonEvents = ->
   $(".play-pause").on "click", ->
@@ -180,6 +181,7 @@ handleChangeStream = ->
         $('#select-stream-table').show()
         $("#camera-video-stream").html(video_player_html)
         initializePlayer()
+        turnOffZoomEffect()
         # flashDetection()
         $("#fullscreen").removeClass("active").addClass "inactive"
         $("#streams").removeClass("inactive").addClass "active"
@@ -322,6 +324,7 @@ handleResize = ->
   $(window).resize ->
     calculateHeight()
     getImageRealRatio()
+    turnOffZoomEffect()
 
 handlePtzCommands = ->
   $(".ptz-controls").on 'click', 'i', ->
@@ -506,6 +509,9 @@ playJpegStream = ->
         live_view_timestamp = payload.timestamp
         $('#live-player-image').attr('src', 'data:image/jpeg;base64,' + payload.image)
         $("#live-player-image").attr("data-timestamp", payload.timestamp)
+        if $("#live-snapshot-magnifier").hasClass 'enabled'
+          $('.zoomWindowContainer').hide()
+          $('.zoomContainer div').css 'background-image', 'url(' + 'data:image/jpeg;base64,' + payload.image + ')'
 
 stopJpegStream = ->
   if Evercam.camera_channel
@@ -595,9 +601,13 @@ ResetTimers = ->
       when 'jpeg', undefined
         playJpegStream()
         $("#fullscreen .inactive-jpeg-error-display").addClass("hide")
-        $(".play-options").show()
+        if $("#live-snapshot-magnifier").hasClass 'enabled'
+          hideIcons()
+        else
+         showIcons()
       when 'video'
         playInActiveVideoStream()
+        turnOffZoomEffect()
 
 IdleWarning = ->
   if $(".nav-tabs li.active a").attr("data-target") is "#live"
@@ -614,7 +624,9 @@ showInactiveMessage = ->
   switch stream_type
     when 'jpeg', undefined
       stopJpegStream()
-      $(".play-options").hide()
+      turnOffZoomEffect()
+      $(".play-options .hide-icon").hide()
+      $(".play-options .ui-snapshot-magnifier").hide()
       $("#fullscreen .inactive-jpeg-error-display").removeClass("hide")
       $("#fullscreen .inactive-jpeg-error-display div").html("<span style='top: #{(jpeg_snap_height / 2) - 30}px; left: #{(jpeg_snap_width / 2) - 250}px;'
         class='spn-message'>#{html}</span>")
@@ -641,6 +653,65 @@ initZoom = ->
     if zoom_level > -1 && zoom_level <= 1
       window.vjs_player.zoomrotate({zoom: zoom_level, rotate: 0});
 
+onClickLiveSnapshotMagnifier = ->
+  $('#live-snapshot-magnifier').on 'click', ->
+    $('.zoomContainer').remove()
+    if $('#live-snapshot-magnifier.enabled').length == 0
+      initElevateZoom()
+      $(this).toggleClass 'enabled'
+    else
+      $(this).toggleClass 'enabled'
+      $('.zoomContainer').hide()
+      showIcons()
+
+turnOffZoomEffect = ->
+  $('#live-snapshot-magnifier').removeClass 'enabled'
+  $('.zoomContainer').hide()
+  showIcons()
+
+hideIcons = ->
+  if !mobile
+    $(".play-options .hide-icon").hide()
+    $(".play-options .ui-snapshot-magnifier").show()
+
+showIcons = ->
+  if !mobile
+    $(".play-options .hide-icon").show()
+    $(".play-options .ui-snapshot-magnifier").show()
+
+centerTabClick = ->
+  $(document).click (e) ->
+    if $(e.target).is('#ul-nav-tab li a,#ul-nav-tab li a span')
+      turnOffZoomEffect()
+
+hoverMouseOnFullscreen = ->
+  $('#live-view-placeholder #fullscreen').hover (->
+    $("#jpg-portion .play-options").css('opacity', '1')
+  ), ->
+    if $("#live-snapshot-magnifier").hasClass 'enabled'
+      $("#jpg-portion .play-options").css('opacity', '1')
+    else
+      $("#jpg-portion .play-options").css('opacity', '0')
+
+initElevateZoom = ->
+  hideIcons()
+  $('#live-player-image').elevateZoom
+    zoomType: 'lens',
+    responsive: 'true'
+    scrollZoom: true,
+    lensShape: 'round',
+    lensSize: 230
+
+removeMagnifierOnEsc = ->
+  $(document).on 'keyup', (evt) ->
+    if evt.keyCode = 27
+      turnOffZoomEffect()
+
+detectMobile = ->
+  if mobile
+    $('#jpg-portion #live-snapshot-magnifier').hide()
+    $('#jpg-portion #edit-live-image').hide()
+
 window.initializeLiveTab = ->
   window.video_player_html = $('#camera-video-stream').html()
   window.vjs_player = {}
@@ -664,7 +735,12 @@ window.initializeLiveTab = ->
   NProgress.done()
   initSelectStream()
   StartTimers()
+  onClickLiveSnapshotMagnifier()
   inactiveWindow()
+  removeMagnifierOnEsc()
+  centerTabClick()
+  hoverMouseOnFullscreen()
+  detectMobile()
 
 ->
   calculateHeight()

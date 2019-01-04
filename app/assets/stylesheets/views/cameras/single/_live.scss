@@ -9,6 +9,10 @@
     margin-right: 0px;
     color: $main-color;
   }
+
+  .enabled .magnifier-icon {
+    color: $hover-blue;
+  }
 }
 #fullscreen a {
   color:$white;
