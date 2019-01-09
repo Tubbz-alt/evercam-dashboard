@@ -100,94 +100,94 @@ load_archive_view_by_id = (archives) ->
     $("#archive_url_link_#{archive_id}").click()
     archive_id_from_url = null
 
-    if archive
-      id = archive.id
-      file_name = archive.file_name
-      file_type = null
-      type = archive.type
-      status = archive.status
-      camera_id = archive.camera_id
-      media_url = get_media_url(id, camera_id, file_name, archive.media_url, type)
-      media_title = archive.title
-      media_autor = archive.requester_name
-      requested_by = archive.requested_by
-      media_from = moment.tz(archive.from_date*1000, Evercam.Camera.timezone).format('MM/DD/YYYY, HH:mm:ss')
-      media_to = moment.tz(archive.to_date*1000, Evercam.Camera.timezone).format('MM/DD/YYYY, HH:mm:ss')
-      media_thumbnail = archive.thumbnail_url
-      media_time = archive.created_at
-      media_ispublic = "#{archive.public}"
-      newTime = moment.tz(media_time * 1000, Evercam.Camera.timezone)
+    # if archive
+    id = archive.id
+    file_name = archive.file_name
+    file_type = null
+    type = archive.type
+    status = archive.status
+    camera_id = archive.camera_id
+    media_url = get_media_url(id, camera_id, file_name, archive.media_url, type)
+    media_title = archive.title
+    media_autor = archive.requester_name
+    requested_by = archive.requested_by
+    media_from = moment.tz(archive.from_date*1000, Evercam.Camera.timezone).format('MM/DD/YYYY, HH:mm:ss')
+    media_to = moment.tz(archive.to_date*1000, Evercam.Camera.timezone).format('MM/DD/YYYY, HH:mm:ss')
+    media_thumbnail = archive.thumbnail_url
+    media_time = archive.created_at
+    media_ispublic = "#{archive.public}"
+    newTime = moment.tz(media_time * 1000, Evercam.Camera.timezone)
 
-      if Evercam.Camera.has_edit_right || requested_by is Evercam.User.username
-        $("#popup-delete-view").show()
-      else
-        $("#popup-delete-view").hide()
+    if Evercam.Camera.has_edit_right || requested_by is Evercam.User.username
+      $("#popup-delete-view").show()
+    else
+      $("#popup-delete-view").hide()
 
-      if type is "compare"
-        $("#archive-play video").attr("loop", "true")
-      else
-        $("#archive-play video").attr("loop", "false")
+    if type is "compare"
+      $("#archive-play video").attr("loop", "true")
+    else
+      $("#archive-play video").attr("loop", "false")
 
-      # if type is "clip" || type is "compare" || type is "url" || type is "file" || type is "edit"
-      update_request_url(id)
-      $('#archives-table_paginate').hide()
-      $("#archives-table_info").hide()
-      $("#toggle-tabs").hide()
-      $("#archives-table").hide()
-      $("#archives-box").show()
-      $("#back-archives").show()
-      $("#back-button").show()
-      $("#camera-video-archive").show()
-      $(".archive-tabs").hide()
-      $(".hide-add-button").hide()
-      $("#archives-table_wrapper.dataTables_wrapper").css 'margin-bottom', '0px'
-      $("#archives-box-2").hide()
-      $(".stackimage").removeClass("stackimage-view")
-      $(".stackimage").addClass("stackimage-player")
-      $("#archives-tab").removeClass("margin-top-15")
-      $('#txt_title').text(media_title)
-      $('#archive-autor').html("Requested by: #{media_autor}</br>")
-      $('#archive-dates').html("From #{media_from} to #{media_to}</br>")
-      $('#archive-time-1').text("Created at #{moment(newTime).format('MMMM Do YYYY, H:mm:ss')}")
-      $("#txt-archive-type").val(type)
-      $("#txt-archive-id").val(id)
-      $("#txt-archive-title").val(media_title)
-      $('.hide-add-button').hide()
-      $('#player-buttons').empty()
-      $('#player-buttons').append renderplayerbuttons(id, camera_id, type, status, media_url, media_ispublic, file_name, archive.from_date, archive.to_date)
-      calculateHeight()
+    # if type is "clip" || type is "compare" || type is "url" || type is "file" || type is "edit"
+    update_request_url(id)
+    $('#archives-table_paginate').hide()
+    $("#archives-table_info").hide()
+    $("#toggle-tabs").hide()
+    $("#archives-table").hide()
+    $("#archives-box").show()
+    $("#back-archives").show()
+    $("#back-button").show()
+    $("#camera-video-archive").show()
+    $(".archive-tabs").hide()
+    $(".hide-add-button").hide()
+    $("#archives-table_wrapper.dataTables_wrapper").css 'margin-bottom', '0px'
+    $("#archives-box-2").hide()
+    $(".stackimage").removeClass("stackimage-view")
+    $(".stackimage").addClass("stackimage-player")
+    $("#archives-tab").removeClass("margin-top-15")
+    $('#txt_title').text(media_title)
+    $('#archive-autor').html("Requested by: #{media_autor}</br>")
+    $('#archive-dates').html("From #{media_from} to #{media_to}</br>")
+    $('#archive-time-1').text("Created at #{moment(newTime).format('MMMM Do YYYY, H:mm:ss')}")
+    $("#txt-archive-type").val(type)
+    $("#txt-archive-id").val(id)
+    $("#txt-archive-title").val(media_title)
+    $('.hide-add-button').hide()
+    $('#player-buttons').empty()
+    $('#player-buttons').append renderplayerbuttons(id, camera_id, type, status, media_url, media_ispublic, file_name, archive.from_date, archive.to_date)
+    calculateHeight()
 
-      if type is "url"
-        $("#archive-play").hide()
-        $("#file_upload_viewer").hide()
+    if type is "url"
+      $("#archive-play").hide()
+      $("#file_upload_viewer").hide()
+      $("#archive-dates").hide()
+      $("#iframe_archive").show()
+      info_total = $("#back-button").height() + $("#info-archive").height() + $(".player-header").height() + $("#ul-nav-tab").height() + 52
+      view_height = Metronic.getViewPort().height
+      $("#iframe_archive").height(view_height - info_total)
+      $('#iframe_archive').prop('src', convert_to_embed_url(media_url))
+    else if type is "file" || type is "edit"
+      arr = file_name.split('.')
+      file_type = get_file_type(arr.pop())
+      $("#iframe_archive").hide()
+      snap_date_time = moment.tz(media_from * 1000, Evercam.Camera.timezone).format('MM/DD/YYYY, HH:mm:ss')
+      $('#archive-dates').html("Cloud Recordings #{snap_date_time}</br>")
+      if type is "file"
         $("#archive-dates").hide()
-        $("#iframe_archive").show()
-        info_total = $("#back-button").height() + $("#info-archive").height() + $(".player-header").height() + $("#ul-nav-tab").height() + 52
-        view_height = Metronic.getViewPort().height
-        $("#iframe_archive").height(view_height - info_total)
-        $('#iframe_archive').prop('src', convert_to_embed_url(media_url))
-      else if type is "file" || type is "edit"
-        arr = file_name.split('.')
-        file_type = get_file_type(arr.pop())
-        $("#iframe_archive").hide()
-        snap_date_time = moment.tz(media_from * 1000, Evercam.Camera.timezone).format('MM/DD/YYYY, HH:mm:ss')
-        $('#archive-dates').html("Cloud Recordings #{snap_date_time}</br>")
-        if type is "file"
-          $("#archive-dates").hide()
-        if file_type is "image"
-          $("#archive-play").hide()
-          $("#file_upload_viewer").show()
-          $("#file_upload_viewer").attr("src", media_url)
-        else
-          $("#archive-play").show()
-          $("#file_upload_viewer").hide()
-          load_player(media_thumbnail, media_url)
+      if file_type is "image"
+        $("#archive-play").hide()
+        $("#file_upload_viewer").show()
+        $("#file_upload_viewer").attr("src", media_url)
       else
-        $("#file_upload_viewer").hide()
-        $("#iframe_archive").hide()
         $("#archive-play").show()
-        $("#archive-dates").show()
+        $("#file_upload_viewer").hide()
         load_player(media_thumbnail, media_url)
+    else
+      $("#file_upload_viewer").hide()
+      $("#iframe_archive").hide()
+      $("#archive-play").show()
+      $("#archive-dates").show()
+      load_player(media_thumbnail, media_url)
 
 search_by_id = (archives, archive_id) ->
   found_archive = null
