@@ -1,5 +1,5 @@
 class CamerasController < ApplicationController
-  before_action :authenticate_user!, :except=>[:single]
+  before_action :authenticate_user!, :except=>[:single, :test]
   include SessionsHelper
   include ApplicationHelper
   include CamerasHelper
@@ -526,7 +526,10 @@ class CamerasController < ApplicationController
   end
 
   def test
-    @cameras = load_user_cameras(true, false)
+    api = get_evercam_api
+    if @current_user
+      @cameras = load_user_cameras(true, false)
+    end
   end
 
   private

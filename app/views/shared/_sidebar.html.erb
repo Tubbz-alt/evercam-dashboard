@@ -40,10 +40,16 @@
               </li>
             <% end %>
           <% else %>
-          <li class="sub-menu-item public-active-list camera-<%= @camera['id'] %> <%= is_active?("/cameras/#{@camera['id']}") %> <% unless @camera['is_online'] %>sidebar-offline<% end %>">
-            <span class="title"> <%= @camera['name'] %></span>
-            <i class="red header-sidebar fa fa-unlink"></i>
-          </li>
+            <% if @camera %>
+            <li class="sub-menu-item public-active-list camera-<%= @camera['id'] %> <%= is_active?("/cameras/#{@camera['id']}") %> <% unless @camera['is_online'] %>sidebar-offline<% end %>">
+              <span class="title"> <%= @camera['name'] %></span>
+              <i class="red header-sidebar fa fa-unlink"></i>
+            </li>
+            <% else %>
+              <li class="sub-menu-item public-active-list">
+                <span class="title"> Test Results</span>
+              </li>
+            <% end %>
           <% end %>
         </ul>
       </li>
