@@ -33,6 +33,9 @@ mobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(n
 initDatePicker = ->
   $("#ui_date_picker_inline").datepicker().on("changeDate", datePickerSelect).on "changeMonth", datePickerChange
 
+  camera_created_date = new Date(moment.unix(Evercam.Camera.created_at).tz("#{Evercam.Camera.timezone}").format("YYYY/MM/DD"))
+  $("#ui_date_picker_inline").datepicker('setStartDate', camera_created_date)
+
   $("#ui_date_picker_inline table th[class*='prev']").on "click", ->
     changeMonthFromArrow('p')
 
@@ -43,34 +46,35 @@ initDatePicker = ->
     SetImageHour $(this).html(), "tdI#{$(this).html()}"
 
 changeMonthFromArrow = (value) ->
-  status_flag = false
-  clearHourCalendar()
-  xhrRequestChangeMonth.abort()
-  $("#ui_date_picker_inline").datepicker('fill')
-  d = $("#ui_date_picker_inline").datepicker('getDate')
-  month = d.getMonth()
-  year = d.getFullYear()
+  if $('#ui_date_picker_inline .datepicker-days').is(':visible')
+    status_flag = false
+    clearHourCalendar()
+    xhrRequestChangeMonth.abort()
+    $("#ui_date_picker_inline").datepicker('fill')
+    d = $("#ui_date_picker_inline").datepicker('getDate')
+    month = d.getMonth()
+    year = d.getFullYear()
 
-  if value is 'n'
-    month = month + 2
-  if month is 13
-    month = 1
-    year++
-  if month is 0
-    month = 12
-    year--
+    if value is 'n'
+      month = month + 2
+    if month is 13
+      month = 1
+      year++
+    if month is 0
+      month = 12
+      year--
 
-  walkDaysInMonth(year, month)
+    walkDaysInMonth(year, month)
 
-  if value =='n'
-    d.setMonth(d.getMonth()+1)
-  else if value =='p'
-    d.setMonth(d.getMonth()-1)
-  $("#ui_date_picker_inline").datepicker('setDate',d)
-  snapshotInfos = null
-  snapshotInfoIdx = 1
-  currentFrameNumber = 0
-  BoldSnapshotHour(false)
+    if value =='n'
+      d.setMonth(d.getMonth()+1)
+    else if value =='p'
+      d.setMonth(d.getMonth()-1)
+    $("#ui_date_picker_inline").datepicker('setDate',d)
+    snapshotInfos = null
+    snapshotInfoIdx = 1
+    currentFrameNumber = 0
+    BoldSnapshotHour(false)
 
 walkDaysInMonth = (year, month) ->
   showDaysLoadingAnimation()
@@ -86,8 +90,15 @@ walkDaysInMonth = (year, month) ->
     false
 
   onSuccess = (response, status, jqXHR) ->
-    for day in response.days
-      HighlightDay(year, month, day, true)
+    if response.days.length is 0
+      hideDaysLoadingAnimation()
+      hideHourLoadingAnimation()
+      HideLoader()
+      $("#imgPlayback").attr("src", "/assets/nosnapshots.svg")
+      $('#snapshot-tab-save').hide()
+    else
+      for day in response.days
+        HighlightDay(year, month, day, true)
 
   settings =
     cache: true
@@ -133,6 +144,7 @@ datePickerChange=(value)->
   snapshotInfos = null
   snapshotInfoIdx = 1
   currentFrameNumber = 0
+  BoldSnapshotHour(false)
 
 clearHourCalendar = ->
   $("#hourCalendar td[class*='day']").removeClass("active")
@@ -349,6 +361,7 @@ HighlightDay = (year, month, day, exists) ->
         calDay.addClass('disabled')
     hideDaysLoadingAnimation()
     hideHourLoadingAnimation()
+    HideLoader()
 
 BoldSnapshotHour = (callFromDt) ->
   showHourLoadingAnimation()
