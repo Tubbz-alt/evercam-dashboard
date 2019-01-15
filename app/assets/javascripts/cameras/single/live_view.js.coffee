@@ -712,6 +712,30 @@ detectMobile = ->
     $('#jpg-portion #live-snapshot-magnifier').hide()
     $('#jpg-portion #edit-live-image').hide()
 
+check_dunkettle_camera = ->
+  cameras = ["dunke-wqnzu", "dunke-ibcwt", "dunke-bnivp", "dunke-gqiwe"]
+  if cameras.indexOf("#{Evercam.Camera.id}") is -1
+    return false
+
+  token = Base64.encode("#{Evercam.Camera.id}|#{Evercam.Camera.name}")
+  onSuccess = (response) ->
+    $("#select-stream-type").val("video").trigger("change")
+    true
+
+  onError = (jqXHR, status, error) ->
+    false
+
+  settings =
+    cache: false
+    data: {}
+    dataType: 'text'
+    error: onError
+    success: onSuccess
+    type: 'GET'
+    url: "https://media.evercam.io/hls/#{token}/index.m3u8?nvr=true"
+
+  $.ajax(settings)
+
 window.initializeLiveTab = ->
   window.video_player_html = $('#camera-video-stream').html()
   window.vjs_player = {}
@@ -741,6 +765,7 @@ window.initializeLiveTab = ->
   centerTabClick()
   hoverMouseOnFullscreen()
   detectMobile()
+  check_dunkettle_camera()
 
 ->
   calculateHeight()

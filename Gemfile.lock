@@ -317,6 +317,7 @@ GEM
     rails-assets-jquery.slimscroll (1.3.8)
     rails-assets-jquery.uniform (4.2.2)
       rails-assets-jquery (>= 1.6, < 2)
+    rails-assets-js-base64 (2.4.9)
     rails-assets-ladda (1.0.5)
       rails-assets-spin.js (~> 2.0.2)
     rails-assets-modernizr (3.5.0)
@@ -497,6 +498,7 @@ DEPENDENCIES
   rails-assets-jquery.nicescroll!
   rails-assets-jquery.slimscroll!
   rails-assets-jquery.uniform!
+  rails-assets-js-base64!
   rails-assets-ladda!
   rails-assets-moment (~> 2.12.0)!
   rails-assets-screenfull!

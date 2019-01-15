@@ -92,4 +92,5 @@ source 'http://insecure.rails-assets.org' do
   gem 'rails-assets-jquery-tags-input'
   gem 'rails-assets-downloadjs'
   gem 'rails-assets-FileSaver'
+  gem 'rails-assets-js-base64'
 end
