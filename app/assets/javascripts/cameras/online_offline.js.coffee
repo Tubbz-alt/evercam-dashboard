@@ -32,9 +32,9 @@ onChangeStatusReportDays = (days, offline_only) ->
   data.offline_only = offline_only
 
   onError = (jqXHR, status, error) ->
-    if showError
-      showError(jqXHR.responseJSON.message)
-      toggleLoadingImage()
+    $(".bb-alert").removeClass("alert-info").addClass("alert-danger")
+    Notification.show(error)
+    toggleLoadingImage()
 
   onSuccess = (response, success, jqXHR) ->
     if response.length is 0
@@ -62,6 +62,7 @@ centerLoadingAnimation = ->
 
 window.initializeOnlineOfflineReport = ->
   onResize()
+  Notification.init(".bb-alert")
   selectHistoryDays()
   onChangeStatusReportDays()
   centerLoadingAnimation()
