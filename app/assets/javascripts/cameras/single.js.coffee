@@ -170,6 +170,23 @@ handleResize = ->
   $(window).resize ->
     liveViewMenuDisplay()
 
+  $(window).unload ->
+    remove_user_from_feed()
+
+remove_user_from_feed = ->
+  stream_url = $("#hls_stream_url").val()
+  if stream_url isnt "" || stream_url isnt null
+    api_url = stream_url.replace("/index.m3u8", "")
+
+    settings =
+      data: {}
+      dataType: 'json'
+      async: false
+      contentType: "application/json; charset=utf-8"
+      type: 'DELETE'
+      url: api_url
+    sendAJAXRequest(settings)
+
 initTimepicker = ->
   $('.timepicker-default').timepicker
     minuteStep: 1
