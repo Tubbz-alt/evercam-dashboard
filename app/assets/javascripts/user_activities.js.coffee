@@ -158,6 +158,7 @@ get_search_query = ->
 
 searchLogs = ->
   $("#search-logs").on "click", ->
+    NProgress.start()
     url = "#{Evercam.API_URL}users/session/activities?api_id=#{Evercam.User.api_id}&api_key=#{Evercam.User.api_key}&limit=10000#{get_search_query()}"
     table.ajax.url(url).load() if table?
 

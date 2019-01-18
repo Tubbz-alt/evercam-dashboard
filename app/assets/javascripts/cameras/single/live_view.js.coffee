@@ -16,12 +16,14 @@ mobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(n
 controlButtonEvents = ->
   $(".play-pause").on "click", ->
     if stream_paused
-      $(this).children().removeClass "icon-control-play"
-      $(this).children().addClass "icon-control-pause"
+      $(this).children().removeClass "fa-play"
+      $(this).children().addClass "fa-pause"
+      $(this).children().attr "title", "Pause"
       playJpegStream()
     else
-      $(this).children().removeClass "icon-control-pause"
-      $(this).children().addClass "icon-control-play"
+      $(this).children().removeClass "fa-pause"
+      $(this).children().addClass "fa-play"
+      $(this).children().attr "title", "Play"
       stopJpegStream()
     stream_paused = !stream_paused
 
@@ -232,8 +234,11 @@ getImageRealRatio = ->
     fullscreen_width = $("#fullscreen").width()
     jpeg_img_height = $("#live-player-image").height()
     jpeg_img_width = $("#live-player-image").width()
+    play_options_width = $("#jpg-portion .play-options").width()
     play_options_position = $("#fullscreen").height() / 2
+    play_options_left_position = ($("#fullscreen").width() - play_options_width) / 2
     $('#jpg-portion .play-options').css({"top": "#{play_options_position}px"})
+    $('#jpg-portion .play-options').css({"left": "#{play_options_left_position}px"})
     if $('.camera-preview-online').hasClass 'hide'
       if offline_img_height > offline_wrap_height ||
       offline_img_width < offline_wrap_width
