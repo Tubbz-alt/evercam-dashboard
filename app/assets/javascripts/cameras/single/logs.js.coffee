@@ -106,11 +106,13 @@ initializeDataTable = ->
           return '<div class="offlines">Camera went offline</div>'
         else if row.action is 'accessed'
           return 'Camera was viewed'
+        else if row.action is 'vh status'
+          return "Virtual Host auto-enabled by system"
         else
           return row.action
       , className: 'log-action'},
       {data: ( row, type, set, meta ) ->
-        if row.action is 'online' or row.action is 'offline'
+        if row.action is 'online' or row.action is 'offline' or row.action is 'vh status'
           return 'System'
         return row.who
       }
