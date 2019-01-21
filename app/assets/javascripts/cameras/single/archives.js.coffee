@@ -328,7 +328,7 @@ getArchivesHtml = (archives) ->
     domain = arr_host.shift()
     url = archives.media_url
     image_html = "<div class='stacklink_view'><i class='fab fa-#{domain} #{domain}'></i></div>"
-    fa_class = "<i class='fa fa-link type-icon type-icon-url'></i>"
+    fa_class = "<i class='fas fa-copy type-icon type-icon-url'></i>"
     hide_dates = "hide"
 
   html = "<div id='dataslot#{archives.id}' class='list-border margin-bottom10'>"
@@ -345,10 +345,10 @@ getArchivesHtml = (archives) ->
   html += "          </div>"
   html += "          <span class='spn-label'><i class='fas fa-users'></i></span><div class='div-snapmail-values snapmail-title' title='#{archives.requester_name}'><span class='small-text'>&nbsp;&nbsp;#{archives.requester_name}</span><span class='line-end'></span></div><div class='clear-f'></div>"
   if archives.type is "edit"
-    html += "          <span class='spn-label'><i class='far fa-calendar-alt font-16'></i></span><div class='div-snapmail-values snapmail-title'><span class='small-text'>&nbsp;&nbsp;#{moment.tz(archives.from_date * 1000, Evercam.Camera.timezone).format('MM/DD/YYYY, HH:mm:ss')}</span><span class='line-end'></span></div><div class='clear-f'></div>"
+    html += "          <span class='spn-label'><i class='fas fa-calendar-alt font-16'></i></span><div class='div-snapmail-values snapmail-title'><span class='small-text'>&nbsp;&nbsp;#{moment.tz(archives.from_date * 1000, Evercam.Camera.timezone).format('MM/DD/YYYY, HH:mm:ss')}</span><span class='line-end'></span></div><div class='clear-f'></div>"
   else
-    html += "          <span class='spn-label'><i class='far fa-calendar-alt font-16'></i></span><div class='div-snapmail-values snapmail-title #{hide_dates}'><span class='small-text'>&nbsp;&nbsp;#{getDates(archives.from_date * 1000)} - #{getDates(archives.to_date * 1000)}</span><span class='line-end'></span></div><div class='clear-f'></div>"
-  html += "          <span class='spn-label'><i class='far fa-clock font-16'></i></span><div class='div-snapmail-values snapmail-title'><span class='small-text'>&nbsp;&nbsp;#{moment(archives.created_at*1000).format("MMMM Do YYYY, H:mm:ss")}</span><span class='line-end'></span></div><div class='clear-f'></div></div>"
+    html += "          <span class='spn-label'><i class='fas fa-calendar-alt font-16'></i></span><div class='div-snapmail-values snapmail-title #{hide_dates}'><span class='small-text'>&nbsp;&nbsp;#{getDates(archives.from_date * 1000)} - #{getDates(archives.to_date * 1000)}</span><span class='line-end'></span></div><div class='clear-f'></div>"
+  html += "          <span class='spn-label'><i class='fas fa-clock font-16'></i></span><div class='div-snapmail-values snapmail-title'><span class='small-text'>&nbsp;&nbsp;#{moment(archives.created_at*1000).format("MMMM Do YYYY, H:mm:ss")}</span><span class='line-end'></span></div><div class='clear-f'></div></div>"
   html += "    </div>"
   html += "    </div>"
   html += "</div>"
@@ -463,11 +463,11 @@ rendersharebuttons = (row, type, set, meta) ->
       url = "#{Evercam.API_URL}cameras/#{row.camera_id}/archives/#{row.id}.mp4"
       play_url = "#{document.location.origin}/v1/cameras/#{row.camera_id}/archives/#{row.id}/play"
       download_link = "<div class='float-left'><a class='archive-actions download-animation archive-icon' data-from='#{row.from_date}' data-to='#{row.to_date}' data-type='#{row.type}' href='javascript:;'' data-download-target='#mp4clip-#{row.id}'><i class='fa fa-download' title='Download'></i></a></div>"
-      copy_url_link = "<a href='javascript:;' data-toggle='tooltip' title='Copy URL' class='archive-actions share-archive' play-url='#{url}' val-archive-id='#{row.id}' val-camera-id='#{row.camera_id}'><i class='fas fa-link'></i></a>"
+      copy_url_link = "<a href='javascript:;' data-toggle='tooltip' title='Copy URL' class='archive-actions share-archive' play-url='#{url}' val-archive-id='#{row.id}' val-camera-id='#{row.camera_id}'><i class='fas fa-copy'></i></a>"
 
       if row.type is "file" || row.type is "edit"
         url = "#{Evercam.API_URL}cameras/#{row.camera_id}/archives/#{row.file_name}"
-        copy_url_link = "<a href='javascript:;' data-toggle='tooltip' title='Copy URL' class='archive-actions share-archive' play-url='#{url}' val-archive-id='#{row.id}' val-camera-id='#{row.camera_id}'><i class='fas fa-link'></i></a>"
+        copy_url_link = "<a href='javascript:;' data-toggle='tooltip' title='Copy URL' class='archive-actions share-archive' play-url='#{url}' val-archive-id='#{row.id}' val-camera-id='#{row.camera_id}'><i class='fas fa-copy'></i></a>"
       else if row.type is "compare"
         main_url = "#{Evercam.API_URL}cameras/#{row.camera_id}/compares/#{row.id}"
         url = "#{main_url}.mp4"
@@ -475,9 +475,9 @@ rendersharebuttons = (row, type, set, meta) ->
                         "<ul class='dropdown-menu'><li><a class='download-animation archive-icon' data-type='compare' data-from='#{row.from_date}' data-to='#{row.to_date}' href='javascript:;' data-download-target='#gif-#{row.id}' title='Download GIF (Good for emails)'><i class='fa fa-download'></i> GIF</li></a>" +
                           "<li><a class='download-animation archive-icon' href='javascript:;' data-type='compare' data-from='#{row.from_date}' data-to='#{row.to_date}' data-download-target='#mp4-#{row.id}' title='Download MP4 (Good for everything else)'><i class='fa fa-download'></i> MP4</a></li></ul>" +
                         '</div>'
-        copy_url_link = "<div class='dropdown'><a class='archive-actions dropdown-toggle' href='#'' data-toggle='dropdown' title='Copy'><i class='fas fa-link'></i></a>" +
-                        "<ul class='dropdown-menu'><li><a class='share-archive archive-icon' href='javascript:;' play-url='#{main_url}.gif' title='Copy GIF URL'><i class='fas fa-link'></i> GIF</li></a>" +
-                          "<li><a class='share-archive archive-icon' href='javascript:;' play-url='#{main_url}.mp4' title='Copy MP4 URL'><i class='fas fa-link'></i> MP4</a></li></ul>" +
+        copy_url_link = "<div class='dropdown'><a class='archive-actions dropdown-toggle' href='#'' data-toggle='dropdown' title='Copy'><i class='fas fa-copy'></i></a>" +
+                        "<ul class='dropdown-menu'><li><a class='share-archive archive-icon' href='javascript:;' play-url='#{main_url}.gif' title='Copy GIF URL'><i class='fas fa-copy'></i> GIF</li></a>" +
+                          "<li><a class='share-archive archive-icon' href='javascript:;' play-url='#{main_url}.mp4' title='Copy MP4 URL'><i class='fas fa-copy'></i> MP4</a></li></ul>" +
                         "</div>"
 
       if row.public
@@ -490,7 +490,7 @@ rendersharebuttons = (row, type, set, meta) ->
             '<a href="http://www.facebook.com/sharer.php?u=" class="archive-actions" target="_blank" title="Facebook" data-width="1280" data-height="720"><i class="fab fa-facebook-f"></i></a>'+
             '<a href="http://www.linkedin.com/shareArticle?url=&title=My photo&summary=This is a photo from evercam" class="archive-actions" target="_blank" title="Linkedin" data-width="1280" data-height="720"><i class="fab fa-linkedin-in"></i></a>' +
             '<a href="http://twitter.com/share?url=&text=This is a photo from evercam&via=evrcm" class="archive-actions" target="_blank" title="Twitter" data-width="1280" data-height="720"><i class="fab fa-twitter"></i></a>' +
-            '<a href="#" data-toggle="tooltip" title="Copy URL" class="archive-actions share-archive" play-url="" val-archive-id="' + row.id + '" val-camera-id="' + row.camera_id + '"><i class="fas fa-link"></i></a></div>'+
+            '<a href="#" data-toggle="tooltip" title="Copy URL" class="archive-actions share-archive" play-url="" val-archive-id="' + row.id + '" val-camera-id="' + row.camera_id + '"><i class="fas fa-copy "></i></a></div>'+
             div.html()
   else
     return div.html()
