@@ -97,6 +97,10 @@ initializePlayer = ->
       techOrder: ["flash", "html5"]
     }, ->
       @on 'error', ->
+        if !window.is_rtsp_open
+          msg = "Port #{$("#ext-rtsp-port").val()} is closed on #{$("#camera-url").val()}."
+          Notification.error(msg)
+          $(".vjs-error-display div").text(msg)
         setInterval (->
           $("#select-stream-type").val("jpeg").trigger("change")
           load_jpeg()

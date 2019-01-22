@@ -548,6 +548,8 @@ port_check = (external_port,type) ->
         $(".#{type}port-status").show()
         $(".#{type}port-status").removeClass('green').addClass('red')
         $(".#{type}port-status").text('Port is Closed')
+        if type is "rtsp-"
+          window.is_rtsp_open = false
 
   settings =
     data: data
