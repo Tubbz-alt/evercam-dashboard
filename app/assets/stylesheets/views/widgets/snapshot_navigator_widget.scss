@@ -63,10 +63,15 @@ th {
 #fullscreen:hover .play-options {
   opacity: 1;
 }
+
+#save-recording-image {
+  margin-top: 0px !important;
+}
+
 .play-options{
   position: absolute;
   opacity: 0;
-  top: 0;
+  top: 50%;
   left: 50%;
   transition: all .2s linear;
   z-index: 10000000000;
