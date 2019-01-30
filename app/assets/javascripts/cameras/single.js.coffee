@@ -17,6 +17,7 @@
 #= require jquery.thumbhover.js
 #= require jquery.images-compare.js
 #= require cameras/single/nvr_recording.js.coffee
+#= require saveimage.js
 
 initializeiCheck = ->
   $("input[type=radio]").iCheck
@@ -236,6 +237,7 @@ window.initializeCameraSingle = ->
   Metronic.init()
   Layout.init()
   QuickSidebar.init()
+  SaveImage.init()
   readOnlyCameraDeleteOption()
   showDurationError()
   liveViewMenuDisplay()

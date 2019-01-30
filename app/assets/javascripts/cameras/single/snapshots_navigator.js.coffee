@@ -938,11 +938,10 @@ saveImage = ->
     date_time = new Date(created_at*1000)
     file_name = "#{Evercam.Camera.id}-#{getSnapshotDate(date_time).toISOString()}.jpg"
     blob = base64ToBlob($("#imgPlayback").attr('src'))
-    saveAs(blob, file_name)
-    # if mobile
-    #   SaveImage.save($("#imgPlayback").attr('src'), "#{file_name}", "image/jpg")
-    # else
-    #   download($("#imgPlayback").attr('src'), file_name, "image/jpg")
+    if mobile
+      SaveImage.save($("#imgPlayback").attr('src'), "#{file_name}", "image/jpg")
+    else
+      saveAs(blob, file_name)
     $('.play-options').css('display','none')
     setTimeout opBack , 1500
 
