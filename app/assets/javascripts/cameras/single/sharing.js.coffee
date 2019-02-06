@@ -764,10 +764,10 @@ getSharedUsers = ->
     true
 
   onSuccess = (users, status, jqXHR) ->
-    # $.each users, (i, user) ->
-    #   $("#sharing-user-email").append(
-    #     "<option value='#{user.email}'>#{user.email}</option>"
-    #   )
+    $.each users, (i, user) ->
+      $("#sharing-user-email").append(
+        "<option value='#{user.email}'>#{user.email}</option>"
+      )
     share_users_select = $('#sharing-user-email').select2
       tags: true,
       placeholder: 'Enter Email Address',
