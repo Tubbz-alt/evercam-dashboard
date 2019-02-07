@@ -546,9 +546,14 @@ onAddSharingUserClicked = (event) ->
           message = data.message.substring(data.message.indexOf('["') + 2, data.message.indexOf('"]'))
       showError(message)
     NProgress.done()
+    clearSelectizeInputField()
     true
   createShare(Evercam.Camera.id, emailAddress, emailbodyMsg, permissions, onSuccess, onError, Evercam.User.api_key, Evercam.User.api_id)
   true
+
+clearSelectizeInputField = ->
+  selectize = share_users_select[0].selectize
+  selectize.clear()
 
 onSaveShareClicked = (event) ->
   event.preventDefault()
@@ -732,7 +737,7 @@ getGravatar = (img, email) ->
   jQuery.ajax(settings)
 
 validateEmail = (email) ->
-  re = /^(?!.*\.{2})[a-zA-Z0-9._-]+@[a-z\d\-]+(\.[a-z]+)*\.[a-z]+\z*$/
+  re = /^(?!.*\.{2})[a-zA-Z0-9._%+"-]+@[a-zA-Z\d\-]+(\.[a-zA-Z]+)*\.[a-zA-Z]+\z*$/
   addresstrimed = email.replace(RegExp(' ', 'gi'), '')
   if re.test(addresstrimed) == false
     false
@@ -740,21 +745,21 @@ validateEmail = (email) ->
     true
 
 highlightInvalidEmailsTag = ->
-  emailAddresses = $(".email-input .select2-container .select2-selection__rendered li.select2-selection__choice")
+  emailAddresses = $(".email-input .selectize-control .selectize-input div.item")
   emailAddresses.each ->
     value = $(this)
-    email_address = value.attr "title"
+    email_address = value.attr "data-value"
     if !validateEmail(email_address)
-      value.css 'border', '1px solid #DC4C3F'
+      value.addClass('invalid-email')
       $(".bb-alert").removeClass("alert-info").addClass("alert-danger")
 
 disableShareButton = ->
-  if $('#sharing-user-email').val()
+  if $('#selectize-share-email').val()
     $('#submit_share_button').removeAttr 'disabled'
   else
     $('#submit_share_button').attr 'disabled', 'disabled'
 
-getSharedUsers = ->
+getSharedUsersSelectize = ->
   data =
     api_id: Evercam.User.api_id
     api_key: Evercam.User.api_key
@@ -765,54 +770,27 @@ getSharedUsers = ->
 
   onSuccess = (users, status, jqXHR) ->
     $.each users, (i, user) ->
-      $("#sharing-user-email").append(
+      $("#selectize-share-email").append(
         "<option value='#{user.email}'>#{user.email}</option>"
       )
-    share_users_select = $('#sharing-user-email').select2
-      tags: true,
-      placeholder: 'Enter Email Address',
-      selectOnClose: true,
-      closeOnSelect: true,
-      tokenSeparators: [',', ';', ' '],
-      templateSelection: format,
-      templateResult: format,
-      escapeMarkup: (markup) ->
-        if markup is "No results found"
-          $('.select2-container .select2-dropdown').hide()
-        else
-          $('.select2-container .select2-dropdown').show()
-        return markup
-      createTag: (term, data) ->
-        highlightInvalidEmailsTag()
-        value = $.trim(term.term)
-        if value
-          share_users_select.select2("open")
-        else
-          share_users_select.select2("close")
+    share_users_select = $('#selectize-share-email').selectize
+      plugins: ['remove_button'],
+      persist: false,
+      maxItems: null,
+      valueField: 'id',
+      labelField: 'name',
+      searchField: ['name', 'email'],
+      create: (input) ->
+        value = $.trim(input)
         return {
-          id: value
-          text: value
+          id: input
+          name: input
         }
-
-    share_users_select.val("").trigger("change")
-    share_users_select.on 'select2:unselecting', (e) ->
-      highlightInvalidEmailsTag()
-      disableShareButton()
-      $(this).data 'unselecting', true
-    share_users_select.on 'select2:opening', (e) ->
-      highlightInvalidEmailsTag()
-      if $(this).data('unselecting')
-        $(this).removeData 'unselecting'
+      onChange: (value) ->
         disableShareButton()
-        e.preventDefault()
-      setTimeout(getEmptyImagesForSelect2, 1500)
-    share_users_select.on 'select2:close', (e) ->
-      highlightInvalidEmailsTag()
-      disableShareButton()
-      setTimeout(onCloseSelect2SetGravatar, 1000)
-    share_users_select.on 'select2:select', (e) ->
-      highlightInvalidEmailsTag()
-      disableShareButton()
+        highlightInvalidEmailsTag()
+    
+    clearSelectizeInputField()
 
   settings =
     cache: false
@@ -872,6 +850,6 @@ window.initializeSharingTab = ->
   initializePopup()
   Notification.init(".bb-alert")
   getTransferFromUrl()
-  getSharedUsers()
+  getSharedUsersSelectize()
 
 window.Evercam.Share.createShare = createShare

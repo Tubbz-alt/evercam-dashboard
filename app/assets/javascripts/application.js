@@ -33,6 +33,8 @@
 //= require datatables-plugins/integration/bootstrap/3/dataTables.bootstrap.js
 //= require iCheck
 //= require select2.min.js
+//= require selectize.min.js
+//= require shim.js
 //= require popbox.js
 //= require swfobject.js
 //= require phoenix

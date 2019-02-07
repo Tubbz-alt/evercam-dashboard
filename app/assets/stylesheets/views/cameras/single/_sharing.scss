@@ -19,6 +19,20 @@
 
 }
 
+.selectize-control.multi .selectize-input .invalid-email {
+  background-color: $evercam-red;
+  border: 1px solid $evercam-red;
+  color: $white;
+
+  a {
+    border-left: 1px solid $evercam-red;
+  }
+}
+
+.selectize-dropdown .create {
+  padding-left: 10px;
+}
+
 .title-padding {
   padding: 12px 10px;
 }
