@@ -1081,7 +1081,11 @@ loadOldestLatestImage = (enter_query) ->
     api_key: Evercam.User.api_key
 
   onError = (jqXHR, status, error) ->
-    false
+    if jqXHR.status is 404
+      $("#imgPlayback").attr("src", jqXHR.responseJSON.data)
+      hideDaysLoadingAnimation()
+      hideHourLoadingAnimation()
+      HideLoader()
 
   onSuccess = (response, status, jqXHR) ->
     $("#imgPlayback").attr("src", response.data)
