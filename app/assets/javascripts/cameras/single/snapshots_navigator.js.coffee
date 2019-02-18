@@ -288,7 +288,7 @@ getTimestampFromUrl = ->
     ""
 
 isValidDateTime = (timestamp) ->
-  moment(timestamp, "YYYY-MM-DDTHH:mm:ss.SSSZ", true).isValid()
+  moment.tz(timestamp, Evercam.Camera.timezone).isValid()
 
 handleBodyLoadContent = ->
   offset = $('#camera_time_offset').val()
@@ -301,12 +301,8 @@ handleBodyLoadContent = ->
 
   timestamp = getTimestampFromUrl()
   if timestamp isnt ""
-    playFromTimeStamp = moment(timestamp)
-    playFromDateTime = new Date(moment(timestamp)
-    .format('MM/DD/YYYY HH:mm:ss'))
-    playFromDateTime.setHours(playFromDateTime.getHours() + CameraOffsetHours)
-    playFromDateTime
-    .setMinutes(playFromDateTime.getMinutes() + CameraOffsetMinutes)
+    playFromTimeStamp = timestamp
+    playFromDateTime = new Date(moment.tz(timestamp, Evercam.Camera.timezone).format('MM/DD/YYYY HH:mm:ss'))
     currentDate = playFromDateTime
     cameraCurrentHour = currentDate.getHours()
     $("#ui_date_picker_inline").datepicker('update', currentDate)

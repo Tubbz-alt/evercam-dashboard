@@ -16,7 +16,6 @@ updateLogTypesFilter = () ->
   )
   from_date = moment.tz($('#datetimepicker').val(), "DD-MM-YYYY H:mm", Evercam.Camera.timezone)
   to_date = moment.tz($('#datetimepicker2').val(), "DD-MM-YYYY H:mm", Evercam.Camera.timezone)
-  console.log from_date.toISOString()
   from = from_date.toISOString()
   to = to_date.toISOString()
   if from_date && to_date
