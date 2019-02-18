@@ -69,7 +69,7 @@ update_cameras = (camera) ->
   list_element =
     "<li class='sub-menu-item camera-#{camera.camera_id} #{offline_class}'>
       #{cr_html}
-      <a data-camera-id='#{camera.camera_id}' href='/v1/cameras/#{camera.camera_id}'>#{camera.name}</a>
+      <a data-camera-id='#{camera.camera_id}' href='/v2/cameras/#{camera.camera_id}'>#{camera.name}</a>
       <i class='red header-sidebar fa fa-unlink'></i>
     </li>"
 

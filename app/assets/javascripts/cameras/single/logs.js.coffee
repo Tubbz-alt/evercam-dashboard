@@ -14,15 +14,16 @@ updateLogTypesFilter = () ->
   $.each($("input[name='type']:checked"), ->
     types.push($(this).val())
   )
-  from_date = moment($('#datetimepicker').val(), "DD-MM-YYYY H:mm")
-  to_date = moment($('#datetimepicker2').val(), "DD-MM-YYYY H:mm")
-  from = from_date._d.getTime()/ 1000
-  to = to_date._d.getTime()/ 1000
-  if from && to
-    showStatusBar(from, to)
+  from_date = moment.tz($('#datetimepicker').val(), "DD-MM-YYYY H:mm", Evercam.Camera.timezone)
+  to_date = moment.tz($('#datetimepicker2').val(), "DD-MM-YYYY H:mm", Evercam.Camera.timezone)
+  console.log from_date.toISOString()
+  from = from_date.toISOString()
+  to = to_date.toISOString()
+  if from_date && to_date
+    showStatusBar(from_date._d.getTime()/ 1000, to_date._d.getTime()/ 1000)
   fromto_seg = ''
-  fromto_seg += '&from=' + from unless isNaN(from)
-  fromto_seg += '&to=' + to unless isNaN(to)
+  fromto_seg += '&from=' + from
+  fromto_seg += '&to=' + to
   newurl = $('#base-url').val()+ "&page=" + page + "&types=" + types.join() + fromto_seg
   table.ajax.url(newurl).load() if table?
   $('#ajax-url').val(newurl) if not table?
@@ -67,7 +68,7 @@ initializeDataTable = ->
     columns: [
       { data: null, orderable: false, defaultContent: '' },
       { data: ( row, type, set, meta ) ->
-        return moment.tz(row.done_at*1000, Evercam.Camera.timezone).format('ddd, DD MMM YYYY, HH:mm:ss')
+        return moment(row.done_at).format("ddd, DD MMM YYYY, HH:mm:ss")
       , sType: 'uk_datetime', orderable: true },
       { data: ( row, type, set, meta ) ->
         ip = ""
@@ -264,11 +265,11 @@ format_online_log = (logs) ->
   offline = null
   $.each logs, (index, log) ->
     if log.action is 'online'
-      online = moment(log.done_at*1000)
+      online = moment(log.done_at)
       tail = logs.slice((index + 1), logs.length)
       $.each tail, (i, head) ->
         if head.action is 'offline'
-          offline = moment(head.done_at*1000)
+          offline = moment(head.done_at)
           timeGet = "
             <span class='message'>after #{getTime2(online, offline)}</span>"
           logs[index].extra = {message: "Camera came online #{timeGet}"}
@@ -376,7 +377,7 @@ showStatusBar = (from, to) ->
   data.camera_id = Evercam.Camera.id
   data.camera_name = Evercam.Camera.name
   data.camera_status = Evercam.Camera.is_online
-  data.created_at = Evercam.Camera.created_at
+  data.created_at = moment(Evercam.Camera.created_at).unix()
   data.timezone = Evercam.Camera.timezone
 
   onSuccess = (response) ->

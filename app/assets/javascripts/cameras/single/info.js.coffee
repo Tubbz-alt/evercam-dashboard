@@ -712,7 +712,7 @@ onSaveSettingClicked = (event) ->
     error: onError
     success: onSuccess
     type: 'PATCH'
-    url: "/v1/cameras/#{Evercam.Camera.id}"
+    url: "/v2/cameras/#{Evercam.Camera.id}"
 
   sendAJAXRequest(settings)
   true

@@ -13,7 +13,7 @@ showFeedback = (message) ->
   Notification.show(message)
 
 isUnauthorized = (response, message) ->
-  if response.responseText.indexOf("/v1/users/signin") isnt -1
+  if response.responseText.indexOf("/v2/users/signin") isnt -1
     showError("Your session has expired.")
     location = window.location
     location.assign(location.protocol + "//" + location.host)

@@ -8,8 +8,8 @@ initView = ->
   camera_id = Evercam.Archive.camera_id
   url = Evercam.Archive.media_url
   media_thumbnail = Evercam.Archive.thumbnail_url
-  from = moment(Evercam.Archive.from_date*1000).format('MM/DD/YYYY, HH:mm:ss')
-  to = moment(Evercam.Archive.to_date*1000).format('MM/DD/YYYY, HH:mm:ss')
+  from = moment(Evercam.Archive.from_date).format("MM/DD/YYYY, HH:mm:ss")
+  to = moment(Evercam.Archive.to_date).format('MM/DD/YYYY, HH:mm:ss')
   created_at = Evercam.Archive.created_at
   media_url = get_media_url(id, camera_id, file_name, url, type)
   file_type = null
@@ -114,8 +114,8 @@ handleResize = ->
 download_file = ->
   $(".download-animation").on "click", ->
     type = Evercam.Archive.type
-    from = moment(Evercam.Archive.from_date*1000).format('MMDDYYYY-HHmmss')
-    to = moment(Evercam.Archive.to_date*1000).format('MMDDYYYY-HHmmss')
+    from = moment(Evercam.Archive.from_date).format('MMDDYYYY-HHmmss')
+    to = moment(Evercam.Archive.to_date).format('MMDDYYYY-HHmmss')
     camera_name = Evercam.Archive.camera_id.replace(/ /g, "-")
     if type is "edit"
       file_name = "Evercam-Snapshot-#{camera_name}-#{from}"
@@ -152,8 +152,8 @@ onShare = ->
 
 
     media_thumbnail = Evercam.Archive.thumbnail_url
-    from = moment(Evercam.Archive.from_date*1000).format('MM/DD/YYYY, HH:mm:ss')
-    to = moment(Evercam.Archive.to_date*1000).format('MM/DD/YYYY, HH:mm:ss')
+    from = moment(Evercam.Archive.from_date).format("MM/DD/YYYY, HH:mm:ss")
+    to = moment(Evercam.Archive.to_date).format("MM/DD/YYYY, HH:mm:ss")
     created_at = Evercam.Archive.created_at
 
     file_type = null
@@ -176,7 +176,7 @@ onShare = ->
     $("#div_frames").text(Evercam.Archive.frames)
     $("#div_duration").text(renderDuration(type, Evercam.Archive.from_date, Evercam.Archive.to_date))
 
-    share_url = "#{document.location.origin}/v1/cameras/#{camera_id}/archives/#{id}/play"
+    share_url = "#{document.location.origin}/v2/cameras/#{camera_id}/archives/#{id}/play"
     $("#share-buttons-new a.facebook").attr("href", "http://www.facebook.com/sharer.php?u=#{share_url}")
     $("#share-buttons-new a.whatsapp").attr("href", "https://web.whatsapp.com/send?text=#{share_url}")
     $("#share-buttons-new a.linkedin").attr("href", "http://www.linkedin.com/shareArticle?url=#{share_url}&title=My photo&summary=This is a photo from evercam")

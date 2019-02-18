@@ -73,7 +73,7 @@ getTimelapseHtml = (timelapse, index) ->
   html += "        </div>"
   html += "        <input type='hidden' id='timelapse-camera-id#{timelapse.id}' value='#{timelapse.camera_id}'/>"
   html += "        <div class='hash-label snapmail-title'>#{timelapse.title}<span class='line-end'></span></div>"
-  html += "        <div class='camera-time margin-top-20'><span class='spn-label'>Camera Name:</span><div class='div-snapmail-values'><a href='/v1/cameras/#{timelapse.camera_id}' target='_blank'>#{timelapse.camera_name}</a></div><div class='clear-f'></div></div>"
+  html += "        <div class='camera-time margin-top-20'><span class='spn-label'>Camera Name:</span><div class='div-snapmail-values'><a href='/v2/cameras/#{timelapse.camera_id}' target='_blank'>#{timelapse.camera_name}</a></div><div class='clear-f'></div></div>"
   html += "        <div class='camera-time'><span class='spn-label'>Created At:</span><div class='div-snapmail-values'>#{format_time.formatDate((new Date(timelapse.created_at*1000)), "d M Y, H:i:s")}</div><div class='clear-f'></div></div>"
   html += "        <div class='camera-time'><span class='spn-label'>Recording Status:</span><div class='div-snapmail-values'>#{(if timelapse.status is 'Active' then 'On' else 'Off')}</div><div class='clear-f'></div></div>"
   html += "        <div class='camera-time'><span class='spn-label'>Last Snapshot At:</span><div class='div-snapmail-values'>#{(if timelapse.snapshot_count == 0 then '---' else format_time.formatDate((new Date(timelapse.last_snapshot_at*1000)), "d M Y, H:i:s"))}</div><div class='clear-f'></div></div>"

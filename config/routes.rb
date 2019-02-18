@@ -2,8 +2,8 @@ Rails.application.routes.draw do
   get '/pay' => 'payments#pay', as: :pay
   get '/thank-for-payment' => 'payments#thank', as: :thank_payment
   post '/pay' => 'payments#make_payment', as: :make_payment
-  get '/v1/payments' => 'payments#new', as: :new_checkout
-  post '/v1/payments' => 'payments#create', as: :new_charge
+  get '/v2/payments' => 'payments#new', as: :new_checkout
+  post '/v2/payments' => 'payments#create', as: :new_charge
 
   # These routes are for managing customer cards on Stripe
   resources :stripe_customers, only: [:create, :update]
@@ -15,63 +15,63 @@ Rails.application.routes.draw do
 
   mount StripeEvent::Engine => '/stripe-events'
 
-  root to: redirect('/v1/cameras'), as: :root
-  get '/v1/cameras' => 'cameras#index', as: :cameras_index
-  get '/v1/cameras/new' => 'cameras#new', as: :cameras_new
-  post '/v1/cameras/new' => 'cameras#create'
+  root to: redirect('/v2/cameras'), as: :root
+  get '/v2/cameras' => 'cameras#index', as: :cameras_index
+  get '/v2/cameras/new' => 'cameras#new', as: :cameras_new
+  post '/v2/cameras/new' => 'cameras#create'
   get '/cameras/transfer' => 'cameras#transfer'
   get '/status' => 'cameras#online_offline'
   get '/status_report' => 'cameras#update_status_report'
   get '/map' => 'cameras#map', as: :map_view
   get '/table' => 'cameras#cameras_table'
-  get '/v1/cameras/:id' => 'cameras#single', as: :cameras_single
-  get '/v1/cameras/:id/clone' => 'cameras#new', as: :cameras_clone
-  get '/v1/cameras/:id/404' => 'cameras#camera_not_found', as: :cameras_not_found
-  patch '/v1/cameras/:id' => 'cameras#update'
+  get '/v2/cameras/:id' => 'cameras#single', as: :cameras_single
+  get '/v2/cameras/:id/clone' => 'cameras#new', as: :cameras_clone
+  get '/v2/cameras/:id/404' => 'cameras#camera_not_found', as: :cameras_not_found
+  patch '/v2/cameras/:id' => 'cameras#update'
   delete '/cameras/:id' => 'cameras#delete'
   post 'cameras/:id/request_clip' => 'cameras#request_clip', as: :request_clip
   delete 'cameras/clip/delete' => 'cameras#delete_clip', as: :delete_clip
-  get '/v1/cameras/:id/archives/:archive_id/play' => 'pages#play', as: :play_clip
-  get '/v1/cameras/:id/share/request' => 'pages#revoke_request'
-  get '/v1/swagger' => "pages#swagger"
+  get '/v2/cameras/:id/archives/:archive_id/play' => 'pages#play', as: :play_clip
+  get '/v2/cameras/:id/share/request' => 'pages#revoke_request'
+  get '/v2/swagger' => "pages#swagger"
   post '/log_intercom' => 'cameras#log_intercom'
   get '/single_camera_status_bar' => 'cameras#status_bar_single_camera'
   get '/server_down' => 'cameras#server_down', as: :server_down
 
-  get '/v1/cameras/:id/*subpath' => 'cameras#single'
+  get '/v2/cameras/:id/*subpath' => 'cameras#single'
 
-  get '/v1/snapmails' => 'snapmails#index', as: :snapmails_index
-  get '/v1/snapmails/:id/unsubscribe' => 'pages#unsubscribe'
-  post '/v1/snapmails/:id/unsubscribe' => 'pages#unsubscribed', as: :unsubscribed_snapmail
+  get '/v2/snapmails' => 'snapmails#index', as: :snapmails_index
+  get '/v2/snapmails/:id/unsubscribe' => 'pages#unsubscribe'
+  post '/v2/snapmails/:id/unsubscribe' => 'pages#unsubscribed', as: :unsubscribed_snapmail
 
   get '/timelapses' => 'timelapses#index', as: :timelapses_index
 
-  get '/v1/public/cameras' => redirect('https://evercam.io/public/cameras/')
-  get '/v1/public/cameras/:id' => redirect('https://evercam.io/public/cameras/')
+  get '/v2/public/cameras' => redirect('https://evercam.io/public/cameras/')
+  get '/v2/public/cameras/:id' => redirect('https://evercam.io/public/cameras/')
 
   resources :sessions, only: [:new, :create, :destroy]
   resources :users, only: [:new, :create, :edit]
   get '/sessions' => redirect('/')
 
-  get '/v1/users/signup' => 'users#new', as: :signup
-  post '/v1/users/signup' => 'users#create'
-  get '/v1/users/password-reset' => 'users#password_reset_request', as: :password_reset
-  post '/v1/users/password-reset' => 'users#password_reset_request'
-  get '/v1/users/password-new' => 'users#password_update_form', as: :password_new
-  post '/v1/users/password-new' => 'users#password_update'
+  get '/v2/users/signup' => 'users#new', as: :signup
+  post '/v2/users/signup' => 'users#create'
+  get '/v2/users/password-reset' => 'users#password_reset_request', as: :password_reset
+  post '/v2/users/password-reset' => 'users#password_reset_request'
+  get '/v2/users/password-new' => 'users#password_update_form', as: :password_new
+  post '/v2/users/password-new' => 'users#password_update'
   get '/confirm' => 'users#confirm'
-  get '/v1/users/signin' => 'sessions#new', as: :signin
+  get '/v2/users/signin' => 'sessions#new', as: :signin
   get '/widget_signin' => 'sessions#widget_new', as: :widget_signin
-  get '/v1/users/signout' => 'sessions#destroy'
-  delete '/v1/users/signout' => 'sessions#destroy', as: :signout
+  get '/v2/users/signout' => 'sessions#destroy'
+  delete '/v2/users/signout' => 'sessions#destroy', as: :signout
 
   # Removed username from url
-  get '/v1/users/resend' => 'users#resend_confirmation_email', as: :user_email_resend
-  get '/v1/users/account' => 'users#settings', as: :user_settings
-  get '/v1/users/settings', to: redirect("/v1/users/account")
-  delete '/v1/users/account' => 'users#delete'
-  post '/v1/users/account' => 'users#settings_update'
-  put '/v1/users/password/change' => 'users#change_password', as: :user_change_password
+  get '/v2/users/resend' => 'users#resend_confirmation_email', as: :user_email_resend
+  get '/v2/users/account' => 'users#settings', as: :user_settings
+  get '/v2/users/settings', to: redirect("/v2/users/account")
+  delete '/v2/users/account' => 'users#delete'
+  post '/v2/users/account' => 'users#settings_update'
+  put '/v2/users/password/change' => 'users#change_password', as: :user_change_password
   # Removed username from url
 
   get '/widgets-new' => 'widgets#widgets_new', as: :widget_live_view

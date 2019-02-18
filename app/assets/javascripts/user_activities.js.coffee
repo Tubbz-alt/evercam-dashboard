@@ -44,11 +44,8 @@ initializeDataTable = ->
           ""
       , orderable: false},
       {data: ( row, type, set, meta ) ->
-        time = moment.tz(row.done_at*1000, "UTC")
-        return "
-          <div class='#{row.done_at} thumb-div'>
-          </div>\
-          <span>#{moment(time).format('MMMM Do YYYY, HH:mm:ss')}</span>"
+        time = moment(row.done_at)
+        return "<span>#{moment(time).format('MMMM Do YYYY, HH:mm:ss')}</span>"
       , sType: 'uk_datetime', orderable: false },
       {data: ( row, type, set, meta ) ->
         if row.extra && row.extra.name
@@ -148,12 +145,12 @@ getDate = (type) ->
 get_search_query = ->
   from_date = moment($('#datetimepicker_from').val(), "DD-MM-YYYY H:mm")
   to_date = moment($('#datetimepicker_to').val(), "DD-MM-YYYY H:mm")
-  from = from_date._d.getTime()/ 1000
-  to = to_date._d.getTime()/ 1000
+  from = from_date.toISOString()
+  to = to_date.toISOString()
 
   fromto_seg = ''
-  fromto_seg += '&from=' + from unless isNaN(from)
-  fromto_seg += '&to=' + to unless isNaN(to)
+  fromto_seg += '&from=' + from if from
+  fromto_seg += '&to=' + to if isNaN(to)
   return fromto_seg
 
 searchLogs = ->

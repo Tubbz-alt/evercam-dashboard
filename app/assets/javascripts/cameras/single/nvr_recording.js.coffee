@@ -7,8 +7,8 @@ thumbnail_width = 0
 countdown = 0
 
 SetInfoMessage = (from, to) ->
-  from_dt = moment.utc(from*1000)
-  to_dt = moment(to*1000).toISOString()
+  from_dt = moment.utc(from)
+  to_dt = moment(to).toISOString()
 
   $("#nvr_time_select").val(from_dt.format("mm:ss"))
   url = "#{Evercam.request.rootpath}/local-recordings?from=#{from_dt.toISOString()}&to=#{to_dt}"
@@ -35,7 +35,7 @@ get_thumbnail = (from) ->
     success: onSuccess
     context: {from: from}
     type: 'GET'
-    url: "#{Evercam.API_URL}cameras/#{Evercam.Camera.id}/recordings/snapshots/#{from}/nearest"
+    url: "#{Evercam.API_URL}cameras/#{Evercam.Camera.id}/recordings/snapshots/#{toISOString(from)}/nearest"
 
   $.ajax(settings)
 
@@ -281,8 +281,10 @@ onChangeStream = ->
     month = date.getMonth() + 1
     day = date.getDate()
     hr = $("#local_recording_hourCalendar td.active").text()
-    from = moment.utc("#{year}-#{month}-#{day} #{hr}:#{$("#nvr_time_select").val()}", "YYYY-MM-DD HH:mm:ss") / 1000
-    to = moment.utc("#{year}-#{month}-#{day} #{hr}:59:59", "YYYY-MM-DD HH:mm:ss") / 1000
+
+    from = "#{year}-#{FormatNumTo2(month)}-#{FormatNumTo2(day)}T#{FormatNumTo2(hr)}:#{$("#nvr_time_select").val()}Z"
+    to = "#{year}-#{FormatNumTo2(month)}-#{FormatNumTo2(day)}T#{FormatNumTo2(hr)}:59:59Z"
+
     if window.vjs_player_local
       window.vjs_player_local.pause()
     load_stream(from, to)
@@ -321,7 +323,7 @@ load_no_video_graph = (year, month, day, hour) ->
 
 download_thumbnails = (times) ->
   $.each times, (index, time) ->
-    get_thumbnail(moment.utc(time[0]) / 1000)
+    get_thumbnail(moment(time[0]))
 
 init_graph = (hr) ->
   onSuccess = (response) ->
@@ -347,20 +349,18 @@ init_graph = (hr) ->
   year = date.getFullYear()
   month = date.getMonth() + 1
   day = date.getDate()
-  from = moment.utc("#{year}-#{month}-#{day} #{hr}:00:00", "YYYY-MM-DD HH:mm:ss") / 1000
-  to = moment.utc("#{year}-#{month}-#{day} #{hr}:59:59", "YYYY-MM-DD HH:mm:ss") / 1000
-
-  query_string = "?api_id=#{Evercam.User.api_id}&api_key=#{Evercam.User.api_key}"
-  query_string += "&starttime=#{from}&endtime=#{to}"
+  from = toISOString(moment.tz("#{year}-#{FormatNumTo2(month)}-#{FormatNumTo2(day)}T#{FormatNumTo2(hr)}:00:00Z", "YYYY-MM-DDTHH:mm:ss", Evercam.Camera.timezone))
+  to = toISOString(moment.tz("#{year}-#{FormatNumTo2(month)}-#{FormatNumTo2(day)}T#{FormatNumTo2(hr)}:59:59Z", "YYYY-MM-DDTHH:mm:ss", Evercam.Camera.timezone))
 
   settings =
-    data: {}
+    data: {api_id: Evercam.User.api_id, api_key: Evercam.User.api_key, starttime: from, endtime: to}
     dataType: 'json'
     error: onError
     success: onSuccess
     context: {year: year, month: month, day: day, hour: hr, from: from, to: to}
+    contentType: "application/json charset=utf-8"
     type: 'GET'
-    url: "#{Evercam.API_URL}cameras/#{Evercam.Camera.id}/nvr/videos#{query_string}"
+    url: "#{Evercam.API_URL}cameras/#{Evercam.Camera.id}/nvr/videos"
 
   $.ajax(settings)
 
@@ -383,18 +383,18 @@ load_graph = (times_list) ->
 
 on_graph_click = ->
   $("#local_recordings_tab").on "mousemove", ".rect_has_data", (ev) ->
-    from_dt = moment.utc("#{$(this).attr("from")}", "YYYY-MM-DD HH:mm:ss")
+    from_dt = moment("#{$(this).attr("from")}", "YYYY-MM-DD HH:mm:ss")
     from = from_dt.format('HH:mm:ss')
     to = moment("#{$(this).attr("to")}", "YYYY-MM-DD HH:mm:ss").format('HH:mm:ss')
     content_width = Metronic.getViewPort().width
     $("#div-tooltip div#spn_datetime").html("#{from} - #{to}")
-    if thumbnails_array["#{from_dt / 1000}"] is undefined
+    if thumbnails_array["#{from_dt}"] is undefined
       $("#tooltip-img").hide()
       $("#spn_datetime").removeClass("thumbnail-times")
       $("#div-tooltip").css({ top: "#{ev.pageY - 25}px", left: "#{ev.pageX - 90}px" })
     else
       $("#tooltip-img").show()
-      $("#nvr-img-popup").attr("src", thumbnails_array["#{from_dt / 1000}"])
+      $("#nvr-img-popup").attr("src", thumbnails_array["#{from_dt}"])
       if thumbnail_width < 1
         thumbnail_width = $("#nvr-img-popup").width()
       left = ev.pageX - 180
@@ -410,8 +410,8 @@ on_graph_click = ->
     $("#local-recording-stream .evercam-loading-animation").show()
     $("#local_recordings_tab .rect_has_data").removeClass("rect_has_data_active")
     $(this).addClass("rect_has_data_active")
-    from = moment.utc("#{$(this).attr("from")}", "YYYY-MM-DD HH:mm:ss") / 1000
-    to = moment.utc("#{$(this).attr("to")}", "YYYY-MM-DD HH:mm:ss") / 1000
+    from = moment("#{$(this).attr("from")}", "YYYY-MM-DD HH:mm:ss")
+    to = moment("#{$(this).attr("to")}", "YYYY-MM-DD HH:mm:ss")
     load_stream(from, to)
 
 walkDaysInMonth = (year, month) ->

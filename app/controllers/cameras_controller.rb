@@ -276,8 +276,8 @@ class CamerasController < ApplicationController
     api = get_evercam_api
     new_params = {}
     new_params[:types] = "online,offline"
-    new_params[:from] = params['from'].to_i
-    new_params[:to] = params['to'].to_i
+    new_params[:from] = Time.at(params['from'].to_i).iso8601
+    new_params[:to] = Time.at(params['to'].to_i).iso8601
     new_params[:limit] = 10000
     all_logs = api.get_logs(params["camera_id"], new_params)
     sorted_logs = all_logs[:logs].sort_by {|log| log["done_at"]}
@@ -337,7 +337,7 @@ class CamerasController < ApplicationController
       {
         camera_name: camera["name"],
         status: camera["is_online"],
-        created_at: Time.at(camera["created_at"]).utc,
+        created_at: Time.iso8601(camera["created_at"]).utc,
         logs: map_logs(all_logs, camera["id"])
       }
     end
@@ -378,7 +378,7 @@ class CamerasController < ApplicationController
     else
       all_logs.map do |log|
         {
-          done_at: Time.at(log["done_at"]).utc,
+          done_at: Time.iso8601(log["done_at"]).utc,
           action: log["action"]
         }
       end

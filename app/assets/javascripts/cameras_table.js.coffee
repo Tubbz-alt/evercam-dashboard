@@ -15,10 +15,10 @@ initializeCamerasDataTable = ->
       {data: (row, type, set, meta ) ->
         if row.is_online
           return "
-          <a href='/v1/cameras/#{row.id}' target='_blank'>#{row.name}</a>"
+          <a href='/v2/cameras/#{row.id}' target='_blank'>#{row.name}</a>"
         else
           return "
-          <a href='/v1/cameras/#{row.id}' target='_blank'>#{row.name}</a>
+          <a href='/v2/cameras/#{row.id}' target='_blank'>#{row.name}</a>
           <i class='red main-sidebar fa fa-unlink font-12'></i>"
       },
       {data: userCameraRights},

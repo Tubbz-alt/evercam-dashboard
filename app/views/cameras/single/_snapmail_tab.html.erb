@@ -31,7 +31,7 @@
                               <select id="ddlCameras" class="js-example-basic-multiple" multiple="multiple" style="width: 100%">
                                 <% @cameras.each do |camera| %>
                                   <% css = "onlinec"
-                                     thumbnail_url = "https://media.evercam.io/v1/cameras/#{camera['id']}/thumbnail?api_id=#{current_user.api_id}&api_key=#{current_user.api_key}"
+                                     thumbnail_url = "https://media.evercam.io/v2/cameras/#{camera['id']}/thumbnail?api_id=#{current_user.api_id}&api_key=#{current_user.api_key}"
                                      unless !camera['is_online']
                                        css = "offlinec"
                                      end

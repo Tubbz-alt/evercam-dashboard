@@ -15,9 +15,9 @@
 <% end %>
 <meta property='og:title' content='<%= title %>'/>
 <meta property='og:description' content='<%= description %>'/>
-<meta property='og:image' content='<%= "https://media.evercam.io/v1/cameras/#{@camera_id}/archives/#{@archive_id}/thumbnail?type=#{@archive_type}" %>'/>
+<meta property='og:image' content='<%= "https://media.evercam.io/v2/cameras/#{@camera_id}/archives/#{@archive_id}/thumbnail?type=#{@archive_type}" %>'/>
 <meta property="og:image:alt" content="<%= @archive['title'] %>" />
-<meta property='og:url' content='<%= "https://dash.evercam.io/v1/cameras/#{@camera_id}/archives/#{@archive_id}" %>' />
+<meta property='og:url' content='<%= "https://dash.evercam.io/v2/cameras/#{@camera_id}/archives/#{@archive_id}" %>' />
 <meta property='og:site_name' content='<%= site_name %>'/>
 <% unless @archive_type.eql?("image") %>
   <meta property='og:type' content='video.other' />
@@ -38,5 +38,5 @@
 <meta name="twitter:description" content='<%= description %>' />
 <meta name="twitter:card" content="summary" />
 <meta name="twitter:site" content="@evrcm" />
-<meta name="twitter:image" content='<%= "https://media.evercam.io/v1/cameras/#{@camera_id}/archives/archives/thumbnail?type=#{@archive_type}" %>' />
+<meta name="twitter:image" content='<%= "https://media.evercam.io/v2/cameras/#{@camera_id}/archives/archives/thumbnail?type=#{@archive_type}" %>' />
 <meta name="twitter:creator" content="@evrcm" />

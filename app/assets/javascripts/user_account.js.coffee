@@ -1,5 +1,5 @@
 format_time = null
-Evercam_API_URL = 'https://api.evercam.io/v1/'
+Evercam_API_URL = 'https://api.evercam.io/v2/'
 
 handleEditable = ->
   $('.makeNonEditable').on 'click', ->
@@ -94,18 +94,18 @@ widgetFormat = (state) ->
 
 updateLiveSnapshotUrl =->
   camera_name = $('#api-call-camera').val()
-  $('#live-snapshot-url').val("#{Evercam_API_URL}cameras/#{camera_name}/live/snapshot?api_id=#{Evercam.User.api_id}&api_key=#{Evercam.User.api_key}")
-  $("#live-api-url").attr 'href', "#{Evercam_API_URL}cameras/#{camera_name}/live/snapshot?api_id=#{Evercam.User.api_id}&api_key=#{Evercam.User.api_key}"
-  $("#snapshot-api-url").attr 'href', "https://dash.evercam.io/v1/cameras/#{camera_name}/live/snapshot?api_id=#{Evercam.User.api_id}&api_key=#{Evercam.User.api_key}"
-  $('#live-snapshot-dashboard-url').val("https://dash.evercam.io/v1/cameras/#{camera_name}/live/snapshot?api_id=#{Evercam.User.api_id}&api_key=#{Evercam.User.api_key}")
+  $('#live-snapshot-url').val("#{Evercam.API_URL}cameras/#{camera_name}/live/snapshot?api_id=#{Evercam.User.api_id}&api_key=#{Evercam.User.api_key}")
+  $("#live-api-url").attr 'href', "#{Evercam.API_URL}cameras/#{camera_name}/live/snapshot?api_id=#{Evercam.User.api_id}&api_key=#{Evercam.User.api_key}"
+  $("#snapshot-api-url").attr 'href', "https://dash.evercam.io/v2/cameras/#{camera_name}/live/snapshot?api_id=#{Evercam.User.api_id}&api_key=#{Evercam.User.api_key}"
+  $('#live-snapshot-dashboard-url').val("https://dash.evercam.io/v2/cameras/#{camera_name}/live/snapshot?api_id=#{Evercam.User.api_id}&api_key=#{Evercam.User.api_key}")
 
 updateRecordedSnapshotUrl = ->
   date_time = ''
-  stringDateTime = ''
   camera_name = $('#recorded-call-camera').val()
+  timezone = $("#recorded-call-camera").find(":selected").attr("data-timezone")
   if $('#api-call-datetime').val()
-    stringDateTime = $('#api-call-datetime').val() + 'T' + $('#api-call-hour').val() + ':' + $('#api-call-minutes').val() + ':' + $('#api-call-seconds').val() + '.000Z'
-    date_time = stringDateTime
+    stringDateTime = $('#api-call-datetime').val() + 'T' + $('#api-call-hour').val() + ':' + $('#api-call-minutes').val() + ':' + $('#api-call-seconds').val()
+    date_time = toISOString(moment.tz(stringDateTime, "YYYY-MM-DDTHH:mm:ss", timezone))
   loadRecordedSnapshot(camera_name, date_time)
 
 loadRecordedSnapshot = (recording_camera_name, recording_time) ->
@@ -116,8 +116,8 @@ loadRecordedSnapshot = (recording_camera_name, recording_time) ->
   onError = (jqXHR, status, error) ->
     $('.recorded-url').hide()
     $('#no-recorded-snapshot').show()
-    $('#recorded-dashboard-url').val("https://dash.evercam.io/v1/cameras/#{recording_camera_name}/recordings/snapshots/#{recording_time}?api_id=#{Evercam.User.api_id}&api_key=#{Evercam.User.api_key}")
-    $("#recorded-dashboard-link").attr 'href', "https://dash.evercam.io/v1/cameras/#{recording_camera_name}/recordings/snapshots/#{recording_time}?api_id=#{Evercam.User.api_id}&api_key=#{Evercam.User.api_key}"
+    $('#recorded-dashboard-url').val("https://dash.evercam.io/v2/cameras/#{recording_camera_name}/recordings/snapshots/#{recording_time}?api_id=#{Evercam.User.api_id}&api_key=#{Evercam.User.api_key}")
+    $("#recorded-dashboard-link").attr 'href', "https://dash.evercam.io/v2/cameras/#{recording_camera_name}/recordings/snapshots/#{recording_time}?api_id=#{Evercam.User.api_id}&api_key=#{Evercam.User.api_key}"
 
   onSuccess = (response, status, jqXHR) ->
     if response.snapshots.length > 0
@@ -125,8 +125,8 @@ loadRecordedSnapshot = (recording_camera_name, recording_time) ->
       $('#no-recorded-snapshot').hide()
       $('#recorded-snapshot-url').val("#{Evercam_API_URL}cameras/#{recording_camera_name}/recordings/snapshots/#{recording_time}?api_id=#{Evercam.User.api_id}&api_key=#{Evercam.User.api_key}&view=true")
       $("#recorded-api-link").attr("href", "#{Evercam_API_URL}cameras/#{recording_camera_name}/recordings/snapshots/#{recording_time}?api_id=#{Evercam.User.api_id}&api_key=#{Evercam.User.api_key}&view=true")
-      $('#recorded-dashboard-url').val("https://dash.evercam.io/v1/cameras/#{recording_camera_name}/recordings/snapshots/#{recording_time}?api_id=#{Evercam.User.api_id}&api_key=#{Evercam.User.api_key}")
-      $("#recorded-dashboard-link").attr 'href', "https://dash.evercam.io/v1/cameras/#{recording_camera_name}/recordings/snapshots/#{recording_time}?api_id=#{Evercam.User.api_id}&api_key=#{Evercam.User.api_key}"
+      $('#recorded-dashboard-url').val("https://dash.evercam.io/v2/cameras/#{recording_camera_name}/recordings/snapshots/#{recording_time}?api_id=#{Evercam.User.api_id}&api_key=#{Evercam.User.api_key}")
+      $("#recorded-dashboard-link").attr 'href', "https://dash.evercam.io/v2/cameras/#{recording_camera_name}/recordings/snapshots/#{recording_time}?api_id=#{Evercam.User.api_id}&api_key=#{Evercam.User.api_key}"
 
   settings =
     cache: false

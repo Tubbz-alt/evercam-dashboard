@@ -16,7 +16,7 @@ archive_id_from_url = null
 xhrRequest = null
 
 isUnauthorized = (response) ->
-  if response.responseText.indexOf("/v1/users/signin") isnt -1
+  if response.responseText.indexOf("/v2/users/signin") isnt -1
     Notification.warning("Your session has expired.")
     location = window.location
     location.assign(location.protocol + "//" + location.host)
@@ -111,12 +111,12 @@ load_archive_view_by_id = (archives) ->
       media_title = archive.title
       media_autor = archive.requester_name
       requested_by = archive.requested_by
-      media_from = moment.tz(archive.from_date*1000, Evercam.Camera.timezone).format('MM/DD/YYYY, HH:mm:ss')
-      media_to = moment.tz(archive.to_date*1000, Evercam.Camera.timezone).format('MM/DD/YYYY, HH:mm:ss')
+      media_from = moment(archive.from_date).format('MM/DD/YYYY, HH:mm:ss')
+      media_to = moment(archive.to_date).format('MM/DD/YYYY, HH:mm:ss')
       media_thumbnail = archive.thumbnail_url
       media_time = archive.created_at
       media_ispublic = "#{archive.public}"
-      newTime = moment.tz(media_time * 1000, Evercam.Camera.timezone)
+      newTime = moment(media_time)
 
       if Evercam.Camera.has_edit_right || requested_by is Evercam.User.username
         $("#popup-delete-view").show()
@@ -170,7 +170,7 @@ load_archive_view_by_id = (archives) ->
         arr = file_name.split('.')
         file_type = get_file_type(arr.pop())
         $("#iframe_archive").hide()
-        snap_date_time = moment.tz(media_from * 1000, Evercam.Camera.timezone).format('MM/DD/YYYY, HH:mm:ss')
+        snap_date_time = moment(media_from).format('MM/DD/YYYY, HH:mm:ss')
         $('#archive-dates').html("Cloud Recordings #{snap_date_time}</br>")
         if type is "file"
           $("#archive-dates").hide()
@@ -345,10 +345,10 @@ getArchivesHtml = (archives) ->
   html += "          </div>"
   html += "          <span class='spn-label'><i class='fas fa-users'></i></span><div class='div-snapmail-values snapmail-title' title='#{archives.requester_name}'><span class='small-text'>&nbsp;&nbsp;#{archives.requester_name}</span><span class='line-end'></span></div><div class='clear-f'></div>"
   if archives.type is "edit"
-    html += "          <span class='spn-label'><i class='fas fa-calendar-alt font-16'></i></span><div class='div-snapmail-values snapmail-title'><span class='small-text'>&nbsp;&nbsp;#{moment.tz(archives.from_date * 1000, Evercam.Camera.timezone).format('MM/DD/YYYY, HH:mm:ss')}</span><span class='line-end'></span></div><div class='clear-f'></div>"
+    html += "          <span class='spn-label'><i class='fas fa-calendar-alt font-16'></i></span><div class='div-snapmail-values snapmail-title'><span class='small-text'>&nbsp;&nbsp;#{moment(archives.from_date).format('MM/DD/YYYY, HH:mm:ss')}</span><span class='line-end'></span></div><div class='clear-f'></div>"
   else
-    html += "          <span class='spn-label'><i class='fas fa-calendar-alt font-16'></i></span><div class='div-snapmail-values snapmail-title #{hide_dates}'><span class='small-text'>&nbsp;&nbsp;#{getDates(archives.from_date * 1000)} - #{getDates(archives.to_date * 1000)}</span><span class='line-end'></span></div><div class='clear-f'></div>"
-  html += "          <span class='spn-label'><i class='fas fa-clock font-16'></i></span><div class='div-snapmail-values snapmail-title'><span class='small-text'>&nbsp;&nbsp;#{moment(archives.created_at*1000).format("MMMM Do YYYY, H:mm:ss")}</span><span class='line-end'></span></div><div class='clear-f'></div></div>"
+    html += "          <span class='spn-label'><i class='fas fa-calendar-alt font-16'></i></span><div class='div-snapmail-values snapmail-title #{hide_dates}'><span class='small-text'>&nbsp;&nbsp;#{getDates(archives.from_date)} - #{getDates(archives.to_date)}</span><span class='line-end'></span></div><div class='clear-f'></div>"
+  html += "          <span class='spn-label'><i class='fas fa-clock font-16'></i></span><div class='div-snapmail-values snapmail-title'><span class='small-text'>&nbsp;&nbsp;#{moment(archives.created_at).format("MMMM Do YYYY, H:mm:ss")}</span><span class='line-end'></span></div><div class='clear-f'></div></div>"
   html += "    </div>"
   html += "    </div>"
   html += "</div>"
@@ -461,7 +461,7 @@ rendersharebuttons = (row, type, set, meta) ->
       return ''
     else
       url = "#{Evercam.API_URL}cameras/#{row.camera_id}/archives/#{row.id}.mp4"
-      play_url = "#{document.location.origin}/v1/cameras/#{row.camera_id}/archives/#{row.id}/play"
+      play_url = "#{document.location.origin}/v2/cameras/#{row.camera_id}/archives/#{row.id}/play"
       download_link = "<div class='float-left'><a class='archive-actions download-animation archive-icon' data-from='#{row.from_date}' data-to='#{row.to_date}' data-type='#{row.type}' href='javascript:;'' data-download-target='#mp4clip-#{row.id}'><i class='fa fa-download' title='Download'></i></a></div>"
       copy_url_link = "<a href='javascript:;' data-toggle='tooltip' title='Copy URL' class='archive-actions share-archive' play-url='#{url}' val-archive-id='#{row.id}' val-camera-id='#{row.camera_id}'><i class='fas fa-copy'></i></a>"
 
@@ -583,7 +583,7 @@ retry_create = ->
 
 getCompareButtons = (div, row) ->
   animation_url = "#{Evercam.API_URL}cameras/#{row.camera_id}/compares/#{row.id}"
-  play_url = "#{document.location.origin}/v1/cameras/#{row.camera_id}/archives/#{row.id}/play"
+  play_url = "#{document.location.origin}/v2/cameras/#{row.camera_id}/archives/#{row.id}/play"
   view_url = ""
   copy_url = ""
   return "<div class='dropdown'><a class='margin-right12 archive-actions play-clip' href='javascript:;' data-archive-id='#{row.id}' title='Play'><i class='fa fa-play-circle'></i></a></div>" +
@@ -594,7 +594,7 @@ getCompareButtons = (div, row) ->
 getFileButtons = (row, div) ->
   arr = row.file_name.split('.')
   fileType = get_file_type(arr.pop())
-  snap_date_time = moment.tz(row.from_date * 1000, Evercam.Camera.timezone).format('MM/DD/YYYY, HH:mm:ss')
+  snap_date_time = moment(row.from_date).format('MM/DD/YYYY, HH:mm:ss')
   file_url = "#{Evercam.API_URL}cameras/#{row.camera_id}/archives/#{row.file_name}?api_key=#{Evercam.User.api_key}&api_id=#{Evercam.User.api_id}"
   edit_link = ""
   if fileType is "image"
@@ -622,7 +622,7 @@ getTitle = (row, type, set, meta) ->
   else if row.type is "edit"
     arr = row.file_name.split('.')
     file_type = get_file_type(arr.pop())
-    snap_date_time = moment.tz(row.from_date * 1000, Evercam.Camera.timezone).format('MM/DD/YYYY, HH:mm:ss')
+    snap_date_time = moment(row.from_date).format('MM/DD/YYYY, HH:mm:ss')
     file_url = "#{Evercam.API_URL}cameras/#{row.camera_id}/archives/#{row.file_name}?api_key=#{Evercam.User.api_key}&api_id=#{Evercam.User.api_id}"
     return "<div class='gravatar-placeholder'><img class='gravatar' src='#{row.thumbnail_url}'><div class='type-icon-alignment'><i class='fa fa-image type-icon type-icon-url'></i></div><div class='float-left'></div>
       <div class='username-id'>
@@ -657,7 +657,7 @@ getTitle = (row, type, set, meta) ->
     return "<div class='gravatar-placeholder'><img class='gravatar' src='#{row.thumbnail_url}'><div class='type-icon-alignment'>#{fa_class}</div><div class='float-left'></div>
       <div class='username-id'>
       <a id='archive_url_link_#{row.id}' class='archive-title-color' data-ispublic='#{row.public}' data-status='#{row.status}' data-camera='#{row.camera_id}' data-id='#{row.id}' data-url='#{mp4Url}' data-thumbnail='#{row.thumbnail}' data-title='#{row.title}' data-from='#{row.from_date}' data-to='#{row.to_date}' data-time=#{row.created_at} data-requester-by='#{row.requested_by}' data-autor='#{row.requester_name}' data-id='#{row.id}' data-type='#{row.type}'>#{row.title}</a>
-      <br /><small class='blue'>From #{getDates(row.from_date*1000)} to #{getDates(row.to_date*1000)}</small></div></div>
+      <br /><small class='blue'>From #{getDates(row.from_date)} to #{getDates(row.to_date)}</small></div></div>
       <input id='txt_frames#{row.id}' type='hidden' value='#{row.frames}'>
       <input id='txt_duration#{row.id}' type='hidden' value='#{renderDuration(row, type, set, meta)}'>
       <input id='archive_embed_code#{row.id}' type='hidden' value='#{query_string}'/>#{archive_inputs}"
@@ -737,7 +737,7 @@ changeImageSource = (email, id) ->
   jQuery.ajax(settings)
 
 renderDate = (row, type, set, meta) ->
-  time = moment.tz(row.created_at*1000, Evercam.Camera.timezone)
+  time = row.created_at
   return "
     <div class='#{row.created_at} hide'>
     </div>\
@@ -748,12 +748,10 @@ renderDuration = (row, type, set, meta) ->
     return "9 secs"
   else
     dateTimeFrom = new Date(
-      moment.utc(row.from_date*1000).
-      format('MM/DD/YYYY,HH:mm:ss')
+      moment(row.from_date).format('MM/DD/YYYY,HH:mm:ss')
     )
     dateTimeTo = new Date(
-      moment.utc(row.to_date*1000).
-      format('MM/DD/YYYY, HH:mm:ss')
+      moment(row.to_date).format('MM/DD/YYYY, HH:mm:ss')
     )
     diff = dateTimeTo - dateTimeFrom
     diffSeconds = diff / 1000
@@ -841,7 +839,7 @@ createClip = ->
     duration = parseInt($("#to-date").val())
     date = $("#from-date").val().split('/')
     time = $('.timepicker-default').val().split(":")
-    from = moment.tz("#{date[2]}-#{FormatNumTo2(date[1])}-#{FormatNumTo2(date[0])} #{FormatNumTo2(time[0])}:#{FormatNumTo2(time[1])}:00", "UTC")
+    from = moment.tz("#{date[2]}-#{FormatNumTo2(date[1])}-#{FormatNumTo2(date[0])} #{FormatNumTo2(time[0])}:#{FormatNumTo2(time[1])}:00", Evercam.Camera.timezone)
     to = from.clone().minutes(from.minutes() + duration)
 
     if $("#clip-name").val() is ""
@@ -855,8 +853,8 @@ createClip = ->
 
     data =
       title: $("#clip-name").val()
-      from_date: from / 1000
-      to_date: to / 1000
+      from_date: toISOString(from)
+      to_date: toISOString(to)
       is_nvr_archive: $("#txtCreateArchiveType").val()
       requested_by: Evercam.User.username
       type: "clip"
@@ -898,14 +896,15 @@ GetSnapshotInfo = ->
   duration = parseInt($("#to-date").val())
   date = $("#from-date").val().split('/')
   time = $('.timepicker-default').val().split(":")
-  from = moment.tz("#{date[2]}-#{FormatNumTo2(date[1])}-#{FormatNumTo2(date[0])} #{FormatNumTo2(time[0])}:#{FormatNumTo2(time[1])}:00", "UTC")
+  from = moment.tz("#{date[2]}-#{FormatNumTo2(date[1])}-#{FormatNumTo2(date[0])} #{FormatNumTo2(time[0])}:#{FormatNumTo2(time[1])}:00", Evercam.Camera.timezone)
+  console.log from
   to = from.clone().minutes(from.minutes() + duration)
 
   data = {}
   data.api_id = Evercam.User.api_id
   data.api_key = Evercam.User.api_key
-  data.from = from / 1000
-  data.to = to / 1000
+  data.from = toISOString(from)
+  data.to = toISOString(to)
   data.limit = 3600
   data.page = 1
 
@@ -972,8 +971,8 @@ playClip = ->
   $("#archives-box, #archives-table").on "click", ".download-animation", ->
     src_id = $(this).attr("data-download-target")
     type = $(this).attr("data-type")
-    from = moment.tz(parseInt($(this).attr("data-from"))*1000, Evercam.Camera.timezone).format('MMDDYYYY-HHmmss')
-    to = moment.tz(parseInt($(this).attr("data-to"))*1000, Evercam.Camera.timezone).format('MMDDYYYY-HHmmss')
+    from = moment(parseInt($(this).attr("data-from"))).format('MMDDYYYY-HHmmss')
+    to = moment(parseInt($(this).attr("data-to"))).format('MMDDYYYY-HHmmss')
     camera_name = Evercam.Camera.name.replace(/ /g, "-")
     if type is "edit"
       file_name = "Evercam-Snapshot-#{camera_name}-#{from}"
@@ -1121,7 +1120,7 @@ modal_events = ->
     media_thumbnail = $(this).attr('data-thumbnail')
     media_time = $(this).attr('data-time')
     media_ispublic = $(this).attr('data-ispublic')
-    newTime = moment.tz(media_time * 1000, Evercam.Camera.timezone)
+    newTime = moment(media_time)
     $("#archive_delete_view").attr("camera_id", camera_id)
     $("#archive_delete_view").attr("archive_id", id)
     $("#archive_delete_view").attr("archive_type", type)
@@ -1155,7 +1154,7 @@ modal_events = ->
     $("#archives-tab").removeClass("margin-top-15")
     $('#txt_title').text(media_title)
     $('#archive-autor').html("Requested by: #{media_autor}</br>")
-    $('#archive-dates').html("From #{getDates(media_from*1000)} to #{getDates(media_to*1000)}</br>")
+    $('#archive-dates').html("From #{getDates(media_from)} to #{getDates(media_to)}</br>")
     $('#archive-time-1').text("Created at #{moment(newTime).format('MMMM Do YYYY, H:mm:ss')}")
     $("#txt-archive-type").val(type)
     $("#txt-archive-id").val(id)
@@ -1176,7 +1175,7 @@ modal_events = ->
       $('#iframe_archive').prop('src', convert_to_embed_url(media_url))
     else if type is "file" || type is "edit"
       $("#iframe_archive").hide()
-      snap_date_time = moment.tz(media_from * 1000, Evercam.Camera.timezone).format('MM/DD/YYYY, HH:mm:ss')
+      snap_date_time = moment(media_from).format('MM/DD/YYYY, HH:mm:ss')
       $('#archive-dates').html("Cloud Recordings #{snap_date_time}</br>")
       if type is "file"
         $("#archive-dates").hide()
@@ -1227,7 +1226,7 @@ modal_events = ->
     $("#txt_title").val($("#txtArchiveTitle#{id}").val())
     $("#media_title_title").val($("#archive_url_link_#{id}").text())
 
-    share_url = "#{document.location.origin}/v1/cameras/#{Evercam.Camera.id}/archives/#{id}/play"
+    share_url = "#{document.location.origin}/v2/cameras/#{Evercam.Camera.id}/archives/#{id}/play"
     if type is "file" || type is "edit"
       share_url = "#{Evercam.API_URL}cameras/#{Evercam.Camera.id}/archives/#{file_name}"
 
@@ -1425,7 +1424,7 @@ reset = ->
   uploadIsRunning = false
 
 save_upload_file = (file_url, filename) ->
-  timespan = moment().utc() /1000
+  timespan = moment().toISOString()
 
   data =
     title: $("#upload_file_title").val()
@@ -1603,7 +1602,7 @@ update_archive = ->
 
 save_media_url = ->
   $("#save_social_media_url").on "click", ->
-    timespan = moment().utc() /1000
+    timespan = moment().toISOString()
     NProgress.start()
 
     data =

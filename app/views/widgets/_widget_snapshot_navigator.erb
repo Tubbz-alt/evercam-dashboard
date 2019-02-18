@@ -14,7 +14,7 @@
             <select id="snapshot-widget-camera" name="widget-camera" class="form-control is-required">
               <% @cameras.each do |camera| %>
                 <% css = "onlinec"
-                  thumbnail_url = "https://media.evercam.io/v1/cameras/#{camera['id']}/thumbnail?api_id=#{current_user.api_id}&api_key=#{current_user.api_key}"
+                  thumbnail_url = "https://media.evercam.io/v2/cameras/#{camera['id']}/thumbnail?api_id=#{current_user.api_id}&api_key=#{current_user.api_key}"
                   unless !camera['is_online']
                     css = "offlinec"
                   end
@@ -94,10 +94,13 @@
 
 <script type="text/javascript">
   var lastSelectedDate, iframeWindow, format, initCameraSelect;
+  var recordings_loaded = false;
+  $('#widget-datetime').val(moment().format("YYYY-MM-DD"));
   $(document).ready(function () {
     $('#widget-datetime').datetimepicker({
       timepicker: false,
       closeOnDateSelect: 0,
+      defaultDate: new Date(),
       onChangeDateTime: function(dp, $input){
         if($input.val() != lastSelectedDate) {
           lastSelectedDate = $input.val();
@@ -106,6 +109,7 @@
       format: 'Y-m-d'
     });
 
+    on_recording_widget_show();
     initCameraSelect();
     function initCameraSelect() {
       $("#snapshot-widget-camera").select2({
@@ -130,7 +134,6 @@
       return $("<span><img style='height:30px;margin-bottom:1px;margin-top:1px;width:35px;' src='" + state.element.attributes[2].value + "' class='img-flag' />&nbsp;" + state.text + "</span>");
     };
 
-    initLocalStorage();
     $("#snapshot-widget-authenticate").on("change", showNote);
     $("#snapshot-code").on("click", function(){
       this.select();
@@ -143,6 +146,15 @@
       $("#widget-seconds").append(option);
     }
   });
+
+  function on_recording_widget_show() {
+    $(".nav-tab-recording-widget").on("shown.bs.tab", function(){
+      if(!recordings_loaded) {
+        recordings_loaded = true;
+        initLocalStorage();
+      }
+    });
+  }
 
   function FormatNumTo2 (n) {
     if (n < 10) {

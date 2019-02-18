@@ -18,7 +18,6 @@ updateCode = () ->
   document.removeEventListener("visibilitychange", window.ec_vis_handler, false);
   clearTimeout(window.ec_watcher) if window.ec_watcher?
   $('.preview').html(baseText) unless offline
-  true
 
 updatePartialValues = ->
   camera = $('#widget-camera').val()
@@ -36,7 +35,6 @@ updatePartialValues = ->
   baseText = "<div id='ec-container-#{camera}' style='width:
     #{width}#{option_width}'><div>
     <script src='#{url}/live.view.widget.js?refresh=#{refresh}&camera=#{camera}&private=#{priv}#{api_credentials}' async></script>"
-  console.log baseText
   $('#code').val(baseText)
   $("#ec-container-#{camera}").width("#{width}#{option_width}")
 
@@ -56,9 +54,16 @@ format = (state) ->
     return state.text
   return $("<span><img style='height:30px;margin-bottom:1px;margin-top:1px;width:35px;' src='#{Evercam.MEDIA_API_URL}cameras/#{state.id}/thumbnail?api_id=#{Evercam.User.api_id}&api_key=#{Evercam.User.api_key}' class='img-flag' />&nbsp;#{state.text}</span>")
 
+handle_tab_open = ->
+  $('.nav-tab-live').on 'shown.bs.tab', ->
+    updateCode()
+
+  $('.nav-tab-live').on 'hide.bs.tab', ->
+    $('.preview').html("")
+
 $ ->
   initCameraSelect()
-  updateCode()
+  handle_tab_open()
   $('#widget-camera-width').change(updatePartialValues)
   $('#width-option').change(updatePartialValues)
   $('#widget-refresh-rate').change(updateCode)

@@ -23,12 +23,12 @@
             <select id="api-call-camera" name="api-call-camera" class="form-control is-required">
               <% @cameras.each do |camera| %>
                 <% css = "onlinec"
-                  thumbnail_url = "https://media.evercam.io/v1/cameras/#{camera['id']}/thumbnail?api_id=#{current_user.api_id}&api_key=#{current_user.api_key}"
+                  thumbnail_url = "https://media.evercam.io/v2/cameras/#{camera['id']}/thumbnail?api_id=#{current_user.api_id}&api_key=#{current_user.api_key}"
                   unless !camera['is_online']
                     css = "offlinec"
                   end
                 %>
-                <option class="<%= css %>" value="<%= camera['id'] %>" data-val="<%= thumbnail_url %>">
+                <option class="<%= css %>" value="<%= camera['id'] %>" data-val="<%= thumbnail_url %>" data-timezone="<%= camera['timezone'] %>">
                   <%= camera['name'] %> <% unless camera['is_online'] %>(Offline)<% end %> <% unless camera['is_public'] %><% end %>
                 </option>
               <% end %>
@@ -71,12 +71,12 @@
             <select id="recorded-call-camera" name="recorded-call-camera" class="form-control is-required">
               <% @cameras.each do |camera| %>
                 <% css = "onlinec"
-                  thumbnail_url = "https://media.evercam.io/v1/cameras/#{camera['id']}/thumbnail?api_id=#{current_user.api_id}&api_key=#{current_user.api_key}"
+                  thumbnail_url = "https://media.evercam.io/v2/cameras/#{camera['id']}/thumbnail?api_id=#{current_user.api_id}&api_key=#{current_user.api_key}"
                   unless !camera['is_online']
                     css = "offlinec"
                   end
                 %>
-                <option class="<%= css %>" value="<%= camera['id'] %>" data-val="<%= thumbnail_url %>">
+                <option class="<%= css %>" value="<%= camera['id'] %>" data-val="<%= thumbnail_url %>" data-timezone="<%= camera['timezone'] %>">
                   <%= camera['name'] %> <% unless camera['is_online'] %>(Offline)<% end %> <% unless camera['is_public'] %><% end %>
                 </option>
               <% end %>
@@ -115,7 +115,7 @@
           </div>
         </div>
         <div class="col-lg-12 col-sm-12-col-md-12 no-padding margin-top-20">
-          <label class="col-md-12 api-id padding-right-10-media-992 float-left padding-left-0 padding-right-0 margin-top-10"><strong class="font-16">API Documentation available here.</strong><a id="api-document-link" href="https://media.evercam.io/v1/swagger/index.html" src="https://media.evercam.io/v1/swagger/index.html" target="_blank"><i class="fa fa-external-link-alt icon-font margin-left-5" title="Open URL"></i></a></label>
+          <label class="col-md-12 api-id padding-right-10-media-992 float-left padding-left-0 padding-right-0 margin-top-10"><strong class="font-16">API Documentation available here.</strong><a id="api-document-link" href="https://media.evercam.io/v2/swagger/index.html" src="https://media.evercam.io/v2/swagger/index.html" target="_blank"><i class="fa fa-external-link-alt icon-font margin-left-5" title="Open URL"></i></a></label>
         </div>
       </form>
     </div>

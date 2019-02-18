@@ -325,7 +325,7 @@
     vendor_id: '<%= @camera['vendor_id'] %>',
     model_name: '<%= @camera['model_name'] %>',
     timezone: '<%= @camera['timezone'] %>',
-    created_at: <%= @camera['created_at'] %>,
+    created_at: '<%= @camera['created_at'] %>',
     has_edit_right: <%= @camera["rights"].split(",").include?("edit") %>,
     has_share_right: <%= @camera["rights"].include?("share") %>,
     <% if current_user %>

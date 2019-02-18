@@ -52,7 +52,7 @@
       <tr>
         <td>Created:</td>
         <td>
-          <%= Time.at(@camera['created_at']).in_time_zone(@camera["timezone"]).to_formatted_s(:long_ordinal) %>
+          <%= Time.parse(@camera['created_at']).to_formatted_s(:long_ordinal) %>
         </td>
       </tr>
       <tr>
@@ -69,7 +69,7 @@
       <tr>
         <td>Last Online</td>
         <td>
-          <%= Time.at(@camera['last_online_at']).in_time_zone(@camera["timezone"]).to_formatted_s(:long_ordinal) if @camera['last_online_at'] %>
+          <%= Time.parse(@camera['last_online_at']).to_formatted_s(:long_ordinal) if @camera['last_online_at'] %>
         </td>
       </tr>
       <% end %>

@@ -78,7 +78,7 @@ handleAddToMyCameras = ->
     onSuccess = (data, status, jqXHR) ->
       if data.success
         Notification.info("Camera successfully added.")
-        window.location = "/v1/cameras/#{Evercam.Camera.id}"
+        window.location = "/v2/cameras/#{Evercam.Camera.id}"
       else
         message = "Adding a camera share failed."
         switch data.code

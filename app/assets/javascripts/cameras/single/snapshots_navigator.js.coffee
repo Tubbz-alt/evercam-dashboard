@@ -32,8 +32,7 @@ mobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(n
 
 initDatePicker = ->
   $("#ui_date_picker_inline").datepicker().on("changeDate", datePickerSelect).on "changeMonth", datePickerChange
-
-  camera_created_date = new Date(moment.unix(Evercam.Camera.created_at).tz("#{Evercam.Camera.timezone}").format("YYYY/MM/DD"))
+  camera_created_date = moment(Evercam.Camera.created_at).format("YYYY/MM/DD")
   $("#ui_date_picker_inline").datepicker('setStartDate', camera_created_date)
 
   $("#ui_date_picker_inline table th[class*='prev']").on "click", ->
@@ -197,7 +196,7 @@ handleSlider = ->
     if x > sliderEndX - 80
       x = sliderEndX - 80
     frameNo = idx + 1
-    $("#divPopup").html("Frame #{frameNo}, #{shortDate(new Date(snapshotInfos[idx].created_at*1000))}")
+    $("#divPopup").html("Frame #{frameNo}, #{shortDate(new Date(snapshotInfos[idx].created_at))}")
     $("#divPopup").show()
     $("#divPopup").offset({ top: ev.pageY + 20, left: x })
 
@@ -245,6 +244,7 @@ showLoader = ->
     $("#imgLoaderRec").show()
 
 SetInfoMessage = (currFrame, date_time) ->
+  date_time = new Date(moment(date_time).format('MM/DD/YYYY HH:mm:ss'))
   $("#divInfo").fadeIn()
   $("#snapshot-notes-text").show()
   $("#divInfo").html("<span class='snapshot-frame'>#{currFrame} of #{totalSnaps}</span> <span class='snapshot-date'>#{shortDate(date_time)}</span>")
@@ -254,7 +254,7 @@ SetInfoMessage = (currFrame, date_time) ->
 
   totalWidth = $("#divSlider").width()
   $("#divPointer").width(totalWidth * currFrame / totalFrames)
-  url = "#{Evercam.request.rootpath}/recordings/snapshots/#{moment.utc(date_time).toISOString()}"
+  url = "#{Evercam.request.rootpath}/recordings/snapshots/#{snapshotInfos[snapshotInfoIdx].created_at}"
 
   if $(".nav-tabs li.active a").html() is "Recordings" && history.replaceState
     window.history.replaceState({}, '', url)
@@ -262,8 +262,7 @@ SetInfoMessage = (currFrame, date_time) ->
 UpdateSnapshotRec = (snapInfo) ->
   showLoader()
   $("#snapshot-notes-text").text(snapInfo.notes)
-  SetInfoMessage currentFrameNumber, new Date(moment(snapInfo.created_at*1000)
-  .format('MM/DD/YYYY HH:mm:ss'))
+  SetInfoMessage currentFrameNumber, snapInfo.created_at
   loadImage(snapInfo.created_at, snapInfo.notes)
 
 getQueryStringByName = (name) ->
@@ -302,8 +301,8 @@ handleBodyLoadContent = ->
 
   timestamp = getTimestampFromUrl()
   if timestamp isnt ""
-    playFromTimeStamp = moment.utc(timestamp)/1000
-    playFromDateTime = new Date(moment.utc(timestamp)
+    playFromTimeStamp = moment(timestamp)
+    playFromDateTime = new Date(moment(timestamp)
     .format('MM/DD/YYYY HH:mm:ss'))
     playFromDateTime.setHours(playFromDateTime.getHours() + CameraOffsetHours)
     playFromDateTime
@@ -461,15 +460,13 @@ GetCameraInfo = (isShowLoader) ->
         sliderpercentage = 100
       $("#divSlider").width("#{sliderpercentage}%")
       currentFrameNumber=1
-      frameDateTime = new Date(moment(snapshotInfos[snapshotInfoIdx]
-      .created_at*1000).format('MM/DD/YYYY HH:mm:ss'))
+      frameDateTime = snapshotInfos[snapshotInfoIdx].created_at
       snapshotTimeStamp = snapshotInfos[snapshotInfoIdx].created_at
       snapshotNotes = snapshotInfos[snapshotInfoIdx].notes
 
       if playFromDateTime isnt null
         snapshotTimeStamp = SetPlayFromImage playFromTimeStamp
-        frameDateTime = new Date(moment(snapshotTimeStamp*1000)
-        .format('MM/DD/YYYY HH:mm:ss'))
+        frameDateTime = snapshotTimeStamp
         if currentFrameNumber isnt 1
           playFromDateTime = null
           playFromTimeStamp = null
@@ -538,7 +535,7 @@ window.estimateImageSize = (image_source) ->
   oneDay = 24 * 60 * 60 * 1000
   created_date = $("#camera-created-at").val()
   if created_date
-    camera_created_date = moment.tz(created_date * 1000,"#{Evercam.Camera.timezone}")
+    camera_created_date = created_date
   current_date = new Date()
   difference_days = Math.round(((current_date - camera_created_date) / oneDay))
   recording_status = Evercam.Camera.cloud_recording.status
@@ -597,7 +594,6 @@ setImageDimension = ->
 SetPlayFromImage = (timestamp) ->
   i = 0
   for snapshot in snapshotInfos
-    snapshot_timestamp = GetUTCDate(new Date(getSnapshotDate(new Date(snapshot.created_at*1000)).format('MM/DD/YYYY HH:mm:ss')))/1000
     if snapshot.created_at >= timestamp
       currentFrameNumber = i + 1
       snapshotInfoIdx = i
@@ -831,8 +827,7 @@ DoNextImg = ->
 
   onSuccess = (response) ->
     if response.snapshots.length > 0
-      SetInfoMessage currentFrameNumber,
-        new Date(moment(snapshot.created_at*1000).format('MM/DD/YYYY HH:mm:ss'))
+      SetInfoMessage currentFrameNumber, snapshot.created_at
     $("#imgPlayback").attr("src", response.snapshots[0].data)
     $("#imgPlayback").attr("data-timestamp", response.snapshots[0].created_at)
     if $("#snapshot-magnifier").hasClass 'enabled'
@@ -927,15 +922,15 @@ handleTabOpen = ->
     window.initScheduleCalendar()
     window.initCloudRecordingSettings()
     if snapshotInfos isnt null
-      date_time = new Date(snapshotInfos[snapshotInfoIdx].created_at*1000)
-      url = "#{Evercam.request.rootpath}/recordings/snapshots/#{moment.utc(date_time).toISOString()}"
+      date_time = snapshotInfos[snapshotInfoIdx].created_at
+      url = "#{Evercam.request.rootpath}/recordings/snapshots/#{date_time}"
       if history.replaceState
         window.history.replaceState({}, '', url)
 
 saveImage = ->
   $('#save-recording-image').on 'click', ->
     created_at = parseInt($("#imgPlayback").attr("data-timestamp"))
-    date_time = new Date(created_at*1000)
+    date_time = new Date(created_at)
     file_name = "#{Evercam.Camera.id}-#{getSnapshotDate(date_time).toISOString()}.jpg"
     blob = base64ToBlob($("#imgPlayback").attr('src'))
     if mobile
@@ -1128,7 +1123,7 @@ setLatestImage = ->
 updateImageCalendar = (oldest_latest_image_date) ->
   currentFrameNumber = 1
   $("#hourCalendar td[class*='day']").removeClass("active")
-  image_date = new Date(moment.unix(oldest_latest_image_date).tz("#{Evercam.Camera.timezone}").format("YYYY/MM/DD HH:mm:ss"))
+  image_date = new Date(moment(oldest_latest_image_date).format("YYYY/MM/DD HH:mm:ss"))
   $("#ui_date_picker_inline").datepicker('update', image_date)
   $("#ui_date_picker_inline").datepicker('setDate', image_date)
   oldest_latest_image_year = image_date.getFullYear()

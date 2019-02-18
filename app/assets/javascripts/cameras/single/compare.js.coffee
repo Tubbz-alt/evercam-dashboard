@@ -27,21 +27,17 @@ getFirstLastImages = (image_id, query_string, reload, setDate) ->
       $("##{image_id}").attr("src", snapshot.data)
       $("##{image_id}").attr("timestamp", snapshot.created_at)
       if setDate is true && query_string.indexOf("nearest") < 0
-        d = new Date(snapshot.created_at*1000)
-        before_month = d.getUTCMonth()+1
-        before_year = d.getUTCFullYear()
-        camera_created_date = new Date(Evercam.Camera.created_at*1000)
-        camera_created_month = camera_created_date.getUTCMonth()+1
-        camera_created_year = camera_created_date.getUTCFullYear()
-        string_date = "#{before_month}/#{d.getUTCDate()}/#{before_year}"
-        camera_created_at = "#{camera_created_year}/#{camera_created_month}/#{camera_created_date.getUTCDate()}"
+        d = moment(snapshot.created_at)
+        string_date = d.format("M/D/YYYY")
+        camera_created_date = moment(Evercam.Camera.created_at)
+        camera_created_year = camera_created_date.format('YYYY')
+        camera_created_at = camera_created_date.format("YYYY/M/D")
         $('#calendar-before').datetimepicker({value: d, minDate: camera_created_at, yearStart: camera_created_year})
         $('#calendar-after').datetimepicker({minDate: camera_created_at, yearStart: camera_created_year})
       if setDate is false && query_string.indexOf("nearest") < 0
-        date_after = new Date(snapshot.created_at*1000)
-        after_month = date_after.getUTCMonth()+1
-        after_year = date_after.getUTCFullYear()
-        string_after_date = "#{after_year}/#{after_month}/#{date_after.getUTCDate()}"
+        date_after = moment(snapshot.created_at)
+        after_year = date_after.format('YYYY')
+        string_after_date = date_after.format("YYYY/M/D")
         $('#calendar-before').datetimepicker({maxDate: string_after_date, yearEnd: after_year})
         $('#calendar-after').datetimepicker({value: date_after, maxDate: string_after_date, yearEnd: after_year})
       initCompare() if reload
@@ -67,12 +63,13 @@ updateURL = ->
   url = "#{Evercam.request.rootpath}/compare"
   query_string = ""
   if $("#txtbefore").val() isnt ""
-    query_string = "?before=#{moment.utc($("#txtbefore").val()).toISOString()}"
+    query_string = "?before=#{toISOString(moment.tz($("#txtbefore").val(), "MM/DD/YYYY hh:mm", Evercam.Camera.timezone))}"
   if $("#txtafter").val() isnt ""
+    after_date = toISOString(moment.tz($("#txtafter").val(), "MM/DD/YYYY hh:mm", Evercam.Camera.timezone))
     if query_string is ""
-      query_string = "?after=#{moment.utc($("#txtafter").val()).toISOString()}"
+      query_string = "?after=#{after_date}"
     else
-      query_string = "#{query_string}&after=#{moment.utc($("#txtafter").val()).toISOString()}"
+      query_string = "#{query_string}&after=#{after_date}"
 
   url = "#{url}#{query_string}"
   if history.replaceState
@@ -181,10 +178,10 @@ setCompareEmbedCodeTitle = ->
     after_image_time = $("#compare_after").attr("timestamp")
     before_image_time = $("#compare_before").attr("timestamp")
     if after_image_time && before_image_time isnt undefined
-      day_before = moment.utc(before_image_time*1000).format("Do")
-      day_after = moment.utc(after_image_time*1000).format("Do")
-      month_before = moment.utc(before_image_time*1000).format("MMM")
-      month_after = moment.utc(after_image_time*1000).format("MMM")
+      day_before = moment(before_image_time).format("Do")
+      day_after = moment(after_image_time).format("Do")
+      month_before = moment(before_image_time).format("MMM")
+      month_after = moment(after_image_time).format("MMM")
       $("#export-compare-title").val("Compare: #{day_before} #{month_before} to #{day_after} #{month_after}")
       e.stopPropagation()
       $('#export-compare-modal').modal 'show'
@@ -251,8 +248,7 @@ export_compare = ->
     sendAJAXRequest(settings)
 
 convert_timestamp_to_path = (timestamp) ->
-  timestamp_to_int = parseInt(timestamp)
-  moment.utc(timestamp_to_int*1000).format('YYYY-MM-DD-HH_mm_ss')
+  moment(timestamp).format('YYYY-MM-DD-HH_mm_ss')
 
 cancelForm = ->
   $('#export-compare-modal').on 'hide.bs.modal', ->
@@ -278,7 +274,7 @@ download_animation = ->
     file_name= $("#export-compare-title").val()
     NProgress.start()
     download_compare($("#{src_id}").val(), file_name)
-    
+
 download_compare = (url, file_name) ->
   xhr = new XMLHttpRequest()
   xhr.open('GET', url)
@@ -346,12 +342,13 @@ window.initializeCompareTab = ->
     onSelectTime: (dp, $input) ->
       $("#txtbefore").val($input.val())
       val = getQueryStringByName("after")
-      url = "#{Evercam.request.rootpath}/compare?before=#{moment.utc($input.val()).toISOString()}"
+      iso_datetime = toISOString(moment.tz($input.val(), "MM/DD/YYYY hh:mm", Evercam.Camera.timezone))
+      url = "#{Evercam.request.rootpath}/compare?before=#{iso_datetime}"
       if val isnt null
         url = "#{url}&after=#{val}"
       if history.replaceState
         window.history.replaceState({}, '', url)
-      getFirstLastImages("compare_before", "/#{(new Date($input.val())) / 1000}/nearest", true, false)
+      getFirstLastImages("compare_before", "/#{iso_datetime}/nearest", true, false)
     onChangeMonth: (dp, $input) ->
       xhrChangeMonth.abort()
       month = dp.getMonth() + 1
@@ -383,13 +380,14 @@ window.initializeCompareTab = ->
       $("#txtafter").val($input.val())
       val = getQueryStringByName("before")
       url = "#{Evercam.request.rootpath}/compare"
+      iso_datetime = toISOString(moment.tz($input.val(), "MM/DD/YYYY hh:mm", Evercam.Camera.timezone))
       if val isnt null
-        url = "#{url}?before=#{val}&after=#{moment.utc($input.val()).toISOString()}"
+        url = "#{url}?before=#{val}&after=#{iso_datetime}"
       else
-        url = "#{url}?after=#{moment.utc($input.val()).toISOString()}"
+        url = "#{url}?after=#{iso_datetime}"
       if history.replaceState
         window.history.replaceState({}, '', url)
-      getFirstLastImages("compare_after", "/#{(new Date($input.val())) / 1000}/nearest", true, false)
+      getFirstLastImages("compare_after", "/#{iso_datetime}/nearest", true, false)
     onChangeMonth: (dp, $input) ->
       xhrChangeMonth.abort()
       month = dp.getMonth() + 1

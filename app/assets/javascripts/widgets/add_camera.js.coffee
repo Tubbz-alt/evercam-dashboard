@@ -4,8 +4,8 @@
 #= require ladda/spin.min.js
 #= require ladda/ladda.min.js
 #= require bugsnag.js
-Evercam_MEDIA_URL = 'https://media.evercam.io/v1/'
-Evercam_API_URL = 'https://api.evercam.io/v1/'
+Evercam_MEDIA_URL = 'https://media.evercam.io/v2/'
+Evercam_API_URL = 'https://api.evercam.io/v2/'
 Dasboard_URL = 'https://dash.evercam.io'
 API_ID = ''
 API_Key = ''
@@ -437,7 +437,7 @@ createCamera = (api_id, api_key) ->
       loader.stop()
 
   onSuccess = (result, status, jqXHR) ->
-    parent.location.href = "#{Dasboard_URL}/v1/cameras?api_id=#{api_id}&api_key=#{api_key}"
+    parent.location.href = "#{Dasboard_URL}/v2/cameras?api_id=#{api_id}&api_key=#{api_key}"
 
   onDuplicateError = (xhr) ->
     switchTab("user-create", "camera-info")

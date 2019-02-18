@@ -44,3 +44,7 @@ function copyToClipboard(element) {
     Notification.info('Copied!');
   });
 }
+
+function toISOString(datetime) {
+  return datetime.format("YYYY-MM-DDTHH:mm:ss.SSSZ"); // "2014-09-08T08:02:17-05:00"
+}

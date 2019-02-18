@@ -92,7 +92,7 @@ var $;
       error: onError,
       success: onSuccess,
       type: 'GET',
-      url: "https://media.evercam.io/v1/cameras/" + camera_id + "/recordings/snapshots" + query_string
+      url: "https://media.evercam.io/v2/cameras/" + camera_id + "/recordings/snapshots" + query_string
     };
     return $.ajax(settings);
   };
