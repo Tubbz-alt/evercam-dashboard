@@ -216,7 +216,7 @@ initializeTabs = ->
   window.initializeInfoTab()
   window.initializeLiveTab()
   window.initializeRecordingsTab()
-  window.initializeLogsTab()
+  window.initializeLogsTab() if $("#logs").length > 0
   window.initializeSharingTab() if $("#shares").length > 0
   window.initializeLocalStorageTab()
   window.initializeSettingsTab()
