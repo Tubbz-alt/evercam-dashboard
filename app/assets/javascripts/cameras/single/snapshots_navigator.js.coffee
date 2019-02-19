@@ -600,19 +600,6 @@ SetPlayFromImage = (timestamp) ->
   snapshotInfoIdx = snapshotInfos.length - 1
   snapshotInfos[snapshotInfoIdx].created_at
 
-GetFromDT = ->
-  d = $("#ui_date_picker_inline").datepicker('getDate')
-  hour = parseInt(cameraCurrentHour)
-  Date.UTC(d.getFullYear(), d.getMonth(), d.getDate(), hour, 0, 0)
-
-GetToDT = ->
-  d = $("#ui_date_picker_inline").datepicker('getDate')
-  hour = parseInt(cameraCurrentHour) + 1
-  if hour == 24
-    Date.UTC(d.getFullYear(), d.getMonth(), d.getDate(), 23, 59, 59)
-  else
-    Date.UTC(d.getFullYear(), d.getMonth(), d.getDate(), hour, 0, 0)
-
 StripLeadingZeros = (input) ->
   if input.length > 1 && input.substr(0,1) == "0"
     input.substr(1)

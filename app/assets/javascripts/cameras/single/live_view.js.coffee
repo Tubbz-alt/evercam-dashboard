@@ -514,7 +514,7 @@ playJpegStream = ->
     Evercam.camera_channel.join()
     Evercam.camera_channel.on 'snapshot-taken', (payload) ->
       $(".btn-live-player").removeClass "hide"
-      if payload.timestamp >= live_view_timestamp and not stream_paused
+      if !stream_paused
         live_view_timestamp = payload.timestamp
         $('#live-player-image').attr('src', 'data:image/jpeg;base64,' + payload.image)
         $("#live-player-image").attr("data-timestamp", payload.timestamp)
