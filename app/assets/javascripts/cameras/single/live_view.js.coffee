@@ -271,6 +271,8 @@ getImageRealRatio = ->
           $("#live-player-image").css({"width": "auto"})
           $("#live-player-image").css({"margin-top": "0px"})
         else
+          if navigator.appName == 'Microsoft Internet Explorer' or ! !(navigator.userAgent.match(/Trident/) or navigator.userAgent.match(/rv:11/)) or typeof $.browser != 'undefined' and $.browser.msie == 1
+            $("#live-player-image").css({"margin-top": "0px"})
           $("#live-player-image").css({"width": "100%"})
           $("#live-player-image").css({"height": "auto"})
           if fullscreen_height == jpeg_img_height
