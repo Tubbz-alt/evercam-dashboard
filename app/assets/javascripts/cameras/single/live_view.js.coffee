@@ -517,9 +517,9 @@ playJpegStream = ->
     Evercam.camera_channel.on 'snapshot-taken', (payload) ->
       $(".btn-live-player").removeClass "hide"
       if !stream_paused
-        live_view_timestamp = payload.timestamp
+        live_view_timestamp = payload.iso_timestamp
         $('#live-player-image').attr('src', 'data:image/jpeg;base64,' + payload.image)
-        $("#live-player-image").attr("data-timestamp", payload.timestamp)
+        $("#live-player-image").attr("data-timestamp", payload.iso_timestamp)
         if $("#live-snapshot-magnifier").hasClass 'enabled'
           $('.zoomWindowContainer').hide()
           $('.zoomContainer div').css 'background-image', 'url(' + 'data:image/jpeg;base64,' + payload.image + ')'
