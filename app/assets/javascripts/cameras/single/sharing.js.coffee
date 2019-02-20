@@ -695,47 +695,6 @@ getFavicon = (email) ->
     favicon = "https://favicon.yandex.net/favicon/#{domain}"
     "https://gravatar.com/avatar/#{signature}?d=#{favicon}"
 
-addGravatarFallbacks = ->
-  img_tags = $("#shares .gravatar")
-  img_tags.each ->
-    img = $(this)
-    email = img.attr "email"
-    getGravatar(img, email)
-
-getGravatar = (img, email) ->
-  favicon = "https://favicon.yandex.net/favicon/"
-  signature = hex_md5(email)
-  index = email.indexOf("@")
-  domain = email.substr((index+1))
-  favicon_url = favicon + domain
-  img_src = "https://gravatar.com/avatar/#{signature}?d=#{favicon_url}"
-  if domain is "hotmail.com"
-    img_src = "https://gravatar.com/avatar/#{signature}"
-  data = {}
-
-  onSuccess = (data, success, jqXHR) ->
-    length = jqXHR.responseText.length
-    if length < 100
-      img_src = "https://gravatar.com/avatar/#{signature}"
-    images_array["#{domain}"] = img_src
-    if img isnt null
-      img.attr "src", img_src
-
-  onError = (jqXHR, status, error) ->
-    images_array["#{domain}"] = img_src
-    if img isnt null
-      img.attr "src", img_src
-
-  settings =
-    cache: false
-    data: data
-    dataType: 'html'
-    error: onError
-    success: onSuccess
-    type: 'GET'
-    url: "#{favicon_url}"
-  jQuery.ajax(settings)
-
 validateEmail = (email) ->
   re = /^(?!.*\.{2})[a-zA-Z0-9._%+"-]+@[a-zA-Z\d\-]+(\.[a-zA-Z]+)*\.[a-zA-Z]+\z*$/
   addresstrimed = email.replace(RegExp(' ', 'gi'), '')
@@ -801,38 +760,6 @@ getSharedUsersSelectize = ->
     type: 'GET'
     url: "#{Evercam.API_URL}shares/users"
   jQuery.ajax(settings)
-
-format = (state) ->
-  if !state.id
-    return state.text
-  if state.id == '0'
-    return state.text
-  if state.element
-    image_src = getFavicon(state.element.value) #images_array[domain]
-    if image_src is undefined
-      image_src = "https://gravatar.com/avatar/446b9c716e6561d9318bc34f55870323"
-    return $("<span><img id='#{state.id}' style='width: 22px;height: auto;' src='#{image_src}' class='gravatar1'/>&nbsp;#{state.text}</span>")
-  else
-    state.text
-
-getEmptyImagesForSelect2 = ->
-  selected_email = $("#select2-sharing-user-email-container .gravatar1").attr("id")
-  img_tags = $("#select2-sharing-user-email-results .gravatar1")
-  img_tags.each ->
-    img_id = $(this).attr("id")
-    img = document.getElementById("#{img_id}")
-    if img && img.naturalWidth < 3
-      $(this).attr("src", "https://gravatar.com/avatar/446b9c716e6561d9318bc34f55870323")
-    if selected_email isnt undefined && selected_email is img_id
-      $(this).attr("src", $("#select2-sharing-user-email-container .gravatar1").attr("src"))
-
-onCloseSelect2SetGravatar = ->
-  highlightInvalidEmailsTag()
-  disableShareButton()
-  img_id = $("#select2-sharing-user-email-container .gravatar1").attr("id")
-  img = document.getElementById("#{img_id}")
-  if img && img.naturalWidth < 3
-    $("#select2-sharing-user-email-container .gravatar1").attr("src", "https://gravatar.com/avatar/446b9c716e6561d9318bc34f55870323")
 
 window.initializeSharingTab = ->
   $("#gravatar-0").attr("src", getFavicon($("#gravatar-0").attr("email")))
