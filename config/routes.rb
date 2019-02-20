@@ -17,6 +17,7 @@ Rails.application.routes.draw do
 
   root to: redirect('/v2/cameras'), as: :root
   get '/v2/cameras' => 'cameras#index', as: :cameras_index
+  get '/v1/cameras' => 'cameras#index'  # temporary route
   get '/v2/cameras/new' => 'cameras#new', as: :cameras_new
   post '/v2/cameras/new' => 'cameras#create'
   get '/cameras/transfer' => 'cameras#transfer'
@@ -25,6 +26,7 @@ Rails.application.routes.draw do
   get '/map' => 'cameras#map', as: :map_view
   get '/table' => 'cameras#cameras_table'
   get '/v2/cameras/:id' => 'cameras#single', as: :cameras_single
+  get '/v1/cameras/:id' => 'cameras#single' # temporary route
   get '/v2/cameras/:id/clone' => 'cameras#new', as: :cameras_clone
   get '/v2/cameras/:id/404' => 'cameras#camera_not_found', as: :cameras_not_found
   patch '/v2/cameras/:id' => 'cameras#update'
@@ -54,7 +56,9 @@ Rails.application.routes.draw do
   get '/sessions' => redirect('/')
 
   get '/v2/users/signup' => 'users#new', as: :signup
+  get '/v1/users/signup' => 'users#new' # temporary route
   post '/v2/users/signup' => 'users#create'
+  post '/v1/users/signup' => 'users#create' # temporary route
   get '/v2/users/password-reset' => 'users#password_reset_request', as: :password_reset
   post '/v2/users/password-reset' => 'users#password_reset_request'
   get '/v2/users/password-new' => 'users#password_update_form', as: :password_new
@@ -63,6 +67,7 @@ Rails.application.routes.draw do
   get '/v2/users/signin' => 'sessions#new', as: :signin
   get '/widget_signin' => 'sessions#widget_new', as: :widget_signin
   get '/v2/users/signout' => 'sessions#destroy'
+  get '/v1/users/signout' => 'sessions#destroy' # temporary route
   delete '/v2/users/signout' => 'sessions#destroy', as: :signout
 
   # Removed username from url
