@@ -1,13 +1,13 @@
 <% if @archive
   title = "Evercam: Archive View {#{@archive['title']}}"
   description = "This is a public archive, Enjoy this public video from anywhere. Use your mobile, laptop or tablet from the office, on the road or even on-site."
-  release_date = Time.at(@archive['created_at']).utc.strftime("%d/%m/%Y, %H:%M:%S")
+  release_date = Time.iso8601(@archive['created_at']).utc.strftime("%d/%m/%Y, %H:%M:%S")
   site_name = "Evercam"
 
   if @archive['type'].eql?("compare")
     title = "Evercam Compare {#{@archive['title']}}"
-    from_date = Time.at(@archive['from_date']).utc.strftime("%d/%m/%Y, %H:%M:%S")
-    to_date = Time.at(@archive['to_date']).utc.strftime("%d/%m/%Y, %H:%M:%S")
+    from_date = Time.iso8601(@archive['from_date']).utc.strftime("%d/%m/%Y, %H:%M:%S")
+    to_date = Time.iso8601(@archive['to_date']).utc.strftime("%d/%m/%Y, %H:%M:%S")
     description = "See progress from #{from_date} to #{to_date} with Evercam Compare"
     site_name = "Evercam Construction Cameras"
   end
@@ -25,8 +25,8 @@
 
 <% if @archive && @archive['type'].eql?("clip") %>
   <%
-    from_date = Time.at(@archive['from_date']).utc
-    to_date = Time.at(@archive['to_date']).utc
+    from_date = Time.iso8601(@archive['from_date']).utc
+    to_date = Time.iso8601(@archive['to_date']).utc
     duration = (to_date - from_date).to_i / 60
   %>
   <meta property='og:video:duration' content='<%= duration %>'/>
