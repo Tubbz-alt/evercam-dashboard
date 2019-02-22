@@ -11,10 +11,10 @@ rvm:
 
 addons:
   addons:
-  postgresql: 9.3
+  postgresql: 9.6
   apt:
     packages:
-    - postgresql-9.3-postgis-2.3
+    - postgresql-9.6-postgis-2.3
   code_climate:
       repo_token: 3045bb415f20a2b7f8715ab52458747dddc35b71848a631553a391fb38ecbc2b
 
@@ -38,4 +38,5 @@ env:
 branches:
   only: master
 
-dist: precise
+sudo: false
+dist: trusty
