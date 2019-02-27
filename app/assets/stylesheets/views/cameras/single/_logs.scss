@@ -30,8 +30,6 @@
   }
 
   .graph-label {
-    margin-left: -15px;
-    padding: 0 5px;
 
     label {
       font-size: 16px;
@@ -53,6 +51,10 @@
     .graph-failed-request {
       color: $evercam-red;
     }
+  }
+
+  .dataTables_wrapper .row {
+    margin: 0px;
   }
 
   .disabled-textarea {
@@ -220,8 +222,8 @@
 
 @media (min-width: 760px) {
 
-  .width-740 {
-    min-width: 740px;
+  .width-770 {
+    min-width: 770px;
   }
 }
 
@@ -235,6 +237,45 @@
 
 .min-width-114 {
   min-width: 114px;
+}
+
+.max-width-400 {
+  max-width: 400px;
+}
+
+.red-border {
+  border: 1px solid $error-border-color;
+}
+
+#form-create-clip {
+
+  .note-error-message {
+    position: absolute;
+    width: auto;
+    color: $error-border-color;
+    padding-left: 5px;
+    margin-top: 0px;
+  }
+
+  .padding-left-right-zero {
+    padding: 5px 3px;
+  }
+
+  .height-100 {
+    height: 100px;
+  }
+
+  .padding-0 {
+    padding: 0px;
+  }
+}
+
+.custom-note-css {
+  background-color: $light-yellow !important;
+
+  .sorting_1 {
+    background-color: $lighter-yellow !important;
+  }
 }
 
 .info-panel .checkbox-list {

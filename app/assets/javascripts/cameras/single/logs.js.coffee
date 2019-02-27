@@ -50,6 +50,10 @@ toggleCheckboxes = ->
   if !$('#type-online-offline').is(':checked')
     $("input[id='type-online-offline']").prop("checked", true)
     $("label[for='type-online-offline'] span").addClass("checked")
+  
+  if !$('#type-custom').is(':checked')
+    $("input[id='type-custom']").prop("checked", true)
+    $("label[for='type-custom'] span").addClass("checked")
 
 initializeDataTable = ->
   table = $('#logs-table').DataTable({
@@ -102,6 +106,8 @@ initializeDataTable = ->
             return '<div class="onlines">Camera came online</div>'
         else if row.extra and row.action is 'offline'
           getOfflineCause(row)
+        else if row.extra and row.action is 'custom'
+          return "<div class='custom-note-background'>Custom Note: #{row.extra.custom_message}</div>"
         else if row.action is 'offline'
           return '<div class="offlines">Camera went offline</div>'
         else if row.action is 'accessed'
@@ -138,6 +144,10 @@ initializeDataTable = ->
           $("table#logs-table > tbody > tr:eq(#{i}) td:eq(0)")
             .addClass("details-control")
             .html("<i class='fa fa-plus font-12 expand-icon' aria-hidden='true'></i>")
+        
+        if data.action is 'custom'
+          $("table#logs-table > tbody > tr:eq(#{i})")
+            .addClass("custom-note-css")
       NProgress.done()
   })
 
@@ -410,6 +420,47 @@ doResize = ->
   $(window).resize ->
     initReport(evercam_logs)
 
+addNewNote = ->
+  $('#logs').on 'click', '#add-note-button', ->
+    if $('#action-note').val()
+      message_note = $("#action-note").val()
+      user_name = Evercam.User.fullname
+      NProgress.start()
+      data =
+        camera_exid: Evercam.Camera.id
+        action: "custom"
+        custom_message: message_note
+        who: user_name
+
+      onError = (jqXHR, status, error) ->
+        message = jqXHR.responseJSON.message
+        Notification.show error
+        NProgress.done()
+
+      onSuccess = (data, status, jqXHR) ->
+        Notification.show "Note added successfully"
+        updateLogTypesFilter()
+        NProgress.done()
+        $("#add-note-modal").modal('hide')
+
+      settings =
+        cache: false
+        data: data
+        dataType: 'json'
+        success: onSuccess
+        error: onError
+        type: 'POST'
+        contentType: 'application/x-www-form-urlencoded'
+        url: "#{Evercam.API_URL}logs?api_id=#{Evercam.User.api_id}&api_key=#{Evercam.User.api_key}"
+      sendAJAXRequest(settings)
+    else
+      $("#note-error-message").removeClass('hide')
+
+handleModelEvents = ->
+  $("#add-note-modal").on "hide.bs.modal", ->
+    $("#note-error-message").addClass('hide')
+    $("#action-note").val("")
+
 window.initializeLogsTab = ->
   moment.locale('en')
   doResize()
@@ -422,10 +473,12 @@ window.initializeLogsTab = ->
   toggleAllTypeFilters()
   toggleCheckboxes()
   updateLogTypesFilter()
+  handleModelEvents()
   $.fn.dataTable.moment('ddd, DD MMM YYYY, HH:mm:ss');
   $.fn.DataTable.ext.type.order['string-date-pre'] = (x) ->
     return moment(x, 'ddd, DD MMM YYYY, HH:mm:ss').format('X')
   initializeDataTable()
   onImageHover()
   showDetails()
+  addNewNote()
   window.initJqueryPlotResponseTime()
