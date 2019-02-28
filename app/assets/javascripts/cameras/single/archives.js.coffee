@@ -14,6 +14,7 @@ is_list_view = true
 pagination = false
 archive_id_from_url = null
 xhrRequest = null
+mobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)
 
 isUnauthorized = (response) ->
   if response.responseText.indexOf("/v2/users/signin") isnt -1
@@ -1230,8 +1231,13 @@ modal_events = ->
     if type is "file" || type is "edit"
       share_url = "#{Evercam.API_URL}cameras/#{Evercam.Camera.id}/archives/#{file_name}"
 
+    if mobile
+      whatsapp_url = "whatsapp://send?text=#{share_url}"
+    else
+      whatsapp_url = "https://web.whatsapp.com/send?text=#{share_url}"
+  
     $("#share-buttons-new a.facebook").attr("href", "http://www.facebook.com/sharer.php?u=#{share_url}")
-    $("#share-buttons-new a.whatsapp").attr("href", "https://web.whatsapp.com/send?text=#{share_url}")
+    $("#share-buttons-new a.whatsapp").attr("href", "#{whatsapp_url}")
     $("#share-buttons-new a.linkedin").attr("href", "http://www.linkedin.com/shareArticle?url=#{share_url}&title=My photo&summary=This is a photo from evercam")
     $("#share-buttons-new a.twitter").attr("href", "http://twitter.com/share?url=#{share_url}&text=This is a photo from evercam&via=evrcm")
 
