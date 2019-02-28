@@ -25,9 +25,9 @@ GIT
 
 GIT
   remote: git://github.com/stripe/stripe-ruby.git
-  revision: e0438d27a8ecd4fbb5580a72dabc4a61572a77e3
+  revision: c139dc890d0d8e0fe737783551cd27f808d81fa7
   specs:
-    stripe (4.8.0)
+    stripe (4.9.0)
       faraday (~> 0.13)
       net-http-persistent (~> 3.0)
 
@@ -91,7 +91,7 @@ GEM
       fog-core
       mime-types (>= 2.99)
       unf
-    autoprefixer-rails (9.4.7)
+    autoprefixer-rails (9.4.9)
       execjs
     awesome_print (1.8.0)
     bcrypt (3.1.12)
@@ -132,13 +132,13 @@ GEM
     database_cleaner (1.7.0)
     diff-lcs (1.3)
     docile (1.1.5)
-    dotenv (2.6.0)
+    dotenv (2.7.1)
     erubi (1.8.0)
     ethon (0.12.0)
       ffi (>= 1.3.0)
     excon (0.62.0)
     execjs (2.7.0)
-    factory_bot (5.0.0)
+    factory_bot (5.0.2)
       activesupport (>= 4.2.0)
     faraday (0.15.4)
       multipart-post (>= 1.2, < 3)
@@ -228,7 +228,7 @@ GEM
     nenv (0.3.0)
     net-http-persistent (3.0.0)
       connection_pool (~> 2.2)
-    newrelic_rpm (6.0.0.351)
+    newrelic_rpm (6.1.0.352)
     nio4r (2.3.1)
     nokogiri (1.10.1)
       mini_portile2 (~> 2.4.0)

@@ -438,6 +438,7 @@ addNewNote = ->
         NProgress.done()
 
       onSuccess = (data, status, jqXHR) ->
+        $(".bb-alert").removeClass("alert-danger").addClass("alert-info")
         Notification.show "Note added successfully"
         updateLogTypesFilter()
         NProgress.done()
