@@ -724,7 +724,7 @@ detectMobile = ->
     $('#jpg-portion #edit-live-image').hide()
 
 check_dunkettle_camera = ->
-  cameras = ["dunke-wqnzu", "dunke-ibcwt", "dunke-bnivp", "dunke-gqiwe"]
+  cameras = ["dunke-wqnzu", "dunke-ibcwt", "dunke-bnivp", "dunke-gqiwe", "camer-runah", "camer-sraxw", "camer-xeojc"]
   if cameras.indexOf("#{Evercam.Camera.id}") is -1
     return false
 
