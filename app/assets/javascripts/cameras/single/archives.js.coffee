@@ -1233,16 +1233,16 @@ modal_events = ->
 
     if mobile
       whatsapp_url = "whatsapp://send?text=#{share_url}"
-      facebook_url = "facebook://sharer.php?u=#{share_url}"
+      # facebook_url = "fb://facewebmodal/sharer.php?u=#{share_url}"
       linkedin_url = "linkedin://shareArticle?url=#{share_url}&title=My photo&summary=This is a photo from evercam"
       twitter_url = "twitter://share?url=#{share_url}&text=This is a photo from evercam&via=evrcm"
     else
       whatsapp_url = "https://web.whatsapp.com/send?text=#{share_url}"
-      facebook_url = "http://www.facebook.com/sharer.php?u=#{share_url}"
+      # facebook_url = "http://www.facebook.com/sharer.php?u=#{share_url}"
       linkedin_url = "http://www.linkedin.com/shareArticle?url=#{share_url}&title=My photo&summary=This is a photo from evercam"
       twitter_url = "http://twitter.com/share?url=#{share_url}&text=This is a photo from evercam&via=evrcm"
 
-    $("#share-buttons-new a.facebook").attr("href", "#{facebook_url}")
+    $("#share-buttons-new a.facebook").attr("href", "http://www.facebook.com/sharer.php?u=#{share_url}")
     $("#share-buttons-new a.whatsapp").attr("href", "#{whatsapp_url}")
     $("#share-buttons-new a.linkedin").attr("href", "#{linkedin_url}")
     $("#share-buttons-new a.twitter").attr("href", "#{twitter_url}")
