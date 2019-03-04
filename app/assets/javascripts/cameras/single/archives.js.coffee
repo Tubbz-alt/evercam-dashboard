@@ -1235,7 +1235,7 @@ modal_events = ->
       whatsapp_url = "whatsapp://send?text=#{share_url}"
     else
       whatsapp_url = "https://web.whatsapp.com/send?text=#{share_url}"
-  
+
     $("#share-buttons-new a.facebook").attr("href", "http://www.facebook.com/sharer.php?u=#{share_url}")
     $("#share-buttons-new a.whatsapp").attr("href", "#{whatsapp_url}")
     $("#share-buttons-new a.linkedin").attr("href", "http://www.linkedin.com/shareArticle?url=#{share_url}&title=My photo&summary=This is a photo from evercam")
@@ -1259,8 +1259,10 @@ modal_events = ->
       $("#row-compare").html(window.compare_html)
       params = query_string.split(" ")
       bucket_url = "https://s3-eu-west-1.amazonaws.com/evercam-camera-assets/"
-      before_image = "#{bucket_url}#{Evercam.Camera.id}/compares/#{params[3]}/start-#{params[1]}.jpg?#{Math.random()}"
-      after_image = "#{bucket_url}#{Evercam.Camera.id}/compares/#{params[3]}/end-#{params[2]}.jpg?#{Math.random()}"
+      from = moment.tz(params[1], "YYYY-MM-DD-HH_mm_ss", Evercam.Camera.timezone).utc().format("YYYY-MM-DD-HH_mm_ss")
+      to = moment.tz(params[2], "YYYY-MM-DD-HH_mm_ss", Evercam.Camera.timezone).utc().format("YYYY-MM-DD-HH_mm_ss")
+      before_image = "#{bucket_url}#{Evercam.Camera.id}/compares/#{params[3]}/start-#{from}.jpg?#{Math.random()}"
+      after_image = "#{bucket_url}#{Evercam.Camera.id}/compares/#{params[3]}/end-#{to}.jpg?#{Math.random()}"
       $("#archive_compare_before").attr("src", before_image)
       $("#archive_compare_after").attr("src", after_image)
       $("#row-frames").hide()
