@@ -16,6 +16,9 @@ getFirstLastImages = (image_id, query_string, reload, setDate) ->
     api_id: Evercam.User.api_id
     api_key: Evercam.User.api_key
 
+  if query_string is "/latest"
+    data.is_save = true
+
   onError = (jqXHR, status, error) ->
     false
 
@@ -213,9 +216,9 @@ export_compare = ->
       api_key: Evercam.User.api_key
       name: name
       before_date: $("#compare_before").attr("timestamp")
-      before_image: $("#compare_before").attr("src")
+      # before_image: $("#compare_before").attr("src")
       after_date: $("#compare_after").attr("timestamp")
-      after_image: $("#compare_after").attr("src")
+      # after_image: $("#compare_after").attr("src")
       embed: embed_code
       exid: exid
       create_animation: true
