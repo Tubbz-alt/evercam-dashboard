@@ -109,6 +109,7 @@ class ApplicationController < ActionController::Base
     if exception.message.eql?("ActionController::InvalidAuthenticityToken")
       redirect_to signin_path
     else
+      Rails.logger.error exception.message
       render :file => "#{Rails.root}/public/500.html", :layout => false, :status => 500
     end
   end
