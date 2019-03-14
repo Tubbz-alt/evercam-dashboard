@@ -3,9 +3,7 @@
   <div class="page-content" id="camera-index">
     <% if params[:controller] == 'cameras' && params[:action] == 'index' && @show_alert_message %>
       <div class="biling-alert alert alert-danger">
-        <span>You require <%= @required_licences %> additional licences.
-          <%= link_to "Buy Licences", billing_path(current_user.username), class: "billing-link" %>
-        </span>
+        <span>You require <%= @required_licences %> additional licences. Contact to support.</span>
       </div>
     <% end %>
     <% @cameras.each do |camera| %>
