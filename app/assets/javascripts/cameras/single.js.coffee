@@ -175,8 +175,8 @@ handleResize = ->
     remove_user_from_feed()
 
 remove_user_from_feed = ->
-  stream_url = $("#hls_stream_url").val()
-  if stream_url isnt "" || stream_url isnt null
+  stream_url = $("#hls_stream_url").val().trim()
+  if stream_url.indexOf("index.m3u8") > 0
     api_url = stream_url.replace("/index.m3u8", "")
 
     settings =
