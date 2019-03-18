@@ -86,7 +86,7 @@ GEM
     addressable (2.5.2)
       public_suffix (>= 2.0.2, < 4.0)
     arel (9.0.0)
-    asset_sync (2.6.0)
+    asset_sync (2.7.0)
       activemodel (>= 4.1.0)
       fog-core
       mime-types (>= 2.99)
@@ -145,7 +145,7 @@ GEM
     faraday_middleware (0.13.1)
       faraday (>= 0.7.4, < 1.0)
     ffi (1.9.25)
-    fog-aws (3.3.0)
+    fog-aws (3.4.0)
       fog-core (~> 2.1)
       fog-json (~> 1.1)
       fog-xml (~> 0.1)
