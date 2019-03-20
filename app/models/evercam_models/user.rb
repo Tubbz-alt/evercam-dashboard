@@ -3,7 +3,6 @@ class User < Sequel::Model
   include BCrypt
   many_to_one :country
   one_to_many :cameras, key: :owner_id
-  one_to_many :licences, key: :user_id
   one_to_many :grants,
               class: 'AccessToken',
               conditions: Sequel.negate(client_id: nil),
@@ -14,7 +13,6 @@ class User < Sequel::Model
               after_load: proc { |u| u.send(:ensure_token_exists) },
               key: :user_id
   one_to_many :camera_shares
-  one_to_many :add_ons, key: :user_id
 
   def self.by_login(login)
     username_query = Sequel.ilike(:username, login)

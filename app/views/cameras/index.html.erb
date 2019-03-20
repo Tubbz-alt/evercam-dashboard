@@ -1,11 +1,6 @@
 <%= content_for(:title, "Evercam: Camera Dashboard") %>
 <div class="page-content-wrapper">
   <div class="page-content" id="camera-index">
-    <% if params[:controller] == 'cameras' && params[:action] == 'index' && @show_alert_message %>
-      <div class="biling-alert alert alert-danger">
-        <span>You require <%= @required_licences %> additional licences. Contact to support.</span>
-      </div>
-    <% end %>
     <% @cameras.each do |camera| %>
       <div class="col-lg-6 camera-index-height col-md-6 col-sm-6 col-xs-12 camera-index camera-<%= camera['id'] %> <%= "camera-offline" unless camera['is_online'] %>">
         <% unless camera['is_online'] %>

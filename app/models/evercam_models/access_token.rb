@@ -2,7 +2,6 @@ require 'securerandom'
 class AccessToken < Sequel::Model
   plugin :after_initialize
   many_to_one :user
-  many_to_one :client
   one_to_many :rights, class: 'AccessRight', key: :token_id
   many_to_one :grantor, class: 'User', key: :grantor_id
   # Finds the token with a matching request
@@ -35,12 +34,6 @@ class AccessToken < Sequel::Model
 
   def is_expired?
     Time.now > self.expires_at
-  end
-
-  # Determines who the beneficiary of the
-  # rights associated with this token is
-  def client
-    super || user
   end
 
   # A convenience method that returns either the user or client associated

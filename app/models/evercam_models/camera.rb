@@ -3,10 +3,8 @@ require 'active_support/core_ext/object/blank'
 class Camera < Sequel::Model
   include Hashie::Extensions::Mash
   many_to_one :vendor_model, class: 'VendorModel', key: :model_id
-  one_to_many :endpoints, class: 'CameraEndpoint'
   many_to_one :owner, class: 'User', key: :owner_id
   one_to_many :shares, class: 'CameraShare'
-  one_to_many :webhooks, class: 'Webhook'
   one_to_one :cloud_recording
   MAC_ADDRESS_PATTERN = /^([0-9A-F]{2}[:-]){5}([0-9A-F]{2})$/i
   # Finds the camera with a matching external id

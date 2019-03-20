@@ -11,7 +11,6 @@ class CamerasController < ApplicationController
     @camera_count = @cameras.count
     @show_alert_message = false
     @required_licences = 0
-    display_billing_alert if ENV['DISPLAY_BILLING_MESSAGE'].eql?("yes") && current_user.payment_method.eql?(Licence::STRIPE)
   end
 
   def new
@@ -533,59 +532,6 @@ class CamerasController < ApplicationController
   end
 
   private
-
-  def display_billing_alert
-    cloud_recordings = Camera.where(owner: current_user).eager(:cloud_recording).all
-    cloud_recordings = cloud_recordings.select { |a| a.cloud_recording.present? && !a.cloud_recording.status.eql?("off") }
-    unless cloud_recordings.nil?
-      seven_day = thirty_day = ninty_day = infinity = 0
-      cloud_recordings.each do |camera|
-        if  camera.cloud_recording.storage_duration.equal?(7)
-          seven_day = seven_day + 1
-        elsif  camera.cloud_recording.storage_duration.equal?(30)
-          thirty_day = thirty_day + 1
-        elsif  camera.cloud_recording.storage_duration.equal?(90)
-          ninty_day = ninty_day + 1
-        elsif  camera.cloud_recording.storage_duration.equal?(-1)
-          infinity = infinity + 1
-        end
-      end
-
-      total_required = cloud_recordings.count
-      if total_required > 0
-        licences = Licence.where(user_id: current_user.id).where(cancel_licence: false)
-        valid_seven_day = valid_thirty_day = valid_ninty_day = valid_infinity = 0
-        licences.each do |licence|
-          if  licence.storage.equal?(7)
-            valid_seven_day = valid_seven_day + licence.total_cameras
-          elsif  licence.storage.equal?(30)
-            valid_thirty_day = valid_thirty_day + licence.total_cameras
-          elsif  licence.storage.equal?(90)
-            valid_ninty_day = valid_ninty_day + licence.total_cameras
-          elsif  licence.storage.equal?(-1)
-            valid_infinity = valid_infinity + licence.total_cameras
-          end
-        end
-        total_licences = licences.inject(0) { |sum, a| sum + a.total_cameras }
-        if seven_day > valid_seven_day
-          @required_licences = @required_licences + (seven_day - valid_seven_day)
-          @show_alert_message = true
-        end
-        if thirty_day > valid_thirty_day
-          @required_licences = @required_licences + (thirty_day - valid_thirty_day)
-          @show_alert_message = true
-        end
-        if ninty_day > valid_ninty_day
-          @required_licences = @required_licences + (ninty_day - valid_ninty_day)
-          @show_alert_message = true
-        end
-        if infinity > valid_infinity
-          @required_licences = @required_licences + (infinity - valid_infinity)
-          @show_alert_message = true
-        end
-      end
-    end
-  end
 
   def get_default_settings
     {
