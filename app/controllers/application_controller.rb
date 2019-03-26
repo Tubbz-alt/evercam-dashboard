@@ -52,7 +52,7 @@ class ApplicationController < ActionController::Base
           ic_user.last_seen_user_agent = request.user_agent
           ic_user.last_request_at = Time.now.to_i
           ic_user.new_session = true
-          ic_user.last_seen_ip = request.remote_ip
+          ic_user.last_seen_ip = request.remote_ip unless (params.has_key?(:api_id) and params.has_key?(:api_key))
           if ic_user.custom_attributes["status"].eql?("Shared-Non-Registered")
             ic_user.custom_attributes["status"] = "Share-Accepted"
           end
