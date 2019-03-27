@@ -117,7 +117,8 @@ creditCardTypeFromNumber = (num) ->
 autoDecimal = ->
   $("#amount").on "blur", ->
     value = $(this).val()
-    $(this).val(parseFloat(value).toFixed(2))
+    if value
+      $(this).val(parseFloat(value).toFixed(2))
 
 window.initializePay = ->
   CheckCardNumber()
