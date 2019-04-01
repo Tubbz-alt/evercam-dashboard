@@ -35,13 +35,12 @@ getFirstLastImages = (image_id, query_string, reload, setDate) ->
         camera_created_date = moment(Evercam.Camera.created_at)
         camera_created_year = camera_created_date.format('YYYY')
         camera_created_at = camera_created_date.format("YYYY/M/D")
-        $('#calendar-before').datetimepicker({value: d, minDate: camera_created_at, yearStart: camera_created_year})
+        $('#calendar-before').datetimepicker({value: d._d, minDate: camera_created_at, yearStart: camera_created_year})
         $('#calendar-after').datetimepicker({minDate: camera_created_at, yearStart: camera_created_year})
       if setDate is false && query_string.indexOf("nearest") < 0
         date_after = moment(snapshot.created_at)
         after_year = date_after.format('YYYY')
         string_after_date = date_after.format("YYYY/M/D")
-        $('#calendar-before').datetimepicker({maxDate: string_after_date, yearEnd: after_year})
         $('#calendar-after').datetimepicker({value: date_after, maxDate: string_after_date, yearEnd: after_year})
       initCompare() if reload
     else
