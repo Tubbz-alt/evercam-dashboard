@@ -1267,10 +1267,11 @@ modal_events = ->
       bucket_url = "https://s3-eu-west-1.amazonaws.com/evercam-camera-assets/"
       from = moment.tz(params[1], "YYYY-MM-DD-HH_mm_ss", Evercam.Camera.timezone).utc().format("YYYY-MM-DD-HH_mm_ss")
       to = moment.tz(params[2], "YYYY-MM-DD-HH_mm_ss", Evercam.Camera.timezone).utc().format("YYYY-MM-DD-HH_mm_ss")
-      before_image = "#{bucket_url}#{Evercam.Camera.id}/compares/#{params[3]}/start-#{from}.jpg?#{Math.random()}"
-      after_image = "#{bucket_url}#{Evercam.Camera.id}/compares/#{params[3]}/end-#{to}.jpg?#{Math.random()}"
+      before_image = "#{bucket_url}#{Evercam.Camera.id}/compares/#{params[3]}/start-#{params[1]}.jpg?#{Math.random()}"
+      after_image = "#{bucket_url}#{Evercam.Camera.id}/compares/#{params[3]}/end-#{params[2]}.jpg?#{Math.random()}"
       $("#archive_compare_before").attr("src", before_image)
       $("#archive_compare_after").attr("src", after_image)
+      $("#archive_embed_code").val("<div id='evercam-compare'></div><script src='#{window.location.origin}/assets/evercam_compare.js' class='#{Evercam.Camera.id} #{from} #{to} #{id} autoplay'></script>")
       $("#row-frames").hide()
       $("#div_shares").show()
       $("#row-duration").hide()

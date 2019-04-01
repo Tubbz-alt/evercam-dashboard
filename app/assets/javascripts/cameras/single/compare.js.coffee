@@ -206,9 +206,9 @@ export_compare = ->
     $("#row-animation").removeClass("hide")
     namePart = name.replace(/[^A-Z0-9]/ig, "")
     exid = "#{namePart.slice(0, 5)}-#{makeRandString()}".toLowerCase()
-    after = " #{convert_timestamp_to_path($("#compare_after").attr("timestamp"))}"
-    before = " #{convert_timestamp_to_path($("#compare_before").attr("timestamp"))}"
-    embed_code = "<div id='evercam-compare'></div><script src='#{window.location.origin}/assets/evercam_compare.js' class='#{Evercam.Camera.id}#{before}#{after} #{exid} autoplay'></script>"
+    after = "#{convert_timestamp_to_path($("#compare_after").attr("timestamp"))}"
+    before = "#{convert_timestamp_to_path($("#compare_before").attr("timestamp"))}"
+    embed_code = "<div id='evercam-compare'></div><script src='#{window.location.origin}/assets/evercam_compare.js' class='#{Evercam.Camera.id} #{before} #{after} #{exid} autoplay'></script>"
     $("#txtEmbedCode").val(embed_code)
 
     data =
@@ -251,7 +251,7 @@ export_compare = ->
     sendAJAXRequest(settings)
 
 convert_timestamp_to_path = (timestamp) ->
-  moment(timestamp).format('YYYY-MM-DD-HH_mm_ss')
+  moment.tz(timestamp, Evercam.Camera.timezone).utc().format('YYYY-MM-DD-HH_mm_ss')
 
 cancelForm = ->
   $('#export-compare-modal').on 'hide.bs.modal', ->
