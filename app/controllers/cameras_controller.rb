@@ -510,6 +510,12 @@ class CamerasController < ApplicationController
           elsif params["recordings"].present?
             viewed_count = ic_user.custom_attributes["viewed_recordings"].to_i
             ic_user.custom_attributes = {"viewed_recordings": viewed_count + 1}
+          elsif params["onclickarchivesharebutton"].present?
+            viewed_count = ic_user.custom_attributes["archive_share"].to_i
+            ic_user.custom_attributes = {"archive_share": viewed_count + 1}
+          elsif params["onclickarchivedownloadbutton"].present?
+            viewed_count = ic_user.custom_attributes["archive_download"].to_i
+            ic_user.custom_attributes = {"archive_download": viewed_count + 1}
           elsif params["has_shared"].present?
             ic_user.custom_attributes = {"has_shared": true}
           elsif params["has_snapmail"].present?
