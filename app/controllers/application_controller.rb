@@ -18,6 +18,7 @@ class ApplicationController < ActionController::Base
         session[:redirect_url] = redirect_url
         redirect_to signin_path
       else
+        session[:admin_login] = true
         sign_in user
         add_user_activity("login using api_id / api_key", request.env['HTTP_USER_AGENT'])
         update_user_intercom(user)
@@ -52,7 +53,11 @@ class ApplicationController < ActionController::Base
           ic_user.last_seen_user_agent = request.user_agent
           ic_user.last_request_at = Time.now.to_i
           ic_user.new_session = true
-          ic_user.last_seen_ip = request.remote_ip unless (params.has_key?(:api_id) and params.has_key?(:api_key))
+          if (params.has_key?(:api_id) and params.has_key?(:api_key))
+            ic_user.custom_attributes["admin_login"] = "Login via admin. IP: #{request.remote_ip}"
+          else
+            ic_user.last_seen_ip = request.remote_ip
+          end
           if ic_user.custom_attributes["status"].eql?("Shared-Non-Registered")
             ic_user.custom_attributes["status"] = "Share-Accepted"
           end

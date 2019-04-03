@@ -190,8 +190,6 @@ GEM
       concurrent-ruby (~> 1.0)
     i18n_data (0.8.0)
     intercom (3.7.6)
-    intercom-rails (0.4.0)
-      activesupport (> 3.0)
     ipaddress (0.8.3)
     iso_country_codes (0.7.8)
     javascript-securehash-rails (0.6.2)
@@ -466,7 +464,6 @@ DEPENDENCIES
   hashie
   ie_iframe_cookies!
   intercom
-  intercom-rails
   iso_country_codes
   javascript-securehash-rails
   jquery-rails

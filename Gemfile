@@ -33,7 +33,6 @@ gem 'country_select',
   github: 'stefanpenner/country_select'
 gem 'ie_iframe_cookies',
   github: 'affan00/ie_iframe_cookies'
-gem 'intercom-rails'
 gem 'intercom', require: 'intercom'
 gem 'dotenv'
 gem 'useragent'

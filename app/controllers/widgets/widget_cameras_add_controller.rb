@@ -5,7 +5,6 @@ class Widgets::WidgetCamerasAddController < ApplicationController
   before_action :allow_iframe, only: [:add_public_camera]
   skip_before_action :verify_authenticity_token, only: [:add_camera]
   skip_before_action :authenticate_user!, only: [:add_public_camera, :add_camera]
-  skip_after_action :intercom_rails_auto_include, only: [:add_camera, :add_public_camera]
 
   include SessionsHelper
   include ApplicationHelper

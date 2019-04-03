@@ -3,10 +3,6 @@ class UsersController < ApplicationController
   before_action :authenticate_user!
   skip_before_action :authenticate_user!, only: [:new, :create, :confirm,
                      :password_reset_request, :password_update, :password_update_form]
-  skip_after_action  :intercom_rails_auto_include, only: [
-    :new, :create, :confirm, :password_reset_request,
-    :password_update, :password_update_form
-  ]
   layout "bare-bones", except: [:settings, :delete]
   include SessionsHelper
   include ApplicationHelper

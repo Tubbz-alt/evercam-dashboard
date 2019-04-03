@@ -1,6 +1,5 @@
 class PagesController < ApplicationController
   before_action :authenticate_user!
-  skip_after_action :intercom_rails_auto_include, only: [:live, :play]
   skip_before_action :authenticate_user!, only: [:revoke_request, :unsubscribe, :unsubscribed, :good_bye, :play]
   include SessionsHelper
   include ApplicationHelper
