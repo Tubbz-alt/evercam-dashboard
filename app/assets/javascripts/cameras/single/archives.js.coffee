@@ -455,45 +455,34 @@ renderbuttons = (row, type, set, meta) ->
 
 onClickShareButton = ->
   $("#archives-tab").on "click", ".onclick-share-button", ->
-    data = {}
-    data.onclickarchivesharebutton = true
-
-    onError = (jqXHR, status, error) ->
-      message = jqXHR.responseJSON.message
-
-    onSuccess = (data, status, jqXHR) ->
-      true
-
-    settings =
-      data: data
-      dataType: 'json'
-      success: onSuccess
-      error: onError
-      type: 'POST'
-      contentType: 'application/x-www-form-urlencoded'
-      url: "/log_intercom"
-    sendAJAXRequest(settings)
+    trackIntercomEvents("track-archive-share")
 
 onClickDownloadButton = ->
   $("#archives-tab").on "click", ".onclick-download-button", ->
-    data = {}
+    trackIntercomEvents("track-archive-download")
+
+trackIntercomEvents = (track_event) ->
+  data = {}
+  if track_event is "track-archive-share"
+    data.onclickarchivesharebutton = true
+  else if track_event is "track-archive-download"
     data.onclickarchivedownloadbutton = true
 
-    onError = (jqXHR, status, error) ->
-      message = jqXHR.responseJSON.message
+  onError = (jqXHR, status, error) ->
+    message = jqXHR.responseJSON.message
 
-    onSuccess = (data, status, jqXHR) ->
-      true
+  onSuccess = (data, status, jqXHR) ->
+    true
 
-    settings =
-      data: data
-      dataType: 'json'
-      success: onSuccess
-      error: onError
-      type: 'POST'
-      contentType: 'application/x-www-form-urlencoded'
-      url: "/log_intercom"
-    sendAJAXRequest(settings)
+  settings =
+    data: data
+    dataType: 'json'
+    success: onSuccess
+    error: onError
+    type: 'POST'
+    contentType: 'application/x-www-form-urlencoded'
+    url: "/log_intercom"
+  sendAJAXRequest(settings)
 
 rendersharebuttons = (row, type, set, meta) ->
   div = $('<div>', {class: "form-group"})
@@ -1760,6 +1749,8 @@ window.initializeArchivesTab = ->
   update_url()
   toggleView()
   onClickPublicInputToggle()
+  onClickDownloadButton()
+  onClickShareButton()
   onClickDownloadButton()
   handleResize()
   tab_events()
