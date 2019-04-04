@@ -455,34 +455,11 @@ renderbuttons = (row, type, set, meta) ->
 
 onClickShareButton = ->
   $("#archives-tab").on "click", ".onclick-share-button", ->
-    trackIntercomEvents("track-archive-share")
+    Intercom 'trackEvent', 'archive-share'
 
 onClickDownloadButton = ->
   $("#archives-tab").on "click", ".onclick-download-button", ->
-    trackIntercomEvents("track-archive-download")
-
-trackIntercomEvents = (track_event) ->
-  data = {}
-  if track_event is "track-archive-share"
-    data.onclickarchivesharebutton = true
-  else if track_event is "track-archive-download"
-    data.onclickarchivedownloadbutton = true
-
-  onError = (jqXHR, status, error) ->
-    message = jqXHR.responseJSON.message
-
-  onSuccess = (data, status, jqXHR) ->
-    true
-
-  settings =
-    data: data
-    dataType: 'json'
-    success: onSuccess
-    error: onError
-    type: 'POST'
-    contentType: 'application/x-www-form-urlencoded'
-    url: "/log_intercom"
-  sendAJAXRequest(settings)
+    Intercom 'trackEvent', 'archive-download'
 
 rendersharebuttons = (row, type, set, meta) ->
   div = $('<div>', {class: "form-group"})
