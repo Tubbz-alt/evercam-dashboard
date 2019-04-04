@@ -49,7 +49,6 @@ class ApplicationController < ActionController::Base
           ic_user.user_id = user.username
           ic_user.email = user.email
           ic_user.name = user.fullname
-          ic_user.signed_up_at = user.created_at.to_i if ic_user.signed_up_at
           ic_user.last_seen_user_agent = request.user_agent
           ic_user.last_request_at = Time.now.to_i
           ic_user.new_session = true
