@@ -363,24 +363,24 @@ renderplayerbuttons = (id, camera_id, type, status, media_url, media_ispublic, f
       return div.html()
     else if type is "compare"
       animation_url = "#{Evercam.API_URL}cameras/#{camera_id}/compares/#{id}"
-      return "<a class='archive-actions dropdown-toggle archive-title onclick-share-button' href='#'' title='share' data-id='#{id}' data-type='#{type}' data-toggle='modal' data-target='#modal-archive-info'><i class='fas fa-share-alt'></i> Share</a>" +
+      return "<a class='archive-actions dropdown-toggle archive-title' href='#'' title='share' data-id='#{id}' data-type='#{type}' data-toggle='modal' data-target='#modal-archive-info'><i class='fas fa-share-alt'></i> Share</a>" +
         "<input id='gif-#{id}' value= '#{animation_url}.gif' type='hidden'><input id='mp4-#{id}' value='#{animation_url}.mp4' type='hidden'>" +
-        "<div id='download-button' class='dropdown float-right'><a class='archive-actions dropdown-toggle margin-right-0 onclick-download-button' href='#' data-toggle='dropdown' title='Download'><i class='fa fa-download'></i> Download</a>" +
+        "<div id='download-button' class='dropdown float-right'><a class='archive-actions dropdown-toggle margin-right-0' href='#' data-toggle='dropdown' title='Download'><i class='fa fa-download'></i> Download</a>" +
         "<ul class='dropdown-menu'>
-          <li><a class='download-animation archive-icon' href='javascript:;' data-from='#{from_dt}' data-to='#{to_dt}' data-download-target='#gif-#{id}' title='Download GIF (Good for emails)'><i class='fa fa-download'></i> GIF</a></li>" +
-          "<li><a class='download-animation archive-icon' href='javascript:;' data-from='#{from_dt}' data-to='#{to_dt}' data-download-target='#mp4-#{id}' title='Download MP4 (Good for everything else)'><i class='fa fa-download'></i> MP4</a></li></ul>" +
+          <li><a class='download-animation archive-icon archive-download' href='javascript:;' data-from='#{from_dt}' data-to='#{to_dt}' data-download-target='#gif-#{id}' title='Download GIF (Good for emails)'><i class='fa fa-download'></i> GIF</a></li>" +
+          "<li><a class='download-animation archive-icon archive-download' href='javascript:;' data-from='#{from_dt}' data-to='#{to_dt}' data-download-target='#mp4-#{id}' title='Download MP4 (Good for everything else)'><i class='fa fa-download'></i> MP4</a></li></ul>" +
         "</div>" + div.html()
     else
       mp4_media_url = "#{Evercam.API_URL}cameras/#{Evercam.Camera.id}/archives/#{id}.mp4"
       is_enable = ""
       if media_ispublic isnt "true"
         is_enable = "hide"
-      share_button = "<a id='share-link-#{id}' class='onclick-share-button archive-actions archive-title #{is_enable}' href='#' title='share' data-file-name='#{file_name}' data-id='#{id}' data-url='#{media_url}' data-type='#{type}' data-status='#{status}' data-camera_id='#{camera_id}' data-ispublic='#{media_ispublic}' data-toggle='modal' data-target='#modal-archive-info'><i class='fas fa-share-alt'></i> share</a>"
+      share_button = "<a id='share-link-#{id}' class='archive-actions archive-title #{is_enable}' href='#' title='share' data-file-name='#{file_name}' data-id='#{id}' data-url='#{media_url}' data-type='#{type}' data-status='#{status}' data-camera_id='#{camera_id}' data-ispublic='#{media_ispublic}' data-toggle='modal' data-target='#modal-archive-info'><i class='fas fa-share-alt'></i> share</a>"
 
       publicButtons = renderIsPublicPlayer(id, type, status, media_ispublic, true)
 
       return "<div class='dropdown'>" + share_button +
-        "<div style='display:inline-block;cursor:pointer;' class='archive-actions'><a class='download-animation archive-icon onclick-download-button' data-from='#{from_dt}' data-to='#{to_dt}' data-download-target='#mp4clip-#{id}' title='Download MP4'><i class='fa fa-download'></i> Download</a></div>" +
+        "<div style='display:inline-block;cursor:pointer;' class='archive-actions'><a class='download-animation archive-icon archive-download' data-from='#{from_dt}' data-to='#{to_dt}' data-download-target='#mp4clip-#{id}' title='Download MP4'><i class='fa fa-download'></i> Download</a></div>" +
         div.html() + publicButtons
   else
     return div.html()
@@ -454,11 +454,11 @@ renderbuttons = (row, type, set, meta) ->
     return div.html()
 
 onClickShareButton = ->
-  $("#archives-tab").on "click", ".onclick-share-button", ->
+  $("#archives").on "click", ".archive-share", ->
     Intercom 'trackEvent', 'archive-share'
 
 onClickDownloadButton = ->
-  $("#archives-tab").on "click", ".onclick-download-button", ->
+  $("#archives-tab").on "click", ".archive-download", ->
     Intercom 'trackEvent', 'archive-download'
 
 rendersharebuttons = (row, type, set, meta) ->
@@ -471,7 +471,7 @@ rendersharebuttons = (row, type, set, meta) ->
     else
       url = "#{Evercam.API_URL}cameras/#{row.camera_id}/archives/#{row.id}.mp4"
       play_url = "#{document.location.origin}/v2/cameras/#{row.camera_id}/archives/#{row.id}/play"
-      download_link = "<div class='float-left'><a class='archive-actions download-animation archive-icon' data-from='#{row.from_date}' data-to='#{row.to_date}' data-type='#{row.type}' href='javascript:;'' data-download-target='#mp4clip-#{row.id}'><i class='fa fa-download' title='Download'></i></a></div>"
+      download_link = "<div class='float-left'><a class='archive-actions download-animation archive-icon archive-download' data-from='#{row.from_date}' data-to='#{row.to_date}' data-type='#{row.type}' href='javascript:;'' data-download-target='#mp4clip-#{row.id}'><i class='fa fa-download' title='Download'></i></a></div>"
       copy_url_link = "<a href='javascript:;' data-toggle='tooltip' title='Copy URL' class='archive-actions share-archive' play-url='#{url}' val-archive-id='#{row.id}' val-camera-id='#{row.camera_id}'><i class='fas fa-copy'></i></a>"
 
       if row.type is "file" || row.type is "edit"
@@ -481,8 +481,8 @@ rendersharebuttons = (row, type, set, meta) ->
         main_url = "#{Evercam.API_URL}cameras/#{row.camera_id}/compares/#{row.id}"
         url = "#{main_url}.mp4"
         download_link = '<div class="dropdown"><a class="archive-actions dropdown-toggle" href="#" data-toggle="dropdown" title="Download"><i class="fa fa-download"></i></a>' +
-                        "<ul class='dropdown-menu'><li><a class='download-animation archive-icon' data-type='compare' data-from='#{row.from_date}' data-to='#{row.to_date}' href='javascript:;' data-download-target='#gif-#{row.id}' title='Download GIF (Good for emails)'><i class='fa fa-download'></i> GIF</li></a>" +
-                          "<li><a class='download-animation archive-icon' href='javascript:;' data-type='compare' data-from='#{row.from_date}' data-to='#{row.to_date}' data-download-target='#mp4-#{row.id}' title='Download MP4 (Good for everything else)'><i class='fa fa-download'></i> MP4</a></li></ul>" +
+                        "<ul class='dropdown-menu'><li><a class='download-animation archive-icon archive-download' data-type='compare' data-from='#{row.from_date}' data-to='#{row.to_date}' href='javascript:;' data-download-target='#gif-#{row.id}' title='Download GIF (Good for emails)'><i class='fa fa-download'></i> GIF</li></a>" +
+                          "<li><a class='download-animation archive-icon archive-download' href='javascript:;' data-type='compare' data-from='#{row.from_date}' data-to='#{row.to_date}' data-download-target='#mp4-#{row.id}' title='Download MP4 (Good for everything else)'><i class='fa fa-download'></i> MP4</a></li></ul>" +
                         '</div>'
         copy_url_link = "<div class='dropdown'><a class='archive-actions dropdown-toggle' href='#'' data-toggle='dropdown' title='Copy'><i class='fas fa-copy'></i></a>" +
                         "<ul class='dropdown-menu'><li><a class='share-archive archive-icon' href='javascript:;' play-url='#{main_url}.gif' title='Copy GIF URL'><i class='fas fa-copy'></i> GIF</li></a>" +
@@ -490,9 +490,9 @@ rendersharebuttons = (row, type, set, meta) ->
                         "</div>"
 
       if row.public
-        return download_link + '<div class="enabled share-buttons"><div class="dropdown"><a href="http://www.facebook.com/sharer.php?u=' + play_url + '" class="archive-actions" target="_blank" title="Facebook" data-width="1280" data-height="720"><i class="fab fa-facebook-f"></i></a>' +
-            '<a href="http://www.linkedin.com/shareArticle?url=' + play_url + '&title=My photo&summary=This is a photo from evercam" class="archive-actions" target="_blank" title="Linkedin" data-width="1280" data-height="720"><i class="fab fa-linkedin-in"></i></a>' +
-            '<a href="http://twitter.com/share?url=' + play_url + '&text=This is an archive from evercam&via=evrcm" class="archive-actions" target="_blank" title="Twitter" data-width="1280" data-height="720"><i class="fab fa-twitter"></i></a></div>' +
+        return download_link + '<div class="enabled share-buttons"><div class="dropdown"><a href="http://www.facebook.com/sharer.php?u=' + play_url + '" class="archive-actions archive-share" target="_blank" title="Facebook" data-width="1280" data-height="720"><i class="fab fa-facebook-f"></i></a>' +
+            '<a href="http://www.linkedin.com/shareArticle?url=' + play_url + '&title=My photo&summary=This is a photo from evercam" class="archive-actions archive-share" target="_blank" title="Linkedin" data-width="1280" data-height="720"><i class="fab fa-linkedin-in"></i></a>' +
+            '<a href="http://twitter.com/share?url=' + play_url + '&text=This is an archive from evercam&via=evrcm" class="archive-actions archive-share" target="_blank" title="Twitter" data-width="1280" data-height="720"><i class="fab fa-twitter"></i></a></div>' +
             copy_url_link + div.html()
       else
         return download_link + '<div class="disabled share-buttons">'+
