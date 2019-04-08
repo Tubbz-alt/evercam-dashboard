@@ -51,22 +51,13 @@
         if (payload.timestamp >= live_view_timestamp) {
           live_view_timestamp = payload.timestamp;
           jQuery(container.find("img")).attr('src', 'data:image/jpeg;base64,' + payload.image);
-          jQuery('#offline_msg_div').hide();
         }
       });
     }
     else {
       jQuery(container.find("img")).attr('src', image_source.attr('src'));
-      jQuery('#offline_msg_div').show();
       var container_height = jQuery(container.find("img")).height();
       var container_width = jQuery(container.find("img")).width();
-      var offline_span_width = jQuery("#embed_offline_message").width();
-      var offline_span_height = jQuery("#embed_offline_message").height();
-      var span_margin_top = (container_height - offline_span_height)/2;
-      jQuery("#embed_offline_message").css("top", span_margin_top);
-      jQuery("#offline_msg_div").width(container_width)
-      jQuery("#offline_msg_div").height(container_height)
-      jQuery("#offline_msg_div").height(container_height)
       if (container_height === 0) {
         setTimeout((function() {
           return connectToSocket();
@@ -123,36 +114,23 @@
       } else {
         if (rtmp_stream) {
           if (mobile) {
-            container.html('<div id="offline_msg_div" style="text-align: center;background: rgba(0, 0, 0, 0.65); display:none; position:absolute;"><span id="embed_offline_message" class="embed_offline_message" style="position: relative;color: #ffffff;font-size: 2.5rem;font-family: sans-serif;">Camera is Offline</span></div>' + "<img style='width: 100%; height: auto; margin: 0; padding: 0; float: left; border: none;'/>");
+            container.html("<img style='width: 100%; height: auto; margin: 0; padding: 0; float: left; border: none;'/>");
             initSocket();
             window.ec_vis_handler = handleVisibilityChange;
             document.addEventListener("visibilitychange", handleVisibilityChange, false);
           }
           else {
-            container.html('<div id="offline_msg_div" style="text-align: center;background: rgba(0, 0, 0, 0.65); display:none; position:absolute;"><span id="embed_offline_message" class="embed_offline_message" style="position: relative;color: #ffffff;font-size: 2.5rem;font-family: sans-serif;">Camera is Offline</span></div>' + '<iframe id="ec-frame" allowFullScreen style="width: 100%;min-height:' + window_height + 'px; height:100%;" src="<%= request.base_url %>/live.view.private.widget?camera=<%= params[:camera] %>&refresh=<%= params[:refresh] %>&api_id=<%= params[:api_id] %>&api_key=<%= params[:api_key] %>'+query_string+'" frameborder="0" scrolling="no"/>');
-            if (offline_camera == false) {
-              jQuery('#offline_msg_div').hide();
-            }
-            else {
-              jQuery('#offline_msg_div').show();
-              var container_height = jQuery("#ec-frame").height();
-              var container_width = jQuery("#ec-frame").width();
-              var offline_span_width = jQuery("#embed_offline_message").width();
-              var offline_span_height = jQuery("#embed_offline_message").height();
-              var span_margin_top = (container_height - offline_span_height)/2;
-              jQuery("#embed_offline_message").css("top", span_margin_top);
-              jQuery("#offline_msg_div").width(container_width)
-              jQuery("#offline_msg_div").height(container_height)
-              jQuery("#offline_msg_div").height(container_height)
-              if (container_height === 0) {
-                setTimeout((function() {
-                  return connectToSocket();
-                }), 100);
-              }
+            container.html('<iframe id="ec-frame" allowFullScreen style="width: 100%;min-height:' + window_height + 'px; height:100%;" src="<%= request.base_url %>/live.view.private.widget?camera=<%= params[:camera] %>&refresh=<%= params[:refresh] %>&api_id=<%= params[:api_id] %>&api_key=<%= params[:api_key] %>'+query_string+'" frameborder="0" scrolling="no"/>');
+            var container_height = jQuery("#ec-frame").height();
+            var container_width = jQuery("#ec-frame").width();
+            if (container_height === 0) {
+              setTimeout((function() {
+                return connectToSocket();
+              }), 100);
             }
           }
         } else {
-          container.html('<div id="offline_msg_div" style="text-align: center;background: rgba(0, 0, 0, 0.65); display:none; position:absolute;"><span id="embed_offline_message" class="embed_offline_message" style="position: relative;color: #ffffff;font-size: 2.5rem;font-family: sans-serif;">Camera is Offline</span></div>' + "<img style='width: 100%; height: auto; margin: 0; padding: 0; float: left; border: none;'/>");
+          container.html("<img style='width: 100%; height: auto; margin: 0; padding: 0; float: left; border: none;'/>");
           initSocket();
           window.ec_vis_handler = handleVisibilityChange;
           document.addEventListener("visibilitychange", handleVisibilityChange, false);
