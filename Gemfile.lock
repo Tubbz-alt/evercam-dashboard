@@ -25,9 +25,9 @@ GIT
 
 GIT
   remote: git://github.com/stripe/stripe-ruby.git
-  revision: bb25d09052feca4043050c74956310730e6dda93
+  revision: c3e65b2552abff71e11daed1b04bbb3b0ffe4b0c
   specs:
-    stripe (4.11.0)
+    stripe (4.12.0)
       faraday (~> 0.13)
       net-http-persistent (~> 3.0)
 
@@ -91,7 +91,7 @@ GEM
       fog-core
       mime-types (>= 2.99)
       unf
-    autoprefixer-rails (9.5.0)
+    autoprefixer-rails (9.5.1)
       execjs
     awesome_print (1.8.0)
     bcrypt (3.1.12)
@@ -254,7 +254,7 @@ GEM
       pry (>= 0.10.4)
     public_suffix (3.0.3)
     puma (3.12.1)
-    rack (2.0.6)
+    rack (2.0.7)
     rack-test (1.1.0)
       rack (>= 1.0, < 3)
     rack_session_access (0.2.0)
@@ -382,7 +382,7 @@ GEM
     selenium-webdriver (3.141.0)
       childprocess (~> 0.5)
       rubyzip (~> 1.2, >= 1.2.2)
-    sequel (5.18.0)
+    sequel (5.19.0)
     shellany (0.0.1)
     simplecov (0.13.0)
       docile (~> 1.1.0)
