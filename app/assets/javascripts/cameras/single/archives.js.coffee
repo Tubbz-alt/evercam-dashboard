@@ -455,11 +455,13 @@ renderbuttons = (row, type, set, meta) ->
 
 onClickShareButton = ->
   $("#archives").on "click", ".archive-share", ->
-    Intercom 'trackEvent', 'archive-share'
+    if Intercom_script
+      Intercom 'trackEvent', 'archive-share'
 
 onClickDownloadButton = ->
   $("#archives-tab").on "click", ".archive-download", ->
-    Intercom 'trackEvent', 'archive-download'
+    if Intercom_script
+      Intercom 'trackEvent', 'archive-download'
 
 rendersharebuttons = (row, type, set, meta) ->
   div = $('<div>', {class: "form-group"})
