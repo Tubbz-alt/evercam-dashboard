@@ -428,8 +428,8 @@ div.tagsinput.error-border {
 div.tagsinput span.tag {
 
   border: 1px solid $tag-border-color;
-  border-radius: 20px;
-  background-color: $white;
+  border-radius: 0px;
+  background-color: $secondary-grey;
   color: $form-dark-grey;
   padding: 5px 10px;
   margin-bottom: 0px;
@@ -454,7 +454,6 @@ div.tagsinput span.tag {
 div.tagsinput span.tag:hover {
 
   color: $black;
-  background-color: $secondary-grey;
   a {
     color: $black;
   }

@@ -169,6 +169,8 @@ initInputTags = ->
   $("#txtRecipient").tagsInput
     'height': 'auto'
     'width': 'auto'
+    'interactive': true
+    'allowDuplicates': false
     'defaultText': 'Add Recipients'
     'onAddTag': (email) ->
       $('#txtRecipient_tagsinput').removeClass('error-border')
@@ -188,11 +190,30 @@ initInputTags = ->
         $('#txtRecipient_tagsinput').addClass('error-border')
         $('#txtRecipient').addClass('error-border')
       return
-    'delimiter': [',']
     'removeWithBackspace': true
     'minChars': 0
     'maxChars': 0
     'placeholderColor': '#666666'
+
+splitTagsOnPaste = ->
+  $('#txtRecipient_tag').on 'paste', (e) ->
+    element = this
+    setTimeout (->
+      text = $(element).val()
+      target = $('#txtRecipient')
+      tags = text.split(/[;, ]+/)
+      i = 0
+      z = tags.length
+      while i < z
+        tag = $.trim(tags[i])
+        if !target.tagExist(tag)
+          target.addTag tag
+        else
+          $('#txtRecipient_tag').val ''
+        i++
+      return
+    ), 0
+    return
 
 validateTagsEmails = ->
   if $('#txtRecipient').val() != ''
@@ -599,3 +620,4 @@ window.initializeSnapmails = ->
   clickOutsideTheEmailInputField()
   focusInTimeField()
   onClickTxtRecipient()
+  splitTagsOnPaste()
