@@ -29,6 +29,17 @@
           <%= @camera['owner'] %>
         </td>
       </tr>
+      <tr>
+        <td>Project:</td>
+        <td>
+          <% project_name = @camera.deep_fetch('project', 'name') {""} %>
+          <% if project_name != "" %>
+            <%= project_name %>
+          <% else %>
+            <span class="grey">Not set</span>
+          <% end %>
+        </td>
+      </tr>
       <tr id="vendor-value">
         <td>Vendor:</td>
         <td id="vendor_data" class="vendor-data">
