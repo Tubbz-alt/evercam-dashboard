@@ -532,7 +532,7 @@ window.estimateImageSize = (image_source) ->
   oneDay = 24 * 60 * 60 * 1000
   created_date = $("#camera-created-at").val()
   if created_date
-    camera_created_date = created_date
+    camera_created_date = new Date(created_date)
   current_date = new Date()
   difference_days = Math.round(((current_date - camera_created_date) / oneDay))
   recording_status = Evercam.Camera.cloud_recording.status
