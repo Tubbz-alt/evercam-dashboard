@@ -10,7 +10,7 @@ archive_js_player = null
 archive_js_player2 = null
 imagesCompare = undefined
 is_reload = true
-is_list_view = true
+is_list_view = false
 pagination = false
 archive_id_from_url = null
 xhrRequest = null
@@ -245,12 +245,13 @@ toggleView = ->
     $("#archives-box").hide()
     $("#archives-tab").addClass("margin-top-15")
   else
-    $("#archives-box").hide()
-    $("#archives-table").show()
+    $("#archives-box").show()
+    $("#archives-table").hide()
+    $(".archive-tabs").hide()
     $("#archives-tab").removeClass("margin-top-15")
 
   $("#toggle-grid").on "click", ->
-    $("#archives-tab").addClass("margin-top-15")
+    $("#archives-tab").removeClass("margin-top-15")
     $("#archives-table").hide()
     $("#archives-box").show()
     $(".archive-tabs").hide()
@@ -304,13 +305,13 @@ getArchivesHtml = (archives) ->
   hide_dates = ""
   image_html = "<img alt='#{archives.title}' src='#{archives.thumbnail_url}' class='stackimage stackimage-view' style='visibility: visible' id='stackimage-#{archives.title}'></a>"
   if archives.type is "clip"
-    fa_class = "<svg width='50' height='50' viewBox='0 0 24 24' fill='none' stroke='#000000' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'>
+    fa_class = "<svg width='30' height='30' viewBox='0 0 24 24' fill='none' stroke='#000000' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'>
     <polygon points='23 7 16 12 23 17 23 7'></polygon>
     <rect x='1' y='5' width='15' height='14' rx='2' ry='2'></rect>
     </svg>"
     url = "#{Evercam.API_URL}cameras/#{archives.camera_id}/archives/#{archives.id}/play?api_key=#{Evercam.User.api_key}&api_id=#{Evercam.User.api_id}"
   else if archives.type is "compare"
-    fa_class = "<svg fill='#000000' height='50' viewBox='0 0 24 24' width='50'>
+    fa_class = "<svg fill='#000000' height='30' viewBox='0 0 24 24' width='30'>
       <path d='M0 0h24v24H0z' fill='none'/>
       <path d='M10 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h5v2h2V1h-2v2zm0 15H5l5-6v6zm9-15h-5v2h5v13l-5-6v9h5c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2z'/>
       </svg>"
@@ -492,17 +493,9 @@ rendersharebuttons = (row, type, set, meta) ->
                         "</div>"
 
       if row.public
-        return download_link + '<div class="enabled share-buttons"><div class="dropdown"><a href="http://www.facebook.com/sharer.php?u=' + play_url + '" class="archive-actions archive-share" target="_blank" title="Facebook" data-width="1280" data-height="720"><i class="fab fa-facebook-f"></i></a>' +
-            '<a href="http://www.linkedin.com/shareArticle?url=' + play_url + '&title=My photo&summary=This is a photo from evercam" class="archive-actions archive-share" target="_blank" title="Linkedin" data-width="1280" data-height="720"><i class="fab fa-linkedin-in"></i></a>' +
-            '<a href="http://twitter.com/share?url=' + play_url + '&text=This is an archive from evercam&via=evrcm" class="archive-actions archive-share" target="_blank" title="Twitter" data-width="1280" data-height="720"><i class="fab fa-twitter"></i></a></div>' +
-            copy_url_link + div.html()
+        return download_link + copy_url_link + div.html()
       else
-        return download_link + '<div class="disabled share-buttons">'+
-            '<a href="http://www.facebook.com/sharer.php?u=" class="archive-actions" target="_blank" title="Facebook" data-width="1280" data-height="720"><i class="fab fa-facebook-f"></i></a>'+
-            '<a href="http://www.linkedin.com/shareArticle?url=&title=My photo&summary=This is a photo from evercam" class="archive-actions" target="_blank" title="Linkedin" data-width="1280" data-height="720"><i class="fab fa-linkedin-in"></i></a>' +
-            '<a href="http://twitter.com/share?url=&text=This is a photo from evercam&via=evrcm" class="archive-actions" target="_blank" title="Twitter" data-width="1280" data-height="720"><i class="fab fa-twitter"></i></a>' +
-            '<a href="#" data-toggle="tooltip" title="Copy URL" class="archive-actions share-archive" play-url="" val-archive-id="' + row.id + '" val-camera-id="' + row.camera_id + '"><i class="fas fa-copy "></i></a></div>'+
-            div.html()
+        return download_link + '<div class="disabled share-buttons"><a href="#" data-toggle="tooltip" title="Copy URL" class="archive-actions share-archive" play-url="" val-archive-id="' + row.id + '" val-camera-id="' + row.camera_id + '"><i class="fas fa-copy "></i></a></div>' + div.html()
   else
     return div.html()
 
