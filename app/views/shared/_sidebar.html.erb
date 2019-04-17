@@ -80,11 +80,9 @@
             <i class="fa fa-cog icon-font"></i> Settings
           <% end %>
         </li>
-        <% if session[:admin_login].nil? %>
         <li role="presentation">
-          <a id="Intercom"><i class="fa fa-comment icon-font"></i><span class="title"> Live Support</span></a>
+          <a onclick='$zoho.salesiq.floatwindow.visible("show");'><i class="fa fa-comment icon-font"></i><span class="title"> Live Support</span></a>
         </li>
-        <% end %>
         <li class="nprogCall">
           <a rel="nofollow" data-method="delete" href=<%= signout_path %>><i class="fas fa-sign-out-alt right-ajustment icon-font"></i><span class="title"> Sign out </span></a>
         </li>
@@ -115,3 +113,11 @@
     <input type="hidden" id="controller" value="<%= params[:controller] %>">
   </div>
 </div>
+<script type="text/javascript">
+  var $zoho=$zoho || {};$zoho.salesiq = $zoho.salesiq || {widgetcode:"758857a8ab7b612c8dad41b0691f8b4f6386f191574508cc8aa8398bb8a1f17f", values:{},ready:function(){}};var d=document;s=d.createElement("script");s.type="text/javascript";s.id="zsiqscript";s.defer=true;s.src="https://salesiq.zoho.com/widget";t=d.getElementsByTagName("script")[0];t.parentNode.insertBefore(s,t);d.write("<div id='zsiqwidget' style='display:none;'></div>");
+  $zoho.salesiq.ready=function(embedinfo)
+  {
+    $zoho.salesiq.visitor.name("<%= current_user.firstname -%>");
+    $zoho.salesiq.visitor.email("<%= current_user.username -%>");
+  }
+</script>
