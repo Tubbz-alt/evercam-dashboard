@@ -1,16 +1,12 @@
 <div class="row padding-right15">
-  <div id="toggle-tabs">
-    <div class="archive-tab-item-th" data-val="File"><a id="toggle-grid">Grid</a> | </span><a id="toggle-list">List</a></div>
-  </div>
-  <div class="archive-tabs">
-    <span><b>Filter By:</b>
-    <span class="archive-tab-item" data-val=""><i class="fas fa-circle active-icon"></i> All</span> |
-    <span class="archive-tab-item" data-val="Clip"><i class="far fa-circle active-icon"></i> Clips</span> |
-    <span class="archive-tab-item" data-val="Compare"><i class="far fa-circle active-icon"></i> Compares</span> |
-    <span class="archive-tab-item" data-val="URL"><i class="far fa-circle active-icon"></i> URLS</span> |
-    <span class="archive-tab-item" data-val="File"><i class="far fa-circle active-icon"></i> File Upload</span></span>
-  </div>
-  <div id="archives-tab" class="col-md-12 margin-top-15">
+  <div id="archives-tab" class="col-md-12 margin-top-15 margin-bottom-20">
+    <div id="no-archive-text" class="margin-top-20 hide">
+      <p>There's nothing here yet.<br>
+      <br>
+      This area shows all the media (clips, videos, compares etc.) related to your camera.<br>
+      <br>
+      You can create these goodies by clicking on the (+) icon in the bottom right corner.</p>
+    </div>
     <div id="archives-box">
       <div id="back-button">
         <a style="display: none" id="back-archives"><i class="fas fa-arrow-left"></i> Back</a>&nbsp;
@@ -57,7 +53,6 @@
           <div id="info-archive">
             <span id="archive-autor"></span>
             <span id="archive-dates"></span>
-            <span id="archive-time-1"></span>
           </div>
         </div>
         <div class="inactive-error-display hide"></div>
@@ -72,9 +67,7 @@
         <th data-priority="2">Share</th>
         <th data-priority="3">Actions</th>
       </thead>
-      <tbody>
-
-      </tbody>
+      <tbody></tbody>
     </table>
   </div>
 </div>

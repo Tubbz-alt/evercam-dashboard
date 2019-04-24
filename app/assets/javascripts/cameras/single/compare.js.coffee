@@ -184,7 +184,7 @@ setCompareEmbedCodeTitle = ->
       day_after = moment(after_image_time).format("Do")
       month_before = moment(before_image_time).format("MMM")
       month_after = moment(after_image_time).format("MMM")
-      $("#export-compare-title").val("Compare: #{day_before} #{month_before} to #{day_after} #{month_after}")
+      $("#export-compare-title").val("#{day_before} #{month_before} to #{day_after} #{month_after}")
       e.stopPropagation()
       $('#export-compare-modal').modal 'show'
     else

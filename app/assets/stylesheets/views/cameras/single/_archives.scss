@@ -179,6 +179,10 @@ div.disabled > a {
     right: 0;
   }
 
+  .iframe_archive_thumbnail {
+    opacity: 0.6;
+  }
+
   .dataTables_wrapper .dataTables_paginate .paginate_button {
     padding: 0px;
 
@@ -326,20 +330,22 @@ div.disabled > a {
   }
 
   .type-icon-alignment-big {
-    border: solid 1px $main-grey;
-    background-color: $white-transparent-background;
-    height: 32px;
+    background-color: $ever-background;
     position: absolute;
+    height: 22px;
+    padding: 2px 3px;
+    z-index: 9999;
   }
 
   .type-icon-alignment-big i {
-    color: $black;
-    font-size: 190%;
-    padding: 0px 3px 0px 3px;
+    color: $white;
+    font-size: 110%;
+    padding-top: 1px;
+    padding-left: 1px;
+    padding-right: 1px;
   }
 
   .type-icon-alignment {
-    // border: solid 1px $main-grey;
     background-color: $white-transparent-background;
     margin-top: 28px;
     margin-left: 38px;
@@ -787,17 +793,28 @@ div.disabled > a {
   z-index: 9999;
 }
 
-.archive-title,
 .archive-title-color {
-  text-decoration: none;
-  font-size: 14px;
-  //color: $form-medium-grey;
+  cursor: pointer;
+  box-shadow: 0px 0px 0px 3px $card-box-shadow;
 }
 
-.archive-title:hover,
-.archive-title-color:hover {
+.archive-title {
+  text-decoration: none;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.archive-title:hover {
   color: $main-color;
   text-decoration: none;
+}
+
+.archive-title-color:hover{
+  background-image: linear-gradient(-180deg, $black-opacity-background 0%, $line-end-gredient-background 100%);
+  
+  .line-end {
+    opacity: 0;
+  }
 }
 
 .archive-modal .modal-dialog {
@@ -877,61 +894,75 @@ table.dataTable thead .sorting_desc,table.dataTable thead .sorting_asc,table.dat
 }
 
 .snapstack-loading {
-  min-width: 200px;
   text-align: center;
 }
 
 .stackimage-player {
-  min-width: 270px;
   width: 70%;
 }
 
 .stackimage-view {
-  min-width: 270px;
-  height: 200px;
+  height: auto;
   width: 100%;
-  padding-right: 2rem;
 }
 
 .stacklink_view {
-  min-width: 270px;
   font-size: 20px;
   color: red;
-  height: 200px;
+  height: 10.6vw;
   width: 100%;
-  background-color: $light-grey;
+  background-color: $black;
+
+  iframe {
+    height: 10.6vw;
+  }
+
+  #video-overlay {
+    z-index: 9999;
+    position: absolute;
+    width: 94%;
+    height: 10vw;
+    i {
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      position: absolute;
+    }
+  }
 
   i {
-    margin-top: 19%;
-    font-size: 5em;
+    font-size: 4em;
   }
   i.youtube { color: red; }
   i.vimeo { color: $main-color; }
 }
 
 .card-archives {
-  background:white;
-  border-radius:2px;
   user-select:none;
   animation:fly-in-from-left .5s 1s ease both;
   transform-origin:top left;
   margin-bottom: 30px;
-  min-height: 140px !Important;
+  padding: 0px;
+  padding-left: 11px;
+  padding-right: 11px;
+  border-radius: 0.1875rem 0.1875rem 0px 0px;
 
   .div-archive-values {
     overflow: hidden;
+    border-bottom: 0px;
+    height: 20px;
   }
 
   .rslides {
       height: 190px;
     }
 
-  .card-padding {
-    padding-right: 2.5rem;
-  }
-
   .bx-wrapper {
     border: 0px;
+  }
+
+  .camera-email {
+    padding: 5px; 
   }
 
   a {
@@ -1203,6 +1234,55 @@ html .video-js {
   width: 100%;
 }
 
+@media (min-width: 1320px) {
+
+  .card-archives {
+    height: 15vw;
+  }
+  .stacklink_view {
+    height: 10.7vw;
+
+    iframe,
+    #video-overlay {
+      height: 10.7vw;
+    }
+  }
+}
+
+@media (max-width: 1320px) {
+
+  .card-archives {
+    height: 14vw;
+  }
+}
+
+@media (max-width: 1200px) {
+
+  .stacklink_view i {
+    font-size: 3em;
+  }
+}
+
+@media (max-width: 992px) {
+
+  .card-archives {
+    height: 30vw;
+  }
+
+  .stacklink_view {
+    height: 26vw;
+
+    iframe,
+    #video-overlay {
+      height: 26vw;
+    }
+
+    i {
+      font-size: 4em;
+    }
+  }
+}
+
 @media (max-width: 850px) {
 
   .username-id {
@@ -1221,19 +1301,25 @@ html .video-js {
 
 @media (max-width: 767px) {
 
-  .stacklink_view i {
-    margin-top: 10%;
+  .card-archives {
+    height: auto;
   }
-}
 
-@media (max-width: 667px) {
+  .stacklink_view {
+    height: 44vw;
 
-  .tab-content .video-js {
-    height: auto !important;
+    iframe,
+    #video-overlay {
+      height: 44vw;
+    }
   }
 }
 
 @media (max-width: 480px) {
+
+  .stacklink_view i {
+    font-size: 4em;
+  }
 
   .archive-modal .modal-dialog {
     width: 94%;
@@ -1285,5 +1371,12 @@ html .video-js {
     .copy-animation {
       margin-left: -10px;
     }
+  }
+}
+
+@media (max-width: 320px) {
+
+  .stacklink_view i {
+    font-size: 3em;
   }
 }

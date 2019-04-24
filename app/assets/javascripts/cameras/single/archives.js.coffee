@@ -10,7 +10,6 @@ archive_js_player = null
 archive_js_player2 = null
 imagesCompare = undefined
 is_reload = true
-is_list_view = false
 pagination = false
 archive_id_from_url = null
 xhrRequest = null
@@ -79,21 +78,12 @@ initializeArchivesDataTable = ->
 table_init_complete = (archives) ->
   $("#archives-table_length").hide()
   $("#archives-table_filter").hide()
+  $("#archives-table_info").hide()
+  $("#archives-table_paginate").hide()
   if archives.length is 0
-    $('#archives-table_paginate, #archives-table_info').hide()
-    $('#archives-table').hide()
-    span = $("<span>")
-    span.append($(document.createTextNode("There are no clips.")))
-    span.attr("id", "no-archive")
-    $('#archives-table_wrapper .col-sm-12').append(span)
-  else if archives.length < 50
-    $("#archives-table_info").hide()
-    $('#archives-table_paginate').hide()
-    pagination = false
-  else if archives.length >= 50
-    $("#archives-table_info").show()
-    $('#archives-table_paginate').show()
-    pagination = true
+    $("#no-archive-text").removeClass('hide')
+  else
+    $("#no-archive-text").addClass('hide')
 
 load_archive_view_by_id = (archives) ->
   if archive_id_from_url && archives.length > 0
@@ -134,12 +124,10 @@ load_archive_view_by_id = (archives) ->
       $('#archives-table_paginate').hide()
       $("#archives-table_info").hide()
       $("#toggle-tabs").hide()
-      $("#archives-table").hide()
       $("#archives-box").show()
       $("#back-archives").show()
       $("#back-button").show()
       $("#camera-video-archive").show()
-      $(".archive-tabs").hide()
       $(".hide-add-button").hide()
       $("#archives-table_wrapper.dataTables_wrapper").css 'margin-bottom', '0px'
       $("#archives-box-2").hide()
@@ -147,9 +135,8 @@ load_archive_view_by_id = (archives) ->
       $(".stackimage").addClass("stackimage-player")
       $("#archives-tab").removeClass("margin-top-15")
       $('#txt_title').text(media_title)
-      $('#archive-autor').html("Requested by: #{media_autor}</br>")
+      $('#archive-autor').html("Created on #{moment(newTime).format('MMMM Do YYYY, H:mm:ss')} by #{media_autor}</br>")
       $('#archive-dates').html("From #{media_from} to #{media_to}</br>")
-      $('#archive-time-1').text("Created at #{moment(newTime).format('MMMM Do YYYY, H:mm:ss')}")
       $("#txt-archive-type").val(type)
       $("#txt-archive-id").val(id)
       $("#txt-archive-title").val(media_title)
@@ -240,46 +227,9 @@ hover_thumbnail = ->
     $("#div-full-thumbnail").hide()
 
 toggleView = ->
-  if is_list_view
-    $("#archives-table").show()
-    $("#archives-box").hide()
-    $("#archives-tab").addClass("margin-top-15")
-  else
-    $("#archives-box").show()
-    $("#archives-table").hide()
-    $(".archive-tabs").hide()
-    $("#archives-tab").removeClass("margin-top-15")
-
-  $("#toggle-grid").on "click", ->
-    $("#archives-tab").removeClass("margin-top-15")
-    $("#archives-table").hide()
-    $("#archives-box").show()
-    $(".archive-tabs").hide()
-    $("#archives").css("width", "100%")
-    $("#archives").css("margin-left", "0")
-    $(".hide-add-button").show()
-    $(".stackimage").addClass("stackimage-view")
-    $(".stackimage").removeClass("stackimage-player")
-    $("#archives-box-2").show()
-    $("#camera-video-archive").hide()
-    $('#archives-table_paginate').hide()
-    $("#archives-table_info").hide()
-    $("#back-archives").hide()
-    $("#back-button").hide()
-    is_list_view = false
-
-  $("#toggle-list").on "click", ->
-    $("#archives-tab").addClass("margin-top-15")
-    $(".archive-tabs span").show()
-    $("#archives-box").hide()
-    $("#archives-table").show()
-    $(".archive-tabs").show()
-    $("#archives").css("width", "100%")
-    $("#archives").css("margin-left", "0")
-    if pagination
-      $('#archives-table_paginate').show()
-      $("#archives-table_info").show()
-    is_list_view = true
+  $("#archives-box").show()
+  $("#archives-table").hide()
+  $("#archives-tab").removeClass("margin-top-15")
 
   $("#back-archives").on "click", ->
     hide_player_view()
@@ -305,23 +255,27 @@ getArchivesHtml = (archives) ->
   hide_dates = ""
   image_html = "<img alt='#{archives.title}' src='#{archives.thumbnail_url}' class='stackimage stackimage-view' style='visibility: visible' id='stackimage-#{archives.title}'></a>"
   if archives.type is "clip"
-    fa_class = "<svg width='30' height='30' viewBox='0 0 24 24' fill='none' stroke='#000000' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'>
+    title_tag = "Video: #{archives.title}"
+    fa_class = "<svg width='18' height='18' viewBox='0 0 24 24' fill='none' stroke='#ffffff' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'>
     <polygon points='23 7 16 12 23 17 23 7'></polygon>
     <rect x='1' y='5' width='15' height='14' rx='2' ry='2'></rect>
     </svg>"
     url = "#{Evercam.API_URL}cameras/#{archives.camera_id}/archives/#{archives.id}/play?api_key=#{Evercam.User.api_key}&api_id=#{Evercam.User.api_id}"
   else if archives.type is "compare"
-    fa_class = "<svg fill='#000000' height='30' viewBox='0 0 24 24' width='30'>
+    title_tag = "Compare: #{archives.title}"
+    fa_class = "<svg fill='#ffffff' height='18' viewBox='0 0 24 24' width='18'>
       <path d='M0 0h24v24H0z' fill='none'/>
       <path d='M10 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h5v2h2V1h-2v2zm0 15H5l5-6v6zm9-15h-5v2h5v13l-5-6v9h5c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2z'/>
       </svg>"
     url = "#{Evercam.API_URL}cameras/#{archives.camera_id}/compares/#{archives.id}.mp4"
   else if archives.type is "file" or archives.type is "edit"
+    title_tag = "Image: #{archives.title}"
     arr = archives.file_name.split('.')
     file_type = get_file_type(arr.pop())
     url = "#{Evercam.API_URL}cameras/#{archives.camera_id}/archives/#{archives.file_name}?api_key=#{Evercam.User.api_key}&api_id=#{Evercam.User.api_id}"
     css_class = "fa-image"
     if archives.type is "file"
+      title_tag = "URL: #{archives.title}"
       hide_dates = "hide"
       css_class = "fa-upload"
     fa_class = "<i class='fa #{css_class} type-icon type-icon-url'></i>"
@@ -329,29 +283,29 @@ getArchivesHtml = (archives) ->
     arr_host = getHostName(archives.media_url).split('.')
     domain = arr_host.shift()
     url = archives.media_url
-    image_html = "<div class='stacklink_view'><i class='fab fa-#{domain} #{domain}'></i></div>"
+    title_tag = "Video: #{archives.title}"
+    image_html = "<div class='stacklink_view'><div id='video-overlay'><i class='fab fa-#{domain} #{domain}'></i></div><iframe id='iframe_archive_thumbnail' class='iframe_archive_thumbnail' width='100%' src='" + convert_to_embed_url(url) + "' frameborder='0' allow='autoplay; encrypted-media' allowfullscreen></iframe></div>"
     fa_class = "<i class='fas fa-copy type-icon type-icon-url'></i>"
     hide_dates = "hide"
 
   html = "<div id='dataslot#{archives.id}' class='list-border margin-bottom10'>"
   html += "    <div class='padding-left-0' style='min-height:0px;'>"
-  html += "    <div class='col-xs-12 col-sm-6 col-md-3 card-archives' style='min-height:0px;'>"
+  html += "    <div class='col-xs-12 col-sm-6 col-md-3 card-archives' style='min-height:0px;'><div class='archive-title-color' data-ispublic='#{archives.public}' data-file-type='#{file_type}' data-file-name='#{archives.file_name}' data-status='#{archives.status}' data-camera='#{archives.camera_id}' data-type='#{archives.type}' data-id='#{archives.id}' data-url='#{url}' data-thumbnail='#{archives.thumbnail_url}' data-title='#{archives.title}' data-to='#{archives.to_date}' data-from='#{archives.from_date}' data-time='#{archives.created_at}' data-autor='#{archives.requester_name}'>"
   html += "             <div class='gravatar-placeholder'><div class='type-icon-alignment-big'>#{fa_class}</div></div>"
   html += "        <div class='snapstack-loading' id='snaps-#{archives.id}' >"
-  html += "           <a class='archive-title-color' data-ispublic='#{archives.public}' data-file-type='#{file_type}' data-file-name='#{archives.file_name}' data-status='#{archives.status}' data-camera='#{archives.camera_id}' data-type='#{archives.type}' data-id='#{archives.id}' data-url='#{url}' data-thumbnail='#{archives.thumbnail_url}' data-title='#{archives.title}' data-to='#{archives.to_date}' data-from='#{archives.from_date}' data-time='#{archives.created_at}' data-autor='#{archives.requester_name}'>"
+  html += "           <span data-ispublic='#{archives.public}' data-file-type='#{file_type}' data-file-name='#{archives.file_name}' data-status='#{archives.status}' data-camera='#{archives.camera_id}' data-type='#{archives.type}' data-id='#{archives.id}' data-url='#{url}' data-thumbnail='#{archives.thumbnail_url}' data-title='#{archives.title}' data-to='#{archives.to_date}' data-from='#{archives.from_date}' data-time='#{archives.created_at}' data-autor='#{archives.requester_name}'></span>"
   html += image_html
   html += "        </div>"
   html += "        <div class='card-padding'>"
   html += "        <div class='camera-email'>"
-  html += "          <div class='nav-tabs div-archive-values'><a class='archive-title-color' data-file-type='#{file_type}' data-file-name='#{archives.file_name}' data-ispublic='#{archives.public}' data-status='#{archives.status}' data-camera='#{archives.camera_id}' data-type='#{archives.type}' data-id='#{archives.id}' data-url='#{url}' data-thumbnail='#{archives.thumbnail_url}' data-title='#{archives.title}' data-to='#{archives.to_date}' data-from='#{archives.from_date}' data-time='#{archives.created_at}' data-autor='#{archives.requester_name}'>#{archives.title}</a>"
-  html += "          </div>"
-  html += "          <span class='spn-label'><i class='fas fa-users'></i></span><div class='div-snapmail-values snapmail-title' title='#{archives.requester_name}'><span class='small-text'>&nbsp;&nbsp;#{archives.requester_name}</span><span class='line-end'></span></div><div class='clear-f'></div>"
-  if archives.type is "edit"
-    html += "          <span class='spn-label'><i class='fas fa-calendar-alt font-16'></i></span><div class='div-snapmail-values snapmail-title'><span class='small-text'>&nbsp;&nbsp;#{moment(archives.from_date).format('MM/DD/YYYY, HH:mm:ss')}</span><span class='line-end'></span></div><div class='clear-f'></div>"
+  html += "          <div class='nav-tabs div-archive-values'><span data-file-type='#{file_type}' data-file-name='#{archives.file_name}' data-ispublic='#{archives.public}' data-status='#{archives.status}' data-camera='#{archives.camera_id}' data-type='#{archives.type}' data-id='#{archives.id}' data-url='#{url}' data-thumbnail='#{archives.thumbnail_url}' data-title='#{archives.title}' data-to='#{archives.to_date}' data-from='#{archives.from_date}' data-time='#{archives.created_at}' data-autor='#{archives.requester_name}'>#{title_tag}</span><span class='line-end'></span></div><div class='clear-f'></div>"
+  if archives.type is "url"
+    html += "          <span class='spn-label' style='margin-top:3px;'><i class='fas fa-users' style='color:#aaaaaa;'></i></span><div class='div-snapmail-values snapmail-title' style='margin-top:3px;' title='#{archives.requester_name}'><span class='small-text'>&nbsp;&nbsp;#{archives.requester_name}</span><span class='line-end'></span></div><div class='clear-f'></div>"
+  else if archives.type is "edit"
+    html += "          <span class='spn-label' style='margin-top:3px;'><i class='fas fa-calendar-alt font-16' style='color:#aaaaaa;'></i></span><div class='div-snapmail-values snapmail-title' style='margin-top:3px;'><span class='small-text'>&nbsp;&nbsp;#{moment(archives.from_date).format('MM/DD/YYYY, HH:mm:ss')}</span><span class='line-end'></span></div><div class='clear-f'></div>"
   else
-    html += "          <span class='spn-label'><i class='fas fa-calendar-alt font-16'></i></span><div class='div-snapmail-values snapmail-title #{hide_dates}'><span class='small-text'>&nbsp;&nbsp;#{getDates(archives.from_date)} - #{getDates(archives.to_date)}</span><span class='line-end'></span></div><div class='clear-f'></div>"
-  html += "          <span class='spn-label'><i class='fas fa-clock font-16'></i></span><div class='div-snapmail-values snapmail-title'><span class='small-text'>&nbsp;&nbsp;#{moment(archives.created_at).format("MMMM Do YYYY, H:mm:ss")}</span><span class='line-end'></span></div><div class='clear-f'></div></div>"
-  html += "    </div>"
+    html += "          <span class='spn-label' style='margin-top:3px;'><i class='fas fa-calendar-alt font-16' style='color:#aaaaaa;'></i></span><div class='div-snapmail-values snapmail-title #{hide_dates}' style='margin-top:3px;'><span class='small-text'>&nbsp;&nbsp;#{getDates(archives.from_date)} - #{getDates(archives.to_date)}</span><span class='line-end'></span></div><div class='clear-f'></div>"
+  html += "    </div></div>"
   html += "    </div>"
   html += "</div>"
   html
@@ -645,15 +599,15 @@ getTitle = (row, type, set, meta) ->
       <div class='media-url-title'>
       #{file_link}</div>#{archive_inputs}"
   else
-    fa_class = "<i class='fas fa-video type-icon'></i>"
+    fa_class = "<i class='fas fa-video type-icon'></i>" 
     if row.type is "compare"
       mp4Url = "#{Evercam.API_URL}cameras/#{Evercam.Camera.id}/compares/#{row.id}.mp4"
-      fa_class = "<svg fill='#000000' height='20' viewBox='0 0 24 24' width='20'>
+      fa_class = "<svg fill='#ffffff' height='18' viewBox='0 0 24 24' width='18'>
         <path d='M0 0h24v24H0z' fill='none'/>
         <path d='M10 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h5v2h2V1h-2v2zm0 15H5l5-6v6zm9-15h-5v2h5v13l-5-6v9h5c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2z'/>
         </svg>"
     else
-      fa_class = "<svg width='20' height='20' viewBox='0 0 24 24' fill='none' stroke='#000000' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'>
+      fa_class = "<svg width='18' height='18' viewBox='0 0 24 24' fill='none' stroke='#ffffff' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'>
       <polygon points='23 7 16 12 23 17 23 7'></polygon>
       <rect x='1' y='5' width='15' height='14' rx='2' ry='2'></rect>
       </svg>"
@@ -704,41 +658,6 @@ getHostName = (url) ->
     return match[2]
   else
     return null
-
-changeImageSource = (email, id) ->
-  favicon_url = "https://favicon.yandex.net/favicon/"
-  gravatar_url = "https://gravatar.com/avatar"
-  if email
-    signature = hex_md5(email)
-    index = email.indexOf("@")
-    domain = email.substr((index+1))
-    favicon_url = favicon_url + domain
-    img_src = "#{gravatar_url}/#{signature}?d=#{favicon_url}"
-    if domain is "hotmail.com"
-      img_src = "#{gravatar_url}/#{signature}"
-  else
-    img_src = "#{gravatar_url}"
-
-  data = {}
-
-  onSuccess = (data, success, jqXHR) ->
-    length = jqXHR.responseText.length
-    if length < 100
-      img_src = "#{gravatar_url}/#{signature}"
-    $("#archives-table .#{id}").attr "src", img_src
-
-  onError = (jqXHR, status, error) ->
-    $("#archives-table .#{id}").attr "src", img_src
-
-  settings =
-    cache: false
-    data: data
-    dataType: 'html'
-    error: onError
-    success: onSuccess
-    type: 'GET'
-    url: "#{favicon_url}"
-  jQuery.ajax(settings)
 
 renderDate = (row, type, set, meta) ->
   time = row.created_at
@@ -876,7 +795,6 @@ createClip = ->
       NProgress.done()
       $("#create_clip_button").removeAttr 'disabled'
       archives_table.ajax.reload (json) ->
-        $('#archives-table').show()
         $("#no-archive").hide()
         formReset()
         setDate()
@@ -901,7 +819,6 @@ GetSnapshotInfo = ->
   date = $("#from-date").val().split('/')
   time = $('.timepicker-default').val().split(":")
   from = moment.tz("#{date[2]}-#{FormatNumTo2(date[1])}-#{FormatNumTo2(date[0])} #{FormatNumTo2(time[0])}:#{FormatNumTo2(time[1])}:00", Evercam.Camera.timezone)
-  console.log from
   to = from.clone().minutes(from.minutes() + duration)
 
   data = {}
@@ -972,7 +889,7 @@ playClip = ->
     archive_id = $(this).attr("data-archive-id")
     $("#archive_url_link_#{archive_id}").click()
 
-  $("#archives-box, #archives-table").on "click", ".download-animation", ->
+  $("#archives-box").on "click", ".download-animation", ->
     src_id = $(this).attr("data-download-target")
     type = $(this).attr("data-type")
     from = moment(parseInt($(this).attr("data-from"))).format('MMDDYYYY-HHmmss')
@@ -1058,7 +975,6 @@ hide_player_view = ->
   $("#toggle-tabs").show()
   $("#archives").css("width", "100%")
   $("#archives").css("margin-left", "0")
-  $("#archives-table_wrapper.dataTables_wrapper").css 'margin-bottom', '90px'
   $(".hide-add-button").show()
   $(".stackimage").addClass("stackimage-view")
   $(".stackimage").removeClass("stackimage-player")
@@ -1067,20 +983,9 @@ hide_player_view = ->
   archive_js_player2.reset()
   $('#iframe_archive').prop('src', "")
 
-  if is_list_view
-    $("#archives-box").hide()
-    $("#archives-table").show()
-    $(".archive-tabs").show()
-    $("#archives-tab").addClass("margin-top-15")
-    if pagination
-      $('#archives-table_paginate').show()
-      $("#archives-table_info").show()
-
 refresh_archive_table = ->
   archives_table.ajax.reload (json) ->
     if json.archives.length is 0
-      $('#archives-table_paginate, #archives-table_info').hide()
-      $('#archives-table').hide()
       $("#no-archive").show()
     NProgress.done()
 
@@ -1103,7 +1008,6 @@ refreshDataTable = ->
 
 window.on_export_compare = ->
   archives_table.ajax.reload()
-  $('#archives-table').show()
   $("#no-archive").hide()
   refreshDataTable()
 
@@ -1129,7 +1033,6 @@ modal_events = ->
     $("#archive_delete_view").attr("archive_id", id)
     $("#archive_delete_view").attr("archive_type", type)
     $("#archive_delete_view").attr("archive_type", type)
-    $("#archives-table_wrapper.dataTables_wrapper").css 'margin-bottom', '0px'
 
     if Evercam.Camera.has_edit_right || requested_by is Evercam.User.username
       $("#popup-delete-view").show()
@@ -1142,24 +1045,19 @@ modal_events = ->
       $("#archive-play video").attr("loop", "false")
 
     update_request_url(id)
-    $('#archives-table_paginate').hide()
-    $("#archives-table_info").hide()
     $("#toggle-tabs").hide()
-    $("#archives-table").hide()
     $("#archives-box").show()
     $("#back-archives").show()
     $("#back-button").show()
     $("#camera-video-archive").show()
-    $(".archive-tabs").hide()
     $(".hide-add-button").hide()
     $("#archives-box-2").hide()
     $(".stackimage").removeClass("stackimage-view")
     $(".stackimage").addClass("stackimage-player")
     $("#archives-tab").removeClass("margin-top-15")
     $('#txt_title').text(media_title)
-    $('#archive-autor').html("Requested by: #{media_autor}</br>")
-    $('#archive-dates').html("From #{getDates(media_from)} to #{getDates(media_to)}</br>")
-    $('#archive-time-1').text("Created at #{moment(newTime).format('MMMM Do YYYY, H:mm:ss')}")
+    $('#archive-autor').html("Created on #{moment(newTime).format('MMMM Do YYYY, H:mm:ss')} by #{media_autor}</br>")
+    $('#archive-dates').html("From #{getDates(media_from)} to #{getDates(media_to)}")
     $("#txt-archive-type").val(type)
     $("#txt-archive-id").val(id)
     $("#txt-archive-title").val(media_title)
@@ -1459,8 +1357,7 @@ save_upload_file = (file_url, filename) ->
   onSuccess = (data, status, jqXHR) ->
     $("#clip-create-message").show()
     archives_table.ajax.reload (json) ->
-      $('#archives-table').show()
-      $("#no-archive").hide()
+      # $("#no-archive").hide()
       $("#upload-file-modal").modal("hide")
       reset()
 
@@ -1534,7 +1431,6 @@ update_url = ->
 
     onSuccess = (data, status, jqXHR) ->
       archives_table.ajax.reload (json) ->
-        $('#archives-table').show()
         $("#no-archive").hide()
         NProgress.done()
         $("#social-media-url-modal").modal("hide")
@@ -1583,7 +1479,7 @@ update_archive = ->
 
     onSuccess = (data, status, jqXHR) ->
       archives_table.ajax.reload (json) ->
-        $("#no-archive").hide()
+        # $("#no-archive").hide()
         NProgress.done()
         formReset()
         $("#txt-archive-title").val(title)
@@ -1636,7 +1532,6 @@ save_media_url = ->
 
     onSuccess = (data, status, jqXHR) ->
       archives_table.ajax.reload (json) ->
-        $('#archives-table').show()
         $("#no-archive").hide()
         NProgress.done()
         $("#social-media-url-modal").modal("hide")
@@ -1655,30 +1550,12 @@ save_media_url = ->
 showFiles = (files) ->
   $("#spn-upload-file-name").text if files.length > 1 then (input.getAttribute('data-multiple-caption') or '').replace('{count}', files.length) else files[0].name
 
-filter_archives = ->
-  $(".archive-tab-item").on "click", ->
-    is_reload = false
-    $(".archive-tab-item i").removeClass("fas").addClass("far")
-    $(this).find("i").removeClass("far").addClass("fas")
-    type = $(this).attr("data-val")
-    if type is "compare"
-      archives_table.column(2).visible false
-      archives_table.column(3).visible true
-    else
-      if type is "url"
-        archives_table.column(3).visible false
-        archives_table.column(2).visible false
-      else
-        archives_table.column(3).visible true
-        archives_table.column(2).visible true
-    archives_table.column(5).search(type).draw()
-
 tab_events = ->
   $('.nav-tab-archives').on 'shown.bs.tab', ->
     unless archive_id_from_url
       hide_player_view()
     archives_table.ajax.reload (json) ->
-      $("#no-archive").hide()
+      # $("#no-archive").hide()
       refreshDataTable()
 
   $(".nav-tab-archives").on "click", ->
@@ -1716,7 +1593,6 @@ window.initializeArchivesTab = ->
   detect_validate_url()
   handle_submenu()
   save_media_url()
-  filter_archives()
   update_archive()
   update_url()
   toggleView()
