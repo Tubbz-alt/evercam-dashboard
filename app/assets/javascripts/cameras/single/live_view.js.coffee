@@ -240,6 +240,8 @@ getImageRealRatio = ->
     jpeg_img_width = $("#live-player-image").width()
     play_options_width = $("#jpg-portion .play-options").width()
     play_options_position = $("#fullscreen").height() / 2
+    if play_options_width is 0
+      setTimeout (-> getImageRealRatio()), 100
     play_options_left_position = ($("#fullscreen").width() - play_options_width) / 2
     $('#jpg-portion .play-options').css({"top": "#{play_options_position}px"})
     $('#jpg-portion .play-options').css({"left": "#{play_options_left_position}px"})
@@ -615,7 +617,7 @@ ResetTimers = ->
         if $("#live-snapshot-magnifier").hasClass 'enabled'
           hideIcons()
         else
-         showIcons()
+          showIcons()
       when 'video'
         playInActiveVideoStream()
         turnOffZoomEffect()
