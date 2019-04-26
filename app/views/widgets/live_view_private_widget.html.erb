@@ -132,7 +132,7 @@ You are not allowed to view this camera
       return false;
     })();
 
-    var screenfull = {
+    var fullScreenHelper = {
       request: function (elem) {
         var request = fn.requestFullscreen;
 
@@ -165,13 +165,13 @@ You are not allowed to view this camera
       if (isCommonjs) {
         module.exports = false;
       } else {
-        window.screenfull = false;
+        window.fullScreenHelper = false;
       }
 
       return;
     }
 
-    Object.defineProperties(screenfull, {
+    Object.defineProperties(fullScreenHelper, {
       isFullscreen: {
         get: function () {
           return !!document[fn.fullscreenElement];
@@ -193,9 +193,9 @@ You are not allowed to view this camera
     });
 
     if (isCommonjs) {
-      module.exports = screenfull;
+      module.exports = fullScreenHelper;
     } else {
-      window.screenfull = screenfull;
+      window.fullScreenHelper = fullScreenHelper;
     }
   })();
 
@@ -214,12 +214,12 @@ You are not allowed to view this camera
 
     function fullscreenImage() {
       $("#evercam-container-img").dblclick(function(){
-        screenfull.toggle($(this)[0]);
+        fullScreenHelper.toggle($(this)[0]);
       });
 
-      if (screenfull.enabled)
-        document.addEventListener(screenfull.raw.fullscreenchange, function(){
-          if (screenfull.isFullscreen) {
+      if (fullScreenHelper.enabled)
+        document.addEventListener(fullScreenHelper.raw.fullscreenchange, function(){
+          if (fullScreenHelper.isFullscreen) {
             $("#evercam-container-img").css('width', 'auto');
           }
           else {

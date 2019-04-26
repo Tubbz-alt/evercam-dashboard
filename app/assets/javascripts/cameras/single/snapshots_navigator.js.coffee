@@ -320,14 +320,14 @@ handleBodyLoadContent = ->
 
 fullscreenImage = ->
   $("#imgPlayback").dblclick ->
-    screenfull.toggle $(this)[0]
+    $(this).fullscreen()
 
-  if screenfull.enabled
-    document.addEventListener screenfull.raw.fullscreenchange, ->
-      if screenfull.isFullscreen
-        $("#imgPlayback").css('width','auto')
-      else
-        $("#imgPlayback").css('width','100%')
+  # if $.fullScreenHelper('state')
+  #   $(document).on 'fullscreenchange', ->
+  #     if $.fullScreenHelper('state')
+  #       $("#imgPlayback").css('width','auto')
+  #     else
+  #       $("#imgPlayback").css('width','100%')
 
 HighlightCurrentMonth = ->
   d = $("#ui_date_picker_inline").datepicker('getDate')

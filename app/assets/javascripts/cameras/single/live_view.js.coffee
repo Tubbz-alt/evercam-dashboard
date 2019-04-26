@@ -66,16 +66,18 @@ refreshCameraStatus = ->
 
 fullscreenImage = ->
   $("#toggle").click ->
-    screenfull.toggle $("#live-player-image")[0]
+    # fullScreenHelper.toggle $("#live-player-image")[0]
+    $("#live-player-image").fullscreen()
   $("#live-player-image").dblclick ->
-    screenfull.toggle $(this)[0]
+    # fullScreenHelper.toggle $(this)[0]
+    $(this).fullscreen()
 
-  if screenfull.enabled
-    document.addEventListener screenfull.raw.fullscreenchange, ->
-      $("#live-player-image").css({"height": "100%"})
-      $("#live-player-image").css({"width": "auto"})
-  else
-    getImageRealRatio()
+  # if $.fullScreenHelper('state')
+  #   $(document).on 'fullscreenchange', ->
+  #     $("#live-player-image").css({"height": "100%"})
+  #     $("#live-player-image").css({"width": "auto"})
+  # else
+  #   getImageRealRatio()
 
 openPopout = ->
   $("#link-popout").on "click", ->
