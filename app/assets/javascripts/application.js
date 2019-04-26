@@ -26,7 +26,7 @@
 //= require jquery.mousewheel.min.js
 //= require jquery.bxslider.min.js
 //= require jquery.elevateZoom-3.0.8.min.js
-//= require screenfull
+//= require screenfull.min.js
 //= require bootstrap-tabdrop
 //= require datatables
 //= require dataTables.responsive.min.js

@@ -323,7 +323,6 @@ GEM
     rails-assets-modernizr (3.5.0)
     rails-assets-moment (2.12.0)
     rails-assets-php-date-formatter (1.3.5)
-    rails-assets-screenfull (4.2.0)
     rails-assets-spin.js (2.0.2)
     rails-controller-testing (1.0.4)
       actionpack (>= 5.0.1.x)
@@ -500,7 +499,6 @@ DEPENDENCIES
   rails-assets-js-base64!
   rails-assets-ladda!
   rails-assets-moment (~> 2.12.0)!
-  rails-assets-screenfull!
   rails-controller-testing
   rspec-rails
   sass-rails
