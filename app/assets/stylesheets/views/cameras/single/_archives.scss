@@ -1244,6 +1244,11 @@ html .video-js {
   .card-archives {
     height: 15vw;
   }
+
+  .stackimage-view {
+    max-height: 12.5vw;
+  }
+
   .stacklink_view {
     height: 10.7vw;
 
@@ -1259,6 +1264,10 @@ html .video-js {
   .card-archives {
     height: 14vw;
   }
+
+  .stackimage-view {
+    max-height: 11.5vw;
+  }
 }
 
 @media (max-width: 1200px) {
@@ -1272,6 +1281,10 @@ html .video-js {
 
   .card-archives {
     height: 30vw;
+  }
+
+  .stackimage-view {
+    max-height: 26vw;
   }
 
   .stacklink_view {
@@ -1308,6 +1321,10 @@ html .video-js {
 
   .card-archives {
     height: auto;
+  }
+
+  .stackimage-view {
+    max-height: 44vw;
   }
 
   .stacklink_view {
