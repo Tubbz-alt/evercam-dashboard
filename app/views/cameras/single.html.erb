@@ -92,11 +92,9 @@
               <li>
                 <a data-toggle="tab" data-target="#snapmail" class="nav-tab-snapmail">Snapmail</a>
               </li>
-            <% end %>
-            <li>
-              <a data-toggle="tab" data-target="#compare" class="nav-tab-compare">Compare</a>
-            </li>
-            <% if current_user %>
+              <li>
+                <a data-toggle="tab" data-target="#compare" class="nav-tab-compare">Compare</a>
+              </li>
               <% if ["marco@evercam.io", "vq@evercam.io", "oldconstruction", "construction@evercam.io", "azhar@evercam.io", "lauranela"].include?(current_user.username) && @camera["vendor_id"].eql?("hikvision") %>
                 <li>
                   <a data-toggle="tab" data-target="#local-recordings" class="nav-tab-local-recordings">Local Recordings</a>
