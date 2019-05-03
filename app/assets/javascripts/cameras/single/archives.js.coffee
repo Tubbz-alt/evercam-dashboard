@@ -142,6 +142,7 @@ load_archive_view_by_id = (archives) ->
       $("#txt-archive-title").val(media_title)
       $('.hide-add-button').hide()
       $('#player-buttons').empty()
+      $("#txt-media-url").val(media_url)
       $('#player-buttons').append renderplayerbuttons(id, camera_id, type, status, media_url, media_ispublic, file_name, archive.from_date, archive.to_date)
       calculateHeight()
 
@@ -1029,6 +1030,7 @@ modal_events = ->
     media_time = $(this).attr('data-time')
     media_ispublic = $(this).attr('data-ispublic')
     newTime = moment(media_time)
+    $("#txt-media-url").val(media_url)
     $("#archive_delete_view").attr("camera_id", camera_id)
     $("#archive_delete_view").attr("archive_id", id)
     $("#archive_delete_view").attr("archive_type", type)
@@ -1188,8 +1190,9 @@ modal_events = ->
     update_request_url()
 
   $('#social-media-url-modal').on 'hide.bs.modal', ->
+    id = $("#txt-archive-id").val()
     reset_media_url_form()
-    update_request_url()
+    update_request_url(id)
 
 update_request_url = (id) ->
   if id
@@ -1233,12 +1236,12 @@ handleResize = ->
     calculateHeight()
 
 showArchiveUrlSaveButton = ->
-  $("#update_archive").removeClass 'hide'
+  $("#update_archive_value").removeClass 'hide'
   $("#save_social_media_url").addClass 'hide'
 
 hideArchiveUrlSaveButton = ->
   $("#save_social_media_url").removeClass 'hide'
-  $("#update_archive").addClass 'hide'
+  $("#update_archive_value").addClass 'hide'
 
 initCompare = ->
   imagesCompareElement = $('.archive-img-compare').imagesCompare()
@@ -1409,9 +1412,10 @@ handle_submenu = ->
     $(".m-menu__submenu").hide()
 
 update_url = ->
-  $("#update_archive").on "click", ->
+  $("#social-media-url-modal").off('click', '#update_archive_value').on 'click', '#update_archive_value', (e) ->
     id = $("#txt-archive-id").val()
-    if $("#media_title_title").val() is ""
+    tittle = $("#media_title_title").val()
+    if tittle is ""
       Notification.error("Title cannot be empty.")
       return false
     if $("#social_media_url").val() is ""
@@ -1432,6 +1436,9 @@ update_url = ->
     onSuccess = (data, status, jqXHR) ->
       archives_table.ajax.reload (json) ->
         $("#no-archive").hide()
+        media_src_url = convert_to_embed_url($("#social_media_url").val())
+        $("#txt_title").text(tittle)
+        $("#iframe_archive").attr("src", media_src_url)
         NProgress.done()
         $("#social-media-url-modal").modal("hide")
         reset_media_url_form()
@@ -1447,69 +1454,77 @@ update_url = ->
     sendAJAXRequest(settings)
 
 update_archive = ->
-  $("#edit-archive-title").on "click", ->
-    elementValue = $("#txt_title").text();
-    $("#txt_title").replaceWith('<input name="test" id="txt_title" type="text" value="' + elementValue + '">')
-    $("#update-archive").show()
-    $("#cancel-title").show()
-    $("#edit-archive-title").hide()
-    $("#txt_title").css("width", "50%")
-    $("#txt_title").css("font-size", "22px")
-    $("#update-archive i").css("font-size", "17px")
-    $("#cancel-title i").css("font-size", "17px")
+  $("#text-info").off('click', '#edit-archive-title').on 'click', '#edit-archive-title', (e) ->
+    type = $("#txt-archive-type").val()
+    if type is "url"
+      $("#social-media-url-modal").modal('show')
+      showArchiveUrlSaveButton()
+      $("#media_title_title").val($("#txt_title").text())
+      media_src = $("#txt-media-url").val()
+      $("#social_media_url").val(media_src)
+    else
+      elementValue = $("#txt_title").text()
+      $("#txt_title").replaceWith('<input name="test" id="txt_title" type="text" value="' + elementValue + '">')
+      $("#update-archive").show()
+      $("#cancel-title").show()
+      $("#edit-archive-title").hide()
+      $("#txt_title").css("width", "50%")
+      $("#txt_title").css("font-size", "22px")
+      $("#update-archive i").css("font-size", "17px")
+      $("#cancel-title i").css("font-size", "17px")
 
-  $("#update-archive").on "click", ->
-    id = $("#txt-archive-id").val()
-    title = $("#txt_title").val()
-    if title is ""
-      Notification.error("Title cannot be empty.")
-      return false
-    NProgress.start()
+    $("#text-info").off('click', '#update-archive').on 'click', '#update-archive', (e) ->
+      id = $("#txt-archive-id").val()
+      title = $("#txt_title").val()
+      if title is ""
+        Notification.error("Title cannot be empty.")
+        return false
+      NProgress.start()
 
-    data =
-      title: title
-      name: title
+      data =
+        title: title
+        name: title
 
-    onError = (jqXHR, status, error) ->
-      if jqXHR.status is 500
-        Notification.error("Internal Server Error. Please contact to admin.")
-      else
-        Notification.error(jqXHR.responseJSON.message)
-      NProgress.done()
-
-    onSuccess = (data, status, jqXHR) ->
-      archives_table.ajax.reload (json) ->
-        # $("#no-archive").hide()
+      onError = (jqXHR, status, error) ->
+        if jqXHR.status is 500
+          Notification.error("Internal Server Error. Please contact to admin.")
+        else
+          Notification.error(jqXHR.responseJSON.message)
         NProgress.done()
-        formReset()
-        $("#txt-archive-title").val(title)
-        $("#update-archive").hide()
-        $("#cancel-title").hide()
-        $("#edit-archive-title").show()
-        $("#edit-archive-title i").css("font-size", "17px")
 
-    controller = "archives"
-    if $("#txt-archive-type").val() is "compare"
-      controller = "compares"
+      onSuccess = (data, status, jqXHR) ->
+        archives_table.ajax.reload (json) ->
+          # $("#no-archive").hide()
+          NProgress.done()
+          formReset()
+          $("#txt-archive-title").val(title)
+          $("#update-archive").hide()
+          $("#cancel-title").hide()
+          $("#edit-archive-title").show()
+          $("#edit-archive-title i").css("font-size", "17px")
 
-    settings =
-      cache: false
-      data: data
-      dataType: 'json'
-      error: onError
-      success: onSuccess
-      type: 'PATCH'
-      url: "#{Evercam.API_URL}cameras/#{Evercam.Camera.id}/#{controller}/#{id}?api_id=#{Evercam.User.api_id}&api_key=#{Evercam.User.api_key}"
-    sendAJAXRequest(settings)
-    $("#txt_title").replaceWith('<strong id="txt_title">' + title + '</strong>')
+      controller = "archives"
+      if $("#txt-archive-type").val() is "compare"
+        controller = "compares"
 
-  $("#cancel-title").on "click", ->
-    value = $("#txt-archive-title").val()
-    $("#txt_title").replaceWith('<strong id="txt_title">' + value + '</strong>')
-    $("#update-archive").hide()
-    $("#cancel-title").hide()
-    $("#edit-archive-title").show()
-    $("#edit-archive-title i").css("font-size", "17px")
+      settings =
+        cache: false
+        data: data
+        dataType: 'json'
+        error: onError
+        success: onSuccess
+        type: 'PATCH'
+        url: "#{Evercam.API_URL}cameras/#{Evercam.Camera.id}/#{controller}/#{id}?api_id=#{Evercam.User.api_id}&api_key=#{Evercam.User.api_key}"
+      sendAJAXRequest(settings)
+      $("#txt_title").replaceWith('<strong id="txt_title">' + title + '</strong>')
+
+    $("#cancel-title").on "click", ->
+      value = $("#txt-archive-title").val()
+      $("#txt_title").replaceWith('<strong id="txt_title">' + value + '</strong>')
+      $("#update-archive").hide()
+      $("#cancel-title").hide()
+      $("#edit-archive-title").show()
+      $("#edit-archive-title i").css("font-size", "17px")
 
 save_media_url = ->
   $("#save_social_media_url").on "click", ->
