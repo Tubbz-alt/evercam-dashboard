@@ -1,3 +1,4 @@
+#= require cameras/single/load_map.js.coffee
 previous = undefined
 map_loaded = false
 xhrRequestPortCheck = null
@@ -453,21 +454,18 @@ initializeMap = ->
         setLatsLngVal(marker.getPosition().lat().toFixed(7),marker.getPosition().lng().toFixed(7))
     map.fitBounds bounds
     map.setZoom(14)
-    return
+
   # [END region_getplaces]
   # Bias the SearchBox results towards places that are within the bounds of the
   # current map's viewport.
   google.maps.event.addListener map, 'bounds_changed', ->
     bounds = map.getBounds()
     searchBox.setBounds bounds
-    return
 
   setLatsLngVal = (lat, lng) ->
     document.getElementById("camera_Lats_Lng").value = "#{lat}, #{lng}"
     $(cameraLats).val lat
     $(cameraLng).val lng
-
-  return
 
 handleModelEvents = ->
   $(".modal").on "show.bs.modal", centerModal
@@ -767,7 +765,7 @@ window.initializeInfoTab = ->
   handleVendorModelEvents()
   if $("#camera-vendor option").length == 1
     loadVendors()
-  google.maps.event.addDomListener document.getElementById("edit-location"), "click", initializeMap
+  google.maps.event.addDomListener document.getElementById("edit-location"), "click", window.initMap
   handleModelEvents()
   initNotification()
   $("#save-map-location").on "click", saveMapLocation
