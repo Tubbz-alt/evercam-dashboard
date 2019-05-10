@@ -87,5 +87,6 @@
 //= require nprogress-call.js
 //= require cameras_table
 //= require snapmails/snapmails.js
+//= require archives/archives.js
 //= require moment-timezone.js
 //= require util.js
