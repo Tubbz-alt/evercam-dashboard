@@ -81,9 +81,9 @@ table_init_complete = (archives) ->
   $("#archives-table_info").hide()
   $("#archives-table_paginate").hide()
   if archives.length is 0
-    $("#no-archive-text").removeClass('hide')
+    $("#archives-tab #no-archive-text").removeClass('hide')
   else
-    $("#no-archive-text").addClass('hide')
+    $("#archives-tab #no-archive-text").addClass('hide')
 
 load_archive_view_by_id = (archives) ->
   if archive_id_from_url && archives.length > 0
@@ -252,8 +252,9 @@ getArchivesHtml = (archives) ->
       css_class = "fa-upload"
     fa_class = "<i class='fa #{css_class} type-icon type-icon-url'></i>"
   else
-    arr_host = getHostName(archives.media_url).split('.')
-    domain = arr_host.shift()
+    if archives.media_url
+      arr_host = getHostName(archives.media_url).split('.')
+      domain = arr_host.shift()
     url = archives.media_url
     title_tag = "Video: #{archives.title}"
     image_html = "<div class='stacklink_view'><div id='video-overlay'><i class='fab fa-#{domain} #{domain}'></i></div><iframe id='iframe_archive_thumbnail' class='iframe_archive_thumbnail' width='100%' src='" + convert_to_embed_url(url) + "' frameborder='0' allow='autoplay; encrypted-media' allowfullscreen></iframe></div>"
@@ -548,8 +549,9 @@ getTitle = (row, type, set, meta) ->
 
   archive_inputs = "<input id='txtArchiveThumb#{row.id}' type='hidden' value='#{row.thumbnail_url}'><input id='txtArchiveTitle#{row.id}' type='hidden' value='#{row.title}'>"
   if row.type is "url"
-    arr_host = getHostName(row.media_url).split('.')
-    domain = arr_host.shift()
+    if row.media_url
+      arr_host = getHostName(row.media_url).split('.')
+      domain = arr_host.shift()
     return "<div class='gravatar-placeholder'><div class='social-media-icon'><i class='fab fa-#{domain} #{domain}'></i></div><div class='type-icon-alignment'><i class='fa fa-link type-icon type-icon-url'></i></div></div>
       <div class='media-url-title'>
       <a id='archive_url_link_#{row.id}' class='archive-title-color' data-ispublic='#{row.public}' data-status='#{row.status}' data-camera='#{row.camera_id}' data-url='#{row.media_url}' data-thumbnail='#{row.thumbnail}' data-title='#{row.title}' data-from='#{row.from_date}' data-to='#{row.to_date}' data-time=#{row.created_at} data-requester-by='#{row.requested_by}' data-autor='#{row.requester_name}' data-id='#{row.id}' data-type='#{row.type}'>#{row.title}</a>
@@ -1127,13 +1129,14 @@ load_player = (media_thumbnail, media_url) ->
       console.log 'error occured', err
 
 convert_to_embed_url = (media_url) ->
-  split = media_url.split("/")
-  if split.length > 4
-    cut_size = split.length - 4
-    media_url = split.slice(0, split.length - cut_size).join("/") + "/"
-  media_url = media_url.replace("watch?v=", "embed/")
-  media_url = media_url.replace("vimeo.com", "player.vimeo.com/video")
-  return media_url
+  if media_url
+    split = media_url.split("/")
+    if split.length > 4
+      cut_size = split.length - 4
+      media_url = split.slice(0, split.length - cut_size).join("/") + "/"
+    media_url = media_url.replace("watch?v=", "embed/")
+    media_url = media_url.replace("vimeo.com", "player.vimeo.com/video")
+    return media_url
 
 calculateHeight = ->
   info_total = $("#back-button").height() + $("#info-archive").height() + $(".player-header").height() + $("#ul-nav-tab").height() + 52
