@@ -74,6 +74,9 @@
             <li>
               <a id="maps-tab-fix" data-toggle="tab" data-target="#details" class="nav-tab-details">Details</a>
             </li>
+            <li>
+              <a data-toggle="tab" data-target="#mapping" class="nav-tab-mapping">Mapping</a>
+            </li>
             <% if has_edit_right %>
               <li>
                 <a data-toggle="tab" data-target="#logs" class="nav-tab-logs"> Logs</a>
@@ -260,6 +263,9 @@
           </div>
           <div id="details" class="tab-pane">
             <%= render partial: "cameras/single/info_tab" %>
+          </div>
+          <div id="mapping" class="tab-pane">
+            <%= render partial: "cameras/single/mapping_tab" %>
           </div>
           <div id="recordings" class="tab-pane">
             <%= render partial: "cameras/single/snapshots_navigator_tab" %>

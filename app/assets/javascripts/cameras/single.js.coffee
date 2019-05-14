@@ -17,6 +17,7 @@
 #= require jquery.thumbhover.js
 #= require jquery.images-compare.js
 #= require cameras/single/nvr_recording.js.coffee
+#= require cameras/single/mapping.js.coffee
 #= require saveimage.js
 
 initializeiCheck = ->
@@ -225,6 +226,7 @@ initializeTabs = ->
   window.initializeImageEditorTab()
   window.initializeTimelapseRecordingsTab() if $("#timelapse-recording-tab").length > 0
   window.initializeLocalRecordingsTab() if $("#local-recordings").length > 0
+  window.initializeMappingTab()
 
 window.initializeCameraSingle = ->
   initializeTabs()

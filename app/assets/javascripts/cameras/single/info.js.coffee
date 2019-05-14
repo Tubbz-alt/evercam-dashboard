@@ -1,4 +1,3 @@
-#= require cameras/single/load_map.js.coffee
 previous = undefined
 map_loaded = false
 xhrRequestPortCheck = null
@@ -765,7 +764,7 @@ window.initializeInfoTab = ->
   handleVendorModelEvents()
   if $("#camera-vendor option").length == 1
     loadVendors()
-  google.maps.event.addDomListener document.getElementById("edit-location"), "click", window.initMap
+  google.maps.event.addDomListener document.getElementById("edit-location"), "click", initializeMap
   handleModelEvents()
   initNotification()
   $("#save-map-location").on "click", saveMapLocation
