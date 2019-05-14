@@ -108,12 +108,6 @@ load_archive_view_by_id = (archives) ->
       media_time = archive.created_at
       media_ispublic = "#{archive.public}"
       newTime = moment(media_time)
-      # $("#popup-delete-view").hide()
-
-      # if Evercam.Camera.has_edit_right || requested_by is Evercam.User.username
-      #   $("#popup-delete-view").show()
-      # else
-      #   $("#popup-delete-view").hide()
 
       if type is "compare"
         $("#archive-play video").attr("loop", "true")
@@ -202,32 +196,6 @@ getArchiveIdFromUrl = ->
   archive_id_from_url = window.Evercam.request.subpath.
     replace(RegExp("archives", "g"), "").
     replace(RegExp("/", "g"), "")
-
-hover_thumbnail = ->
-  $("#archives-tab").on "mousemove", ".gravatar", (ev) ->
-    view_width = Metronic.getViewPort().width
-    view_height = Metronic.getViewPort().height
-    $("#fullsize-thumbnail").attr("src", $(this).attr("src"))
-    thumbnail_width = $("#fullsize-thumbnail").width()
-    thumbnail_height =$("#fullsize-thumbnail").height()
-    top = ev.pageY
-    screen_top = ev.screenY
-    if ((view_height - screen_top) < thumbnail_height)
-      hidden_height = thumbnail_height - (view_height - screen_top)
-      top = (top - hidden_height)
-
-    if $(".page-sidebar").css('display') is "block"
-      left = ev.pageX + 10
-      if view_width < left + thumbnail_width + 10
-        left = left - (left + thumbnail_width - view_width) - 30
-    else
-      left = ev.pageX + 10
-
-    $("#div-full-thumbnail").css({ top: "#{top}px", left: "#{left}px" })
-    $("#div-full-thumbnail").show()
-
-  $("#archives-tab").on "mouseout", ".gravatar", (ev) ->
-    $("#div-full-thumbnail").hide()
 
 toggleView = ->
   $("#archives-box").show()
@@ -762,66 +730,6 @@ FormatNumTo2 = (n) ->
   else
     num
 
-createClip = ->
-  $("#create_clip_button").on "click", ->
-    if $("#txtCreateArchiveType").val() is "" && !has_snapshots
-      $("#td-has-snapshot").removeClass("alert-info").addClass("alert-danger")
-      return false
-
-    duration = parseInt($("#to-date").val())
-    date = $("#from-date").val().split('/')
-    time = $('.timepicker-default').val().split(":")
-    from = moment.tz("#{date[2]}-#{FormatNumTo2(date[1])}-#{FormatNumTo2(date[0])} #{FormatNumTo2(time[0])}:#{FormatNumTo2(time[1])}:00", Evercam.Camera.timezone)
-    to = from.clone().minutes(from.minutes() + duration)
-
-    if $("#clip-name").val() is ""
-      Notification.error("Clip title cannot be empty.")
-      return false
-    if duration > 60
-      Notification.error("Duration exceeds maximum limit of 60 min.")
-      return false
-    NProgress.start()
-    $("#create_clip_button").attr 'disabled', 'disabled'
-
-    data =
-      title: $("#clip-name").val()
-      from_date: toISOString(from)
-      to_date: toISOString(to)
-      is_nvr_archive: $("#txtCreateArchiveType").val()
-      requested_by: Evercam.User.username
-      type: "clip"
-
-    onError = (jqXHR, status, error) ->
-      if jqXHR.status is 500
-        Notification.error("Internal Server Error. Please contact to admin.")
-      else
-        Notification.error(jqXHR.responseJSON.message)
-      NProgress.done()
-      $("#create_clip_button").removeAttr 'disabled'
-
-    onSuccess = (data, status, jqXHR) ->
-      $('#archive-modal').modal('hide')
-      NProgress.done()
-      $("#create_clip_button").removeAttr 'disabled'
-      archives_table.ajax.reload (json) ->
-        $("#no-archive").hide()
-        formReset()
-        setDate()
-        $("#create_clip_button").removeAttr 'disabled'
-      if $("#txtCreateArchiveType").val() isnt ""
-        window.vjs_player_local.pause()
-        $("#clip-create-message").show()
-
-    settings =
-      cache: false
-      data: data
-      dataType: 'json'
-      error: onError
-      success: onSuccess
-      type: 'POST'
-      url: "#{Evercam.API_URL}cameras/#{Evercam.Camera.id}/archives?api_id=#{Evercam.User.api_id}&api_key=#{Evercam.User.api_key}"
-    $.ajax(settings)
-
 GetSnapshotInfo = ->
   xhrRequestCheckSnapshot.abort() if xhrRequestCheckSnapshot
   duration = parseInt($("#to-date").val())
@@ -1043,11 +951,6 @@ modal_events = ->
     $("#archive_delete_view").attr("archive_id", id)
     $("#archive_delete_view").attr("archive_type", type)
     $("#archive_delete_view").attr("archive_type", type)
-
-    # if Evercam.Camera.has_edit_right || requested_by is Evercam.User.username
-    #   $("#popup-delete-view").show()
-    # else
-    #   $("#popup-delete-view").hide()
 
     if type is "compare"
       $("#archive-play video").attr("loop", "true")
@@ -1274,115 +1177,6 @@ open_window = ->
       when "compare"
         $(".nav-tab-compare").tab('show')
 
-init_fileupload = ->
-  $("#file-upload").on "change", (e) ->
-    lbl_old_val = $("#spn-upload-file-name").html()
-    fileName = ''
-    if $(this).files && $(this).files.length > 1
-      fileName = ( $(this).getAttribute( 'data-multiple-caption' ) || '' ).replace( '{count}', $(this).files.length )
-    else
-      fileName = e.target.value.split( '\\' ).pop()
-
-    if fileName
-      $("#spn-upload-file-name").html(fileName)
-    else
-      $("#spn-upload-file-name").html(lbl_old_val)
-
-  $("#upload-file-modal").on "hide.bs.modal", ->
-    $("#file-upload-progress .bar").css("width", "0%")
-    $("#file-upload-progress .bar").text("0%")
-    $("#file-upload").val("")
-    $("#spn-upload-file-name").html("Choose a file or drag it here.")
-    $("#upload_file_title").val("")
-
-  $("#start-file-upload").on "click", ->
-    input = document.querySelector("#file-upload")
-    if upload
-      if uploadIsRunning
-        upload.abort()
-        $("#start-file-upload").val("Resume upload")
-        uploadIsRunning = false
-      else
-        upload.start()
-        $("#start-file-upload").val("Pause upload")
-        uploadIsRunning = true
-    else
-      if $("#upload_file_title").val() is ""
-        Notification.error("Title cannot be empty.")
-        return false
-      if input.files.length is 0
-        Notification.error("Choose file to upload.")
-        return false
-      startUpload()
-
-startUpload = ->
-  file = document.querySelector("#file-upload").files[0]
-  if !file
-    return
-
-  $("#start-file-upload").val("Pause upload")
-
-  options =
-    endpoint: Evercam.TUS_URL
-    resume: true
-    chunkSize: Infinity
-    retryDelays: [0, 1000, 3000, 5000]
-    onError: (error) ->
-      Notification.error("Failed because: #{error}")
-      reset()
-    onProgress: (bytesUploaded, bytesTotal) ->
-      percentage = (bytesUploaded / bytesTotal * 100).toFixed(2)
-      $("#file-upload-progress .bar").css("width", "#{percentage}%")
-      $("#file-upload-progress .bar").text("#{parseInt(percentage)}%")
-    onSuccess: ->
-      save_upload_file(upload.url, upload.file.name)
-
-  upload = new tus.Upload(file, options)
-  upload.start()
-  uploadIsRunning = true
-
-reset = ->
-  $("#start-file-upload").val("Start upload")
-  $("#file-upload-progress .bar").css("width", "0%")
-  $("#file-upload-progress .bar").text("0%")
-  upload = null
-  uploadIsRunning = false
-
-save_upload_file = (file_url, filename) ->
-  timespan = moment().toISOString()
-
-  data =
-    title: $("#upload_file_title").val()
-    from_date: timespan
-    to_date: timespan
-    requested_by: Evercam.User.username
-    type: "file"
-    file_url: file_url
-    file_extension: filename.slice (filename.lastIndexOf('.') - 1 >>> 0) + 2
-
-  onError = (jqXHR, status, error) ->
-    if jqXHR.status is 500
-      Notification.error("Internal Server Error. Please contact to admin.")
-    else
-      Notification.error(jqXHR.responseJSON.message)
-
-  onSuccess = (data, status, jqXHR) ->
-    $("#clip-create-message").show()
-    archives_table.ajax.reload (json) ->
-      # $("#no-archive").hide()
-      $("#upload-file-modal").modal("hide")
-      reset()
-
-  settings =
-    cache: false
-    data: data
-    dataType: 'json'
-    error: onError
-    success: onSuccess
-    type: 'POST'
-    url: "#{Evercam.API_URL}cameras/#{Evercam.Camera.id}/archives?api_id=#{Evercam.User.api_id}&api_key=#{Evercam.User.api_key}"
-  $.ajax(settings)
-
 detect_validate_url = ->
   $("#social_media_url").on "keyup paste change", ->
     url = $("#social_media_url").val()
@@ -1407,18 +1201,6 @@ reset_media_url_form = ->
 detect_url = (url, regex) ->
   patt = new RegExp(regex)
   patt.test(url)
-
-handle_submenu = ->
-  $("#archive-add").on "click", ->
-    top = $(this).position().top
-    archive_height = $("#archives").height()
-    view_height = Metronic.getViewPort().height
-    $(".triangle-right-border").css("top", "180px")
-    $(".m-menu__submenu").css("top", top - 170)
-    $(".m-menu__submenu").toggle( "slow")
-
-  $(document).on 'mouseup', (evt) ->
-    $(".m-menu__submenu").hide()
 
 update_url = ->
   $("#social-media-url-modal").off('click', '#update_archive_value').on 'click', '#update_archive_value', (e) ->
@@ -1581,7 +1363,6 @@ tab_events = ->
     unless archive_id_from_url
       hide_player_view()
     archives_table.ajax.reload (json) ->
-      # $("#no-archive").hide()
       refreshDataTable()
 
   $(".nav-tab-archives").on "click", ->
@@ -1615,7 +1396,6 @@ window.initializeArchives = ->
   Notification.init('.bb-alert')
   copyToClipboard('.copy-url-icon')
   tooltip()
-  createClip()
   playClip()
   shareURL()
   setDate()
@@ -1623,9 +1403,7 @@ window.initializeArchives = ->
   cancelForm()
   modal_events()
   open_window()
-  init_fileupload()
   detect_validate_url()
-  handle_submenu()
   save_media_url()
   update_archive()
   update_url()
@@ -1636,5 +1414,4 @@ window.initializeArchives = ->
   onClickDownloadButton()
   handleResize()
   tab_events()
-  hover_thumbnail()
   retry_create()

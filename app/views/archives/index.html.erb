@@ -14,11 +14,10 @@
         <div class="tab-pane active" id="archives">
           <div id="archives-tab" class="col-md-12 margin-top-15 margin-bottom-20">
             <div id="no-archive-text" class="margin-top-20 hide no-archive-text">
-              <p>There's nothing here yet.<br>
+              <p>This area shows all the media (clips, videos, compares etc.) related to your camera.<br>
               <br>
-              This area shows all the media (clips, videos, compares etc.) related to your camera.<br>
+                There's nothing here yet.
               <br>
-              You can create these by clicking on the  <i class="fas fa-plus icon-font"></i>  icon in the bottom right corner.</p>
             </div>
             <div id="archives-box">
               <div id="back-button">
@@ -93,57 +92,6 @@
             <input id="archives-api-url" type="hidden" value="<%= "#{EVERCAM_API}archives?api_id=#{current_user.api_id}&api_key=#{current_user.api_key}" %>">
           <% end %>
 
-          <%# <div id="add-button" class="hide-add-button row text-right add-archive-button">
-            <div id="archive-add" class="btn btn-primary archive-add margin-bottom-30">+</div>
-
-            <div class="m-menu__submenu">
-              <span class="triangle-right-border"></span>
-              <ul class="m-menu__subnav">
-                <li class="m-menu__item " aria-haspopup="true"  data-redirect="true">
-                  <a  href="#" class="type-link create-clip-link" data-type="cloud" data-toggle="modal" data-target="#archive-modal">
-                    <i class="fa fa-cloud"></i>
-                    <span class="menu-ink-text">
-                      Cloud Recordings Clip
-                    </span>
-                  </a>
-                </li>
-                <li class="m-menu__item " aria-haspopup="true"  data-redirect="true">
-                  <a href="#" class="type-link create-clip-link" data-type="local" data-toggle="modal" data-target="#archive-modal">
-                    <i class="fas fa-video"></i>
-                    <span class="menu-ink-text">
-                      Local Recordings Clip
-                    </span>
-                  </a>
-                </li>
-                <li class="m-menu__item " aria-haspopup="true"  data-redirect="true">
-                  <a  href="#" class="type-link" data-type="compare">
-                    <img height="15" src="/assets/compare-scale.png" class="compare-img">
-                    <span class="menu-ink-text">
-                      Evercam Compare
-                    </span>
-                  </a>
-                </li>
-                <li class="m-menu__item " aria-haspopup="true"  data-redirect="true">
-                  <a  href="javascript:;" class="type-link" data-toggle="modal" data-target="#social-media-url-modal">
-                    <i class="fa fa-link"></i>
-                    <span class="menu-ink-text">
-                      URL (Youtube, Vimeo...)
-                    </span>
-                  </a>
-                </li>
-                <li class="m-menu__item" aria-haspopup="true"  data-redirect="true">
-                  <a  href="#" class="type-link" data-type="upload" data-toggle="modal" data-target="#upload-file-modal">
-                    <i class="fa fa-upload"></i>
-                    <span class="menu-ink-text">
-                      Upload File
-                    </span>
-                  </a>
-                </li>
-              </ul>
-              <div class="clear-f"></div>
-            </div>
-          </div> %>
-
           <div id="modal-archive-info" class="modal fade modal-archive-info">
             <div class="modal-dialog max-width-600">
               <div class="modal-content">
@@ -215,54 +163,6 @@
                       </div>
                     </div>
                   </div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div id="upload-file-modal" class="modal fade">
-            <div class="modal-dialog max-width-470">
-              <div class="modal-content">
-                <div id="form-create-clip" class="modal-body">
-                  <div class="row">
-                    <div class='col-lg-12 col-md-12 col-sm-12'>
-                      <div class='portlet'>
-                        <button type="button" class="close margin-top-minus5" data-dismiss="modal" aria-hidden="true"><i class="fas fa-times"></i></button>
-                        <div class="portlet-title">
-                          <div class="caption"> Upload File</div>
-                        </div>
-                        <div class="portlet-body">
-                          <div class="add-clip">
-                            <table class="table table-fixed table-borderless">
-                              <tr>
-                                <td style="width: 70px;"><label class="control-label camera-name" for="upload_file_title">Title</label></td>
-                                <td><input type="text" required placeholder="e.g. My Video" class="form-control clip-text-box" id="upload_file_title" name="upload_file_title"></td>
-                              </tr>
-                              <tr>
-                                <td colspan="2">
-                                  <div class="file-drag-drop text-center" for="file-upload">
-                                    <span class="file-label" id="spn-upload-file-name">Choose a file or drag it here.</span>
-                                    <input type="file" name="file-upload" id="file-upload" class="inputfile inputfile-4" data-multiple-caption="{count} files selected" />
-                                  </div>
-                                  <div id="file-upload-progress" class="progress progress-striped progress-success">
-                                    <div class="bar" style="width: 0%;"></div>
-                                  </div>
-                                </td>
-                              </tr>
-                            </table>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                  <fieldset>
-                    <div class="export-buttons">
-                      <div class='pull-left form-group1'>
-                        <input type="button" class="push btn btn-primary margin-right-10 margin-left-5" id="start-file-upload" value="Start upload"/>
-                      </div>
-                      <span id="spn-success-export" class="alert alert-info hide"></span>
-                    </div>
-                  </fieldset>
                 </div>
               </div>
             </div>
