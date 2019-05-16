@@ -1,18 +1,25 @@
 overlay = undefined
 map = undefined
 markers = []
+object = undefined
+point1 = undefined
+point2 = undefined
+camera_location_lat = 0
+camera_location_lng = 0
+object_location_lat = 0
+object_location_lng = 0
+object_diff = 0
 
 initMap = ->
-  console.log ("init mapping")
   mapOptions =
     zoom: 19
-    center: new (google.maps.LatLng)(Evercam.Camera.location.lat, Evercam.Camera.location.lng)
+    center: new (google.maps.LatLng)(camera_location_lat, camera_location_lng)
   map = new (google.maps.Map)(document.getElementById('mapping_container'), mapOptions)
   addCamera()
 
 load_overlay = ->
-  swBound = new (google.maps.LatLng)(Evercam.Camera.location.lat - 0.0100000, Evercam.Camera.location.lng - 0.0100000)
-  neBound = new (google.maps.LatLng)(Evercam.Camera.location.lat + 0.0100000, Evercam.Camera.location.lng + 0.0100000)
+  swBound = new (google.maps.LatLng)(camera_location_lat - 0.0100000, camera_location_lng - 0.0100000)
+  neBound = new (google.maps.LatLng)(camera_location_lat + 0.0100000, camera_location_lng + 0.0100000)
   bounds = new (google.maps.LatLngBounds)(swBound, neBound)
 
   srcImage = 'https://media.evercam.io/v1/cameras/evercam-office/archives/overl-zwqct/thumbnail?type=clip'
@@ -157,7 +164,6 @@ addCamera = ->
   clouser_points = ->
     vertices = polygon.getPath()
     i = 0
-    # $.each vertices.getLength(), (i, xy) ->
     while i < vertices.getLength()
       xy = vertices.getAt(i)
       latlng = new (google.maps.LatLng)(xy.lat(), xy.lng())
@@ -167,6 +173,8 @@ addCamera = ->
         latlng = new (google.maps.LatLng)(xy.lat() - 0.000019, xy.lng())
       marker = markers[i]
       marker.setPosition latlng
+      if i == 1
+        object.setPosition(new (google.maps.LatLng)(xy.lat() - object_diff, xy.lng()))
       i++
 
   update_polygon_closure = (polygon, marker, i) ->
@@ -175,12 +183,16 @@ addCamera = ->
       polygon.getPath().setAt i, latlng
       marker.setPosition latlng
 
-  dragend_camera_focal = ->
-    console.log 'hi'
+  bind_rotate_event = (polygon, degree) ->
+    (event) ->
 
-  destinations.push new (google.maps.LatLng)(Evercam.Camera.location.lat, Evercam.Camera.location.lng)
-  destinations.push new (google.maps.LatLng)(add_subtract(Evercam.Camera.location.lat, 0.000100), add_subtract(Evercam.Camera.location.lng, 0.000500))
-  destinations.push new (google.maps.LatLng)(Evercam.Camera.location.lat - 0.000060, add_subtract(Evercam.Camera.location.lng, 0.000500))
+      rotatePolygon(polygon, degree)
+
+  point1 = new (google.maps.LatLng)(add_subtract(camera_location_lat, 0.000100), add_subtract(camera_location_lng, 0.000500))
+  point2 = new (google.maps.LatLng)(camera_location_lat - 0.000060, add_subtract(camera_location_lng, 0.000500))
+  destinations.push new (google.maps.LatLng)(camera_location_lat, camera_location_lng)
+  destinations.push point1
+  destinations.push point2
 
   polygonOption =
     path: destinations
@@ -196,11 +208,13 @@ addCamera = ->
   polygon.setMap map
   google.maps.event.addListener polygon, 'drag', clouser_points
 
+  $("#btnRotate").on "click", ->
+    rotatePolygon(polygon, 30)
+
   marker_options =
     map: map
     icon: 'https://maps.google.com/mapfiles/kml/pal4/icon57.png'
     flat: true
-    draggable: true
     raiseOnDrag: false
 
   i = 0
@@ -208,20 +222,59 @@ addCamera = ->
     latlng = destinations[i]
     if i == 0
       marker_options.position = new (google.maps.LatLng)(latlng.lat() - 0.000015, latlng.lng().toFixed(7) - 0.000040)
-      marker_options.icon = "https://s3-eu-west-1.amazonaws.com/evercam-public-assets/Selection_051.png"
+      marker_options.icon = "https://s3-eu-west-1.amazonaws.com/evercam-public-assets/camera.png"
     else
       marker_options.position = new (google.maps.LatLng)(latlng.lat().toFixed(7) - 0.000019, latlng.lng())
-      marker_options.icon = "https://maps.google.com/mapfiles/kml/pal4/icon57.png"
+      marker_options.icon = "https://maps.gstatic.com/mapfiles/transparent.png" # https://maps.google.com/mapfiles/kml/pal4/icon57.png"
     marker = new (google.maps.Marker)(marker_options)
     # google.maps.event.addListener marker, 'drag', update_polygon_closure(polygon, marker, i)
     #google.maps.event.addListener(marker, "dragend", dragend_camera_focal());
     markers.push marker
     i++
 
+  object_diff = (point1.lat().toFixed(7) - point2.lat().toFixed(7)) / 2
+  if camera_location_lat is object_location_lat
+    o_lat = point1.lat() - object_diff
+    o_lng = point1.lng()
+  else
+    o_lat = object_location_lat
+    o_lng = object_location_lng
+  marker_options.position = new (google.maps.LatLng)(o_lat, o_lng)
+  marker_options.draggable = true
+  marker_options.icon = "https://maps.google.com/mapfiles/ms/micons/man.png"
+  object = new (google.maps.Marker)(marker_options)
+  google.maps.event.addListener(object, 'drag', bind_rotate_event(polygon, 0.5));
+
 add_subtract = (value, value2) ->
   return value + value2
+
+rotatePolygon = (polygon, angle) ->
+  map = polygon.getMap()
+  prj = map.getProjection()
+  origin = prj.fromLatLngToPoint(polygon.getPath().getAt(0))
+  coords = polygon.getPath().getArray().map((latLng) ->
+
+    point = prj.fromLatLngToPoint(latLng)
+    rotatedLatLng = prj.fromPointToLatLng(rotatePoint(point, origin, angle))
+    {
+      lat: rotatedLatLng.lat()
+      lng: rotatedLatLng.lng()
+    }
+  )
+  polygon.setPath coords
+
+rotatePoint = (point, origin, angle) ->
+  angleRad = angle * Math.PI / 180.0
+  {
+    x: Math.cos(angleRad) * (point.x - (origin.x)) - (Math.sin(angleRad) * (point.y - (origin.y))) + origin.x
+    y: Math.sin(angleRad) * (point.x - (origin.x)) + Math.cos(angleRad) * (point.y - (origin.y)) + origin.y
+  }
 
 window.initializeMappingTab = ->
   map_height = Metronic.getViewPort().height - $("#ul-nav-tab").height()
   $("#mapping_container").height(map_height - 5)
+  camera_location_lat = Evercam.Camera.location_detailed.camera_loc.lat
+  camera_location_lng = Evercam.Camera.location_detailed.camera_loc.lng
+  object_location_lat = Evercam.Camera.location_detailed.object_loc.lat
+  object_location_lng = Evercam.Camera.location_detailed.object_loc.lng
   initMap()
