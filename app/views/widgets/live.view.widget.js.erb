@@ -88,7 +88,7 @@
       var window_height = $(window).height();
       /******* Load HTML *******/
       var na = navigator.userAgent;
-      var is_android = (na.indexOf('Android ') > -1 && !(na.indexOf('Chrome') > -1));
+      var is_android = (na.indexOf('Android ') > -1 && (na.indexOf('Chrome') > -1));
       var mobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)
       var hasFlash = false;
       try {
