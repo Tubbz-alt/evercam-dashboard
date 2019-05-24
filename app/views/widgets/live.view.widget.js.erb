@@ -88,8 +88,9 @@
       var window_height = $(window).height();
       /******* Load HTML *******/
       var na = navigator.userAgent;
-      var is_android = (na.indexOf('Android ') > -1 && (na.indexOf('Chrome') > -1));
-      var mobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)
+      var is_android = (na.indexOf('Android ') > -1 && (na.indexOf('Chrome') > -1))
+      var is_ios = (na.indexOf('Safari') != -1 && na.indexOf('Chrome') == -1 && na.match(/^(iPad|iPod|iPhone)$/))
+      var mobile = /Android|webOS|BlackBerry|IEMobile|Opera Mini/i.test(na)
       var hasFlash = false;
       try {
         var flash = new ActiveXObject('ShockwaveFlash.ShockwaveFlash');
@@ -115,15 +116,13 @@
         });
       } else {
         if (rtmp_stream) {
-          if ((mobile) && !(is_android)) {
-            console.log("mobile instead of android chrome")
+          if ((mobile) && !(is_android) && !(is_ios)) {
             container.html("<img style='width: 100%; height: auto; margin: 0; padding: 0; float: left; border: none;'/>");
             initSocket();
             window.ec_vis_handler = handleVisibilityChange;
             document.addEventListener("visibilitychange", handleVisibilityChange, false);
           }
           else {
-            console.log("android chrome")
             container.html('<iframe id="ec-frame" allowFullScreen style="width: 100%;min-height:' + window_height + 'px; height:100%;" src="<%= request.base_url %>/live.view.private.widget?camera=<%= params[:camera] %>&refresh=<%= params[:refresh] %>&api_id=<%= params[:api_id] %>&api_key=<%= params[:api_key] %>'+query_string+'" frameborder="0" scrolling="no"/>');
             var container_height = jQuery("#ec-frame").height();
             var container_width = jQuery("#ec-frame").width();
