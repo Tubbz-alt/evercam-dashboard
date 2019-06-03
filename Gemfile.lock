@@ -25,9 +25,9 @@ GIT
 
 GIT
   remote: git://github.com/stripe/stripe-ruby.git
-  revision: ec91de6849f34d8d6701a6e91a1b2ee0d50c21ea
+  revision: 0d7968b97b198de5c4c2b71bc980531ee75c052b
   specs:
-    stripe (4.18.0)
+    stripe (4.18.1)
       faraday (~> 0.13)
       net-http-persistent (~> 3.0)
 
@@ -94,7 +94,7 @@ GEM
     autoprefixer-rails (9.5.1.1)
       execjs
     awesome_print (1.8.0)
-    bcrypt (3.1.12)
+    bcrypt (3.1.13)
     builder (3.2.3)
     byebug (11.0.1)
     capybara (3.1.1)
@@ -226,7 +226,7 @@ GEM
     nenv (0.3.0)
     net-http-persistent (3.0.1)
       connection_pool (~> 2.2)
-    newrelic_rpm (6.3.0.355)
+    newrelic_rpm (6.4.0.356)
     nio4r (2.3.1)
     nokogiri (1.10.3)
       mini_portile2 (~> 2.4.0)
@@ -381,7 +381,7 @@ GEM
     selenium-webdriver (3.142.3)
       childprocess (>= 0.5, < 2.0)
       rubyzip (~> 1.2, >= 1.2.2)
-    sequel (5.20.0)
+    sequel (5.21.0)
     shellany (0.0.1)
     simplecov (0.13.0)
       docile (~> 1.1.0)
