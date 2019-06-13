@@ -185,9 +185,9 @@ addCamera = ->
   bind_rotate_event = (polygon, degree) ->
     (event) ->
       if event.latLng.lat().toFixed(7) > o_lat
-        degree = -0.5
-
-      rotatePolygon(polygon, degree)
+        rotatePolygon(polygon, -0.5)
+      else
+        rotatePolygon(polygon, 0.5)
       o_lat = event.latLng.lat().toFixed(7)
 
   point1 = new (google.maps.LatLng)(add_subtract(camera_location_lat, 0.000100), add_subtract(camera_location_lng, 0.000500))
