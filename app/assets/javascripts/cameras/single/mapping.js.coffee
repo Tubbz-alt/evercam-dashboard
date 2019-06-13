@@ -9,6 +9,7 @@ camera_location_lng = 0
 object_location_lat = 0
 object_location_lng = 0
 object_diff = 0
+o_lat = 0
 
 initMap = ->
   mapOptions =
@@ -75,8 +76,6 @@ USGSOverlay = (bounds, image, map) ->
     dragging = @get('dragging')
     map.setOptions 'draggable': !dragging
     return
-
-USGSOverlay.prototype = new (google.maps.OverlayView)
 
 USGSOverlay::onAdd = ->
   self = this
@@ -185,8 +184,11 @@ addCamera = ->
 
   bind_rotate_event = (polygon, degree) ->
     (event) ->
+      if event.latLng.lat().toFixed(7) > o_lat
+        degree = -0.5
 
       rotatePolygon(polygon, degree)
+      o_lat = event.latLng.lat().toFixed(7)
 
   point1 = new (google.maps.LatLng)(add_subtract(camera_location_lat, 0.000100), add_subtract(camera_location_lng, 0.000500))
   point2 = new (google.maps.LatLng)(camera_location_lat - 0.000060, add_subtract(camera_location_lng, 0.000500))
@@ -222,6 +224,7 @@ addCamera = ->
     latlng = destinations[i]
     if i == 0
       marker_options.position = new (google.maps.LatLng)(latlng.lat() - 0.000015, latlng.lng().toFixed(7) - 0.000040)
+      marker_options.rotation = 10
       marker_options.icon = "https://s3-eu-west-1.amazonaws.com/evercam-public-assets/camera.png"
     else
       marker_options.position = new (google.maps.LatLng)(latlng.lat().toFixed(7) - 0.000019, latlng.lng())
@@ -270,6 +273,11 @@ rotatePoint = (point, origin, angle) ->
     y: Math.sin(angleRad) * (point.x - (origin.x)) + Math.cos(angleRad) * (point.y - (origin.y)) + origin.y
   }
 
+handleTabOpen = ->
+  $('.nav-tab-mapping').on 'shown.bs.tab', ->
+    USGSOverlay.prototype = new (google.maps.OverlayView)
+    initMap()
+
 window.initializeMappingTab = ->
   map_height = Metronic.getViewPort().height - $("#ul-nav-tab").height()
   $("#mapping_container").height(map_height - 5)
@@ -277,4 +285,4 @@ window.initializeMappingTab = ->
   camera_location_lng = Evercam.Camera.location_detailed.camera_loc.lng
   object_location_lat = Evercam.Camera.location_detailed.object_loc.lat
   object_location_lng = Evercam.Camera.location_detailed.object_loc.lng
-  initMap()
+  handleTabOpen()
