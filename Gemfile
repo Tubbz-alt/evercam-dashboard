@@ -61,7 +61,6 @@ group :test do
   gem 'poltergeist'
   gem 'nokogiri'
   gem 'rack_session_access'
-  gem 'selenium-webdriver'
   gem 'launchy'
   gem 'webmock'
   gem 'codeclimate-test-reporter', require: nil
