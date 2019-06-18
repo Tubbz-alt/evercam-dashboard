@@ -42,6 +42,8 @@ Rails.application.routes.draw do
 
   get '/v2/cameras/:id/*subpath' => 'cameras#single'
 
+  get '/v2/projects' => 'projects#index', as: :projects_index
+
   get '/v2/snapmails' => 'snapmails#index', as: :snapmails_index
   get '/v2/snapmails/:id/unsubscribe' => 'pages#unsubscribe'
   post '/v2/snapmails/:id/unsubscribe' => 'pages#unsubscribed', as: :unsubscribed_snapmail

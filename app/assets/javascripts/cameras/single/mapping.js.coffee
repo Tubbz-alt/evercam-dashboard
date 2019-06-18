@@ -251,6 +251,24 @@ addCamera = ->
 add_subtract = (value, value2) ->
   return value + value2
 
+getBearings = ->
+  spherical = google.maps.geometry.spherical
+  point1 = markers[0].getPosition()
+  point2 = markers[1].getPosition()
+  point3 = markers[2].getPosition()
+  bearing1 = google.maps.geometry.spherical.computeHeading(point1, point2)
+  bearing2 = google.maps.geometry.spherical.computeHeading(point2, point3)
+  angle = getDifference(bearing1, bearing2)
+  angle
+
+getDifference = (a1, a2) ->
+  al = if a1 > 0 then a1 else 360 + a1
+  a2 = if a2 > 0 then a2 else 360 + a2
+  angle = Math.abs(a1 - a2) + 180
+  if angle > 180
+    angle = 360 - angle
+  Math.abs angle
+
 rotatePolygon = (polygon, angle) ->
   map = polygon.getMap()
   prj = map.getProjection()
@@ -281,8 +299,8 @@ handleTabOpen = ->
 window.initializeMappingTab = ->
   map_height = Metronic.getViewPort().height - $("#ul-nav-tab").height()
   $("#mapping_container").height(map_height - 5)
-  camera_location_lat = Evercam.Camera.location_detailed.camera_loc.lat
-  camera_location_lng = Evercam.Camera.location_detailed.camera_loc.lng
-  object_location_lat = Evercam.Camera.location_detailed.object_loc.lat
-  object_location_lng = Evercam.Camera.location_detailed.object_loc.lng
+  camera_location_lat = Evercam.Camera.location_detailed.lat
+  camera_location_lng = Evercam.Camera.location_detailed.lng
+  object_location_lat = Evercam.Camera.location_detailed.lat
+  object_location_lng = Evercam.Camera.location_detailed.lng
   handleTabOpen()

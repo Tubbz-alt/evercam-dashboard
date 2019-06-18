@@ -1,0 +1,94 @@
+<%= content_for(:title, "Evercam: Projects") %>
+
+<div class="page-content-wrapper">
+  <div class="page-content snapmail">
+    <div class="tabbable tabbable-custom">
+      <div class="center-tabs">
+        <ul class="nav nav-tabs add-camera-page">
+          <li class="active">
+            <a id="lnkProject" href="#project_map" data-toggle="tab">
+              Projects - Dunkettle </a>
+          </li>
+        </ul>
+        <div class="projects-button">
+          <button class="btn-project" data-toggle="modal" data-target="#projects-list-modal">
+            <svg aria-hidden="true" data-prefix="fas" data-icon="list" class="svg-inline" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 -50 512 516">
+              <path fill="currentColor" d="M128 116V76c0-8.837 7.163-16 16-16h352c8.837 0 16 7.163 16 16v40c0 8.837-7.163 16-16 16H144c-8.837 0-16-7.163-16-16zm16 176h352c8.837 0 16-7.163 16-16v-40c0-8.837-7.163-16-16-16H144c-8.837 0-16 7.163-16 16v40c0 8.837 7.163 16 16 16zm0 160h352c8.837 0 16-7.163 16-16v-40c0-8.837-7.163-16-16-16H144c-8.837 0-16 7.163-16 16v40c0 8.837 7.163 16 16 16zM16 144h64c8.837 0 16-7.163 16-16V64c0-8.837-7.163-16-16-16H16C7.163 48 0 55.163 0 64v64c0 8.837 7.163 16 16 16zm0 160h64c8.837 0 16-7.163 16-16v-64c0-8.837-7.163-16-16-16H16c-8.837 0-16 7.163-16 16v64c0 8.837 7.163 16 16 16zm0 160h64c8.837 0 16-7.163 16-16v-64c0-8.837-7.163-16-16-16H16c-8.837 0-16 7.163-16 16v64c0 8.837 7.163 16 16 16z"></path>
+            </svg> All Projects
+          </button>
+          <button class="btn-project">
+            <svg aria-hidden="true" data-prefix="fas" data-icon="plus" class="svg-inline" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 -60 448 530">
+              <path fill="currentColor" d="M416 208H272V64c0-17.67-14.33-32-32-32h-32c-17.67 0-32 14.33-32 32v144H32c-17.67 0-32 14.33-32 32v32c0 17.67 14.33 32 32 32h144v144c0 17.67 14.33 32 32 32h32c17.67 0 32-14.33 32-32V304h144c17.67 0 32-14.33 32-32v-32c0-17.67-14.33-32-32-32z"></path>
+            </svg> New Project
+          </button>
+        </div>
+      </div>
+      <div class="tab-content">
+        <div class="tab-pane active" id="project_map">
+          <div class="button-container">
+            <span class="spn-left spn-add-camera">
+              <svg aria-hidden="true" data-prefix="fas" data-icon="video" class="svg-inline" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 -50 576 512">
+                <path fill="currentColor" d="M336.2 64H47.8C21.4 64 0 85.4 0 111.8v288.4C0 426.6 21.4 448 47.8 448h288.4c26.4 0 47.8-21.4 47.8-47.8V111.8c0-26.4-21.4-47.8-47.8-47.8zm189.4 37.7L416 177.3v157.4l109.6 75.5c21.2 14.6 50.4-.3 50.4-25.8V127.5c0-25.4-29.1-40.4-50.4-25.8z"></path>
+              </svg> Add Camera
+            </span>
+            <span class="spn-right spn-add-floor-pan">
+              <svg aria-hidden="true" data-prefix="fas" data-icon="building" class="svg-inline" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 -50 448 512">
+                <path fill="currentColor" d="M436 480h-20V24c0-13.255-10.745-24-24-24H56C42.745 0 32 10.745 32 24v456H12c-6.627 0-12 5.373-12 12v20h448v-20c0-6.627-5.373-12-12-12zM128 76c0-6.627 5.373-12 12-12h40c6.627 0 12 5.373 12 12v40c0 6.627-5.373 12-12 12h-40c-6.627 0-12-5.373-12-12V76zm0 96c0-6.627 5.373-12 12-12h40c6.627 0 12 5.373 12 12v40c0 6.627-5.373 12-12 12h-40c-6.627 0-12-5.373-12-12v-40zm52 148h-40c-6.627 0-12-5.373-12-12v-40c0-6.627 5.373-12 12-12h40c6.627 0 12 5.373 12 12v40c0 6.627-5.373 12-12 12zm76 160h-64v-84c0-6.627 5.373-12 12-12h40c6.627 0 12 5.373 12 12v84zm64-172c0 6.627-5.373 12-12 12h-40c-6.627 0-12-5.373-12-12v-40c0-6.627 5.373-12 12-12h40c6.627 0 12 5.373 12 12v40zm0-96c0 6.627-5.373 12-12 12h-40c-6.627 0-12-5.373-12-12v-40c0-6.627 5.373-12 12-12h40c6.627 0 12 5.373 12 12v40zm0-96c0 6.627-5.373 12-12 12h-40c-6.627 0-12-5.373-12-12V76c0-6.627 5.373-12 12-12h40c6.627 0 12 5.373 12 12v40z"></path>
+              </svg> Add Floor Plan
+            </span>
+          </div>
+          <div id="mapping_container" class=""></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="projects-list-modal" class="modal fade projects-list-modal">
+  <div class="modal-dialog max-width-470">
+    <div class="modal-content">
+      <div id="form-create-clip" class="modal-body">
+        <div class="row">
+          <div class='col-lg-12 col-md-12 col-sm-12'>
+            <div class='portlet'>
+              <button type="button" class="close margin-top-minus5" data-dismiss="modal" aria-hidden="true"><i class="fas fa-times"></i></button>
+              <div class="portlet-title">
+                <div class="caption"> All Projects</div>
+              </div>
+              <div class="portlet-body">
+                <div class="add-clip">
+                  <table class="table table-borderless projects_table">
+                    <thead>
+                      <th>Title</th>
+                      <th>Cameras</th>
+                      <th>Date</th>
+                      <th></th>
+                    </thead>
+                    <tbody>
+
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <fieldset>
+          <div class="save-settings">
+            <div class='pull-left form-group'><label class="control-label" for="add-button"></label>
+
+            </div>
+          </div>
+        </fieldset>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  window.Evercam.Projects = <%= @projects.to_json.html_safe %>;
+  google.maps.event.addDomListener(window, 'load', window.initializeProjects);
+  // $(document).ready(function () {
+  //   window.initializeProjects();
+  // });
+</script>

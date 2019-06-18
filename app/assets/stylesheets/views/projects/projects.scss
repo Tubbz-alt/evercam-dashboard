@@ -1,0 +1,71 @@
+#project_map {
+  margin: 0 -15px;
+}
+
+.projects-button {
+  float: right;
+  position: absolute;
+  right: 0;
+  top: 3px;
+}
+
+.btn-project {
+  height: 30px;
+  padding: 0 .5rem !important;
+  font-size: 1.4rem;
+  background: #606c76;
+  border-color: #606c76;
+  margin-right: .5rem;
+  margin-bottom: 0;
+  color: #ffffff;
+  border: 0;
+}
+
+.btn-project:hover {
+  background-color: #428bca;
+}
+
+.button-container {
+  position: absolute;
+  z-index: 1;
+  left: 50%;
+  top: 45px;
+  padding: 5px;
+  background-color: #ffffff;
+  border-radius: 2px;
+}
+
+.svg-inline {
+  width: 12px;
+}
+
+.spn-left {
+  padding: 0 3px;
+  border-right: solid 1px #000000;
+}
+
+.spn-right {
+  padding-left: 5px;
+}
+
+.spn-add-camera, .spn-add-floor-pan {
+  cursor: pointer;
+}
+
+.max-width-470 {
+  width: 470px;
+}
+
+.projects_table thead {
+  border-bottom: solid 1px #e7e7e7;
+}
+
+.delete-project {
+  cursor: pointer;
+}
+
+.disabled-link,
+.disabled-link:hover {
+  color: #000000;
+  cursor: not-allowed;
+}

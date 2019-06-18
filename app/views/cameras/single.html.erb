@@ -342,17 +342,10 @@
       lng: <%= @camera.deep_fetch('location', 'lng') {} %>
     },
     location_detailed: {
-      camera_loc: {
-        lat: <%= @camera.deep_fetch('location_detailed', 'camera_loc', 'lat') { @camera.deep_fetch('location', 'lat') {0} } %>,
-        lng: <%= @camera.deep_fetch('location_detailed', 'camera_loc', 'lng') {@camera.deep_fetch('location', 'lng') {0}} %>
-      },
-      object_loc: {
-        lat: <%= @camera.deep_fetch('location_detailed', 'object_loc', 'lat') {@camera.deep_fetch('location', 'lat') {0}} %>,
-        lng: <%= @camera.deep_fetch('location_detailed', 'object_loc', 'lng') {@camera.deep_fetch('location', 'lng') {0}} %>
-      },
-      fov: {
-        lat: <%= @camera.deep_fetch('location_detailed', 'fov', 'horizontal') {90} %>
-      }
+        lat: <%= @camera.deep_fetch('location_detailed', 'lat') {0} %>,
+        lng: <%= @camera.deep_fetch('location_detailed', 'lng') {0} %>,
+        dir: <%= @camera.deep_fetch('location_detailed', 'dir') {0} %>,
+        fov_h: <%= @camera.deep_fetch('location_detailed', 'fov_h') {0} %>
     },
     cloud_recording: {
       frequency: <%= @cloud_recording['frequency'].to_i %>,
