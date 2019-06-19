@@ -112,7 +112,7 @@
       }
 
       if (priv || denied == true) {
-        container.html('<iframe id="ec-frame" allowFullScreen style="height: 100%;top: 0;left: 0;position:absolute;" src="<%= request.base_url %>/live.view.private.widget?camera=<%= params[:camera] %>&private=true&refresh=<%= params[:refresh] %>&api_id=<%= params[:api_id] %>&api_key=<%= params[:api_key] %>'+query_string+'" frameborder="0" scrolling="no"/>');
+        container.html('<iframe id="ec-frame" allowFullScreen style="width:100%;height: 100%;top: 0;left: 0;position:absolute;" src="<%= request.base_url %>/live.view.private.widget?camera=<%= params[:camera] %>&private=true&refresh=<%= params[:refresh] %>&api_id=<%= params[:api_id] %>&api_key=<%= params[:api_key] %>'+query_string+'" frameborder="0" scrolling="no"/>');
         $('#ec-frame').load(function() {
         });
       } else {
@@ -124,7 +124,7 @@
             document.addEventListener("visibilitychange", handleVisibilityChange, false);
           }
           else {
-            container.html('<iframe id="ec-frame" allowFullScreen style="height: 100%;top: 0;left: 0;position:absolute;" src="<%= request.base_url %>/live.view.private.widget?camera=<%= params[:camera] %>&refresh=<%= params[:refresh] %>&api_id=<%= params[:api_id] %>&api_key=<%= params[:api_key] %>'+query_string+'" frameborder="0" scrolling="no"/>');
+            container.html('<iframe id="ec-frame" allowFullScreen style="width:100%;height: 100%;top: 0;left: 0;position:absolute;" src="<%= request.base_url %>/live.view.private.widget?camera=<%= params[:camera] %>&refresh=<%= params[:refresh] %>&api_id=<%= params[:api_id] %>&api_key=<%= params[:api_key] %>'+query_string+'" frameborder="0" scrolling="no"/>');
             var container_height = jQuery("#ec-frame").height();
             var container_width = jQuery("#ec-frame").width();
             if (container_height === 0) {
