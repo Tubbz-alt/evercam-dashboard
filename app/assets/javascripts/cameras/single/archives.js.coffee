@@ -599,7 +599,7 @@ getTitle = (row, type, set, meta) ->
       <div class='media-url-title'>
       #{file_link}</div>#{archive_inputs}"
   else
-    fa_class = "<i class='fas fa-video type-icon'></i>" 
+    fa_class = "<i class='fas fa-video type-icon'></i>"
     if row.type is "compare"
       mp4Url = "#{Evercam.API_URL}cameras/#{Evercam.Camera.id}/compares/#{row.id}.mp4"
       fa_class = "<svg fill='#ffffff' height='18' viewBox='0 0 24 24' width='18'>

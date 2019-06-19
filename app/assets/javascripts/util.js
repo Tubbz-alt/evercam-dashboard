@@ -48,3 +48,18 @@ function copyToClipboard(element) {
 function toISOString(datetime) {
   return datetime.format("YYYY-MM-DDTHH:mm:ss.SSSZ"); // "2014-09-08T08:02:17-05:00"
 }
+
+function formatBytes(bytes, decimals) {
+  var dm, i, k, sizes;
+  if (decimals == null) {
+    decimals = 2;
+  }
+  if (bytes === 0) {
+    return '0 Bytes';
+  }
+  k = 1024;
+  dm = decimals < 0 ? 0 : decimals;
+  sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];
+  i = Math.floor(Math.log(bytes) / Math.log(k));
+  return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + ' ' + sizes[i];
+};

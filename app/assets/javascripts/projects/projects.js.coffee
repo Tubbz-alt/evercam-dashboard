@@ -1,6 +1,8 @@
 loaded_project = null
 map = null
 is_set_map_center = false
+upload = null;
+uploadIsRunning = false;
 
 initMap = ->
   mapOptions =
@@ -8,16 +10,16 @@ initMap = ->
     center: new (google.maps.LatLng)(0, 0)
   map = new (google.maps.Map)(document.getElementById('mapping_container'), mapOptions)
   if loaded_project.overlays.length > 0
-    load_overlay(map)
+    $.each loaded_project.overlays, (index, overlay) ->
+      load_overlay(overlay)
 
-load_overlay = (map) ->
-  prj_overlay = loaded_project.overlays[0]
+load_overlay = (prj_overlay) ->
   swBound = new (google.maps.LatLng)(prj_overlay.sw_bounds.lat, prj_overlay.sw_bounds.lng) # - 0.0100000
   neBound = new (google.maps.LatLng)(prj_overlay.ne_bounds.lat, prj_overlay.ne_bounds.lng) # + 0.0100000
   bounds = new (google.maps.LatLngBounds)(swBound, neBound)
   map.setCenter(swBound)
 
-  srcImage = prj_overlay.path # 'https://media.evercam.io/v1/cameras/evercam-office/archives/overl-zwqct/thumbnail?type=clip'
+  srcImage = prj_overlay.path
   overlay = new USGSOverlay(bounds, srcImage, map)
 
   markerA = new (google.maps.Marker)(
@@ -227,12 +229,111 @@ load_cameras = ->
   $.each loaded_project.camera_ids, (index, camera) ->
     addCamera(camera)
 
+onFileSelect = ->
+  $('input[type="file"]').change (e) ->
+    if e.target.files.length > 0
+      fileName = e.target.files[0].name
+      fileType = e.target.files[0].type
+      # save_overlay("https://staging.evercam.io/files/7c95b17744f7020185689a36ffc28d56", fileName, fileType)
+      # console.log "The file '#{fileName}' has been selected. Size: #{formatBytes(e.target.files[0].size)}"
+      $('#btn_file_upload').removeAttr("disabled")
+    else
+      $('#btn_file_upload').attr("disabled", "disabled")
+
+  $("#btn_file_upload").on "click", ->
+    input = document.querySelector("#file-upload")
+    if upload
+      if uploadIsRunning
+        upload.abort()
+        $("#btn_file_upload").html("Upload")
+        uploadIsRunning = false
+      else
+        upload.start()
+        $("#btn_file_upload").html('<i class="fas fa-sync fa-spin"></i>')
+        uploadIsRunning = true
+    else
+      startUpload()
+
+startUpload = ->
+  file = document.querySelector('input[type="file"]').files[0]
+  if !file
+    return
+
+  $("#btn_file_upload").html('<i class="fas fa-sync fa-spin"></i>')
+
+  options =
+    endpoint: Evercam.TUS_URL
+    resume: true
+    chunkSize: Infinity
+    retryDelays: [0, 1000, 3000, 5000]
+    onError: (error) ->
+      console.log error
+      # Notification.error("Failed because: #{error}")
+      reset()
+    onProgress: (bytesUploaded, bytesTotal) ->
+      percentage = (bytesUploaded / bytesTotal * 100).toFixed(2)
+      # $("#file-upload-progress .bar").css("width", "#{percentage}%")
+      # $("#file-upload-progress .bar").text("#{parseInt(percentage)}%")
+    onSuccess: ->
+      save_overlay(upload.url, upload.file.name, file.type)
+      # save_upload_file(upload.url, upload.file.name)
+      reset()
+
+  upload = new tus.Upload(file, options)
+  upload.start()
+  uploadIsRunning = true
+
+reset = ->
+  $("#btn_file_upload").html("Upload")
+  # $("#file-upload-progress .bar").css("width", "0%")
+  # $("#file-upload-progress .bar").text("0%")
+  upload = null
+  uploadIsRunning = false
+
+save_overlay = (file_url, filename, fileType) ->
+  image_name = file_url.slice (file_url.lastIndexOf('/') - 1 >>> 0) + 2
+  lnglat = map.getCenter()
+
+  data =
+    image_name: image_name
+    sw_lat: lnglat.lat() - 0.0005000
+    sw_lng: lnglat.lng() - 0.0005000
+    ne_lat: lnglat.lat() + 0.0005000
+    ne_lng: lnglat.lng() + 0.0005000
+    file_url: file_url
+    fileType: fileType
+    file_extension: filename.slice (filename.lastIndexOf('.') - 1 >>> 0) + 2
+    api_id: Evercam.User.api_id
+    api_key: Evercam.User.api_key
+
+  onError = (jqXHR, status, error) ->
+    if jqXHR.status is 500
+      Notification.error("Internal Server Error. Please contact to admin.")
+    else
+      Notification.error(jqXHR.responseJSON.message)
+
+  onSuccess = (data, status, jqXHR) ->
+    reset()
+    $("#add-floorplan-modal").modal('hide')
+    $("#file-upload").val("")
+    load_overlay(data)
+
+  settings =
+    cache: false
+    data: data
+    dataType: 'json'
+    error: onError
+    success: onSuccess
+    type: 'POST'
+    url: "#{Evercam.API_URL}projects/#{loaded_project.id}/overlay"
+  $.ajax(settings)
+
 window.initializeProjects = ->
   bind_projects()
   load_project()
   map_height = Metronic.getViewPort().height - $(".nav-tabs").height()
   $("#mapping_container").height(map_height - 16)
-
+  onFileSelect()
   loaded_project = Evercam.Projects[0]
   $("#lnkProject").text("Projects - #{loaded_project.name}")
   initMap()
