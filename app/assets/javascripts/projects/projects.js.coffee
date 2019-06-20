@@ -14,26 +14,33 @@ initMap = ->
       load_overlay(overlay)
 
 load_overlay = (prj_overlay) ->
-  swBound = new (google.maps.LatLng)(prj_overlay.sw_bounds.lat, prj_overlay.sw_bounds.lng) # - 0.0100000
-  neBound = new (google.maps.LatLng)(prj_overlay.ne_bounds.lat, prj_overlay.ne_bounds.lng) # + 0.0100000
+  swBound = new (google.maps.LatLng)(prj_overlay.sw_bounds.lat, prj_overlay.sw_bounds.lng)
+  neBound = new (google.maps.LatLng)(prj_overlay.ne_bounds.lat, prj_overlay.ne_bounds.lng)
   bounds = new (google.maps.LatLngBounds)(swBound, neBound)
   map.setCenter(swBound)
 
   srcImage = prj_overlay.path
   overlay = new USGSOverlay(bounds, srcImage, map)
+  console.log(overlay)
+  overlay = overlay.l
 
   markerA = new (google.maps.Marker)(
     position: swBound
     icon: 'https://maps.google.com/mapfiles/kml/pal4/icon57.png'
+    flat: true
     map: map
-    draggable: true)
+    draggable: true
+    raiseOnDrag: false)
 
   markerB = new (google.maps.Marker)(
     position: neBound
     icon: 'https://maps.google.com/mapfiles/kml/pal4/icon57.png'
     map: map
-    draggable: true)
+    flat: true
+    draggable: true
+    raiseOnDrag: false)
 
+  # debugger;
   # overlay.bindTo 'sw', markerA, 'position', true
   # overlay.bindTo 'ne', markerB, 'position', true
 
@@ -234,8 +241,6 @@ onFileSelect = ->
     if e.target.files.length > 0
       fileName = e.target.files[0].name
       fileType = e.target.files[0].type
-      # save_overlay("https://staging.evercam.io/files/7c95b17744f7020185689a36ffc28d56", fileName, fileType)
-      # console.log "The file '#{fileName}' has been selected. Size: #{formatBytes(e.target.files[0].size)}"
       $('#btn_file_upload').removeAttr("disabled")
     else
       $('#btn_file_upload').attr("disabled", "disabled")
@@ -272,11 +277,8 @@ startUpload = ->
       reset()
     onProgress: (bytesUploaded, bytesTotal) ->
       percentage = (bytesUploaded / bytesTotal * 100).toFixed(2)
-      # $("#file-upload-progress .bar").css("width", "#{percentage}%")
-      # $("#file-upload-progress .bar").text("#{parseInt(percentage)}%")
     onSuccess: ->
       save_overlay(upload.url, upload.file.name, file.type)
-      # save_upload_file(upload.url, upload.file.name)
       reset()
 
   upload = new tus.Upload(file, options)
@@ -285,8 +287,6 @@ startUpload = ->
 
 reset = ->
   $("#btn_file_upload").html("Upload")
-  # $("#file-upload-progress .bar").css("width", "0%")
-  # $("#file-upload-progress .bar").text("0%")
   upload = null
   uploadIsRunning = false
 
@@ -345,11 +345,10 @@ USGSOverlay = (bounds, image, map) ->
   @map_ = map
   @div_ = null
   @setMap map
-  @set 'dragging', false
+  @set 'dragging', true
   @addListener 'dragging_changed', ->
     dragging = @get('dragging')
     map.setOptions 'draggable': !dragging
-    return
 
 USGSOverlay.prototype = new (google.maps.OverlayView)
 
@@ -375,6 +374,7 @@ USGSOverlay::onAdd = ->
   mouseTarget.draggable = 'true'
   panes.overlayMouseTarget.appendChild mouseTarget
   @mouseTarget_ = mouseTarget
+
   google.maps.event.addDomListener mouseTarget, 'drag', (e) ->
     if !self.get('dragging') or e.clientX < 0 and e.clientY < 0
       return
@@ -409,7 +409,6 @@ USGSOverlay::onAdd = ->
     self.updateBounds new (google.maps.LatLngBounds)(self.get('sw'), self.get('ne'))
 
 USGSOverlay::draw = ->
-  #debugger;
   overlayProjection = @getProjection()
   sw = overlayProjection.fromLatLngToDivPixel(@bounds_.getSouthWest())
   ne = overlayProjection.fromLatLngToDivPixel(@bounds_.getNorthEast())
