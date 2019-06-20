@@ -20,8 +20,7 @@ load_overlay = (prj_overlay) ->
   map.setCenter(swBound)
 
   srcImage = prj_overlay.path
-  overlay = new USGSOverlay(bounds, srcImage, map)
-  console.log(overlay)
+  overlay = new USGSOverlay(prj_overlay.id, bounds, srcImage, map)
   overlay = overlay.l
 
   markerA = new (google.maps.Marker)(
@@ -40,10 +39,6 @@ load_overlay = (prj_overlay) ->
     draggable: true
     raiseOnDrag: false)
 
-  # debugger;
-  # overlay.bindTo 'sw', markerA, 'position', true
-  # overlay.bindTo 'ne', markerB, 'position', true
-
   google.maps.event.addListener markerA, 'drag', ->
     newPointA = markerA.getPosition()
     newPointB = markerB.getPosition()
@@ -59,14 +54,12 @@ load_overlay = (prj_overlay) ->
   google.maps.event.addListener markerA, 'dragend', ->
     newPointA = markerA.getPosition()
     newPointB = markerB.getPosition()
-    console.log 'point1' + newPointA
-    console.log 'point2' + newPointB
+    update_overlay(overlay.overlay_id, newPointA, newPointB)
 
   google.maps.event.addListener markerB, 'dragend', ->
     newPointA = markerA.getPosition()
     newPointB = markerB.getPosition()
-    console.log 'point1' + newPointA
-    console.log 'point2' + newPointB
+    update_overlay(overlay.overlay_id, newPointA, newPointB)
 
 addCamera = (camera) ->
   destinations = []
@@ -328,7 +321,36 @@ save_overlay = (file_url, filename, fileType) ->
     url: "#{Evercam.API_URL}projects/#{loaded_project.id}/overlay"
   $.ajax(settings)
 
+update_overlay = (overlay_id, sw_lnglat, ne_lnglat) ->
+  data =
+    sw_lat: sw_lnglat.lat()
+    sw_lng: sw_lnglat.lng()
+    ne_lat: ne_lnglat.lat()
+    ne_lng: ne_lnglat.lng()
+    api_id: Evercam.User.api_id
+    api_key: Evercam.User.api_key
+
+  onError = (jqXHR, status, error) ->
+    if jqXHR.status is 500
+      Notification.error("Internal Server Error. Please contact to admin.")
+    else
+      Notification.error(jqXHR.responseJSON.message)
+
+  onSuccess = (data, status, jqXHR) ->
+    true
+
+  settings =
+    cache: false
+    data: data
+    dataType: 'json'
+    error: onError
+    success: onSuccess
+    type: 'PATCH'
+    url: "#{Evercam.API_URL}projects/#{loaded_project.id}/overlay/#{overlay_id}"
+  $.ajax(settings)
+
 window.initializeProjects = ->
+  Notification.init(".bb-alert")
   bind_projects()
   load_project()
   map_height = Metronic.getViewPort().height - $(".nav-tabs").height()
@@ -339,7 +361,8 @@ window.initializeProjects = ->
   initMap()
   load_cameras()
 
-USGSOverlay = (bounds, image, map) ->
+USGSOverlay = (overlay_id, bounds, image, map) ->
+  @overlay_id = overlay_id
   @bounds_ = bounds
   @image_ = image
   @map_ = map
