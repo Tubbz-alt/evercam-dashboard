@@ -185,31 +185,34 @@ rotatePoint = (point, origin, angle) ->
 
 bind_projects = ->
   $.each Evercam.Projects, (index, project) ->
-    row = $("<tr>")
-    cell = $("<td>", {class: "col-md-5"})
-    a = $("<a>")
-    a.attr("href", "javascript:;")
-    a.addClass("load_project")
-    a.attr("data-val", index)
-    a.append(document.createTextNode("#{project.name}"))
-    cell.append(a)
-    row.append(cell)
+    create_project_table_row(index, project)
 
-    cell = $("<td>", {class: "col-md-2"})
-    cell.append(document.createTextNode(project.camera_ids.length))
-    row.append(cell)
+create_project_table_row = (index, project)->
+  row = $("<tr>")
+  cell = $("<td>", {class: "col-md-5"})
+  a = $("<a>")
+  a.attr("href", "javascript:;")
+  a.addClass("load_project")
+  a.attr("data-val", index)
+  a.append(document.createTextNode("#{project.name}"))
+  cell.append(a)
+  row.append(cell)
 
-    cell = $("<td>", {class: "col-md-3"})
-    cell.append(document.createTextNode(moment(project.created_at).format("YYYY/MM/DD")))
-    row.append(cell)
+  cell = $("<td>", {class: "col-md-2"})
+  cell.append(document.createTextNode(project.camera_ids.length))
+  row.append(cell)
 
-    cell = $("<td>", {class: "col-md-1"})
-    i = $("<i>", {class: "fas"})
-    i.addClass("fa-trash-alt delete-project")
-    cell.append(i)
-    row.append(cell)
+  cell = $("<td>", {class: "col-md-3"})
+  cell.append(document.createTextNode(moment(project.created_at).format("YYYY/MM/DD")))
+  row.append(cell)
 
-    $(".projects_table > tbody:last-child").append(row)
+  cell = $("<td>", {class: "col-md-1"})
+  i = $("<i>", {class: "fas"})
+  i.addClass("fa-trash-alt delete-project")
+  cell.append(i)
+  row.append(cell)
+
+  $(".projects_table > tbody:last-child").append(row)
 
 load_project = ->
   $(".projects_table").on "click", ".load_project", ->
@@ -349,6 +352,42 @@ update_overlay = (overlay_id, sw_lnglat, ne_lnglat) ->
     url: "#{Evercam.API_URL}projects/#{loaded_project.id}/overlay/#{overlay_id}"
   $.ajax(settings)
 
+create_project = ->
+  $(".create-project").on "click", ->
+    data =
+      name: "New Project"
+      api_id: Evercam.User.api_id
+      api_key: Evercam.User.api_key
+
+    onError = (jqXHR, status, error) ->
+      if jqXHR.status is 500
+        Notification.error("Internal Server Error. Please contact to admin.")
+      else
+        Notification.error(jqXHR.responseJSON.message)
+
+    onSuccess = (data, status, jqXHR) ->
+      project = data.projects[0]
+      Evercam.Projects.push(project)
+      create_project_table_row(Evercam.Projects.length, project)
+
+      loaded_project = project
+      $("#lnkProject").text("Projects - #{loaded_project.name}")
+      initMap()
+      load_cameras()
+      $('#projects-list-modal').modal('hide')
+      $(".load_project").removeClass("disabled-link")
+      # $(this).addClass("disabled-link")
+
+    settings =
+      cache: false
+      data: data
+      dataType: 'json'
+      error: onError
+      success: onSuccess
+      type: 'POST'
+      url: "#{Evercam.API_URL}projects"
+    $.ajax(settings)
+
 window.initializeProjects = ->
   Notification.init(".bb-alert")
   bind_projects()
@@ -360,6 +399,7 @@ window.initializeProjects = ->
   $("#lnkProject").text("Projects - #{loaded_project.name}")
   initMap()
   load_cameras()
+  create_project()
 
 USGSOverlay = (overlay_id, bounds, image, map) ->
   @overlay_id = overlay_id
