@@ -102,11 +102,6 @@
   padding-top: 4px;
   width: 100%;
 
-  .fa-sync{
-    color: $white;
-    margin: 9px;
-  }
-
   .refresh-gif {
     right: 0%;
     display: none;
@@ -161,11 +156,6 @@
   }
 }
 
-.offline-camera-placeholder, .offline-camera-placeholder img  {
-  height: 100%;
-  max-width: 100%;
-}
-
 .red {
   color: $evercam-red;
 }
@@ -178,8 +168,9 @@
 #fullscreen:hover .ptz-controls {
   opacity: 1;
 }
+
 .play-options,
-.offline-edit {
+.offline-play-icons {
   position: absolute;
   opacity: 0;
   top: 50%;
@@ -191,35 +182,46 @@
   margin-top: -5px;
 }
 
+.offline-play-icons {
+  display: inline-flex;
+}
+
 .btn-live-player,
-.edit-offline-image {
+.edit-offline-image,
+.offline-refresh-icon {
   float: left;
   padding: 8px 11px;
-  background: rgba(0,0,0,0.7);
+  background: $ever-background;
   font-size: 12px;
-  color: #ffffff;
+  color: $white;
   border-radius: 50% !important;
   transition: all .2s linear;
   margin-right: 5px;
   cursor: pointer;
+  width: 40px;
+  height: 36px;
 }
 
 .btn-live-player:hover,
-.edit-offline-image:hover {
-  background: #68a2d5;
+.edit-offline-image:hover,
+.offline-refresh-icon:hover {
+  background: $hover-blue;
 }
 
-.offline-camera-placeholder:hover .offline-edit {
-  opacity: 1;
+.offline-refresh-icon .fa-spin {
+  display: none;
+}
+
+.offline-camera-placeholder:hover {
+
+  .offline-play-icons {
+    opacity: 1;
+  }
 }
 
 .refresh-live-snap{
   bottom: 9px;
   left: 68px;
-}
-
-.refresh-camera:hover {
-  background: $hover-blue;
 }
 
 .tint img {
@@ -293,8 +295,7 @@
 .offline-message {
   position: absolute;
   width: auto;
-  top: 30px;
-  right: 42%;
+  top: 35px;
   color: $white;
   background: $ever-background;
   font-size: 15px;
@@ -364,15 +365,6 @@
   .offline-message {
     font-size: 8px;
     padding: 5px 5px;
-  }
-
-  .wrap .refresh-camera {
-    width: 26px;
-    height: 26px;
-  }
-
-  .wrap .fa-sync {
-    margin: 5px;
   }
 }
 
@@ -656,18 +648,6 @@
     font-size: 12px;
   }
 
-}
-
-.refresh-camera {
-  position: absolute;
-  top: 30px;
-  right: 0%;
-  width: 36px;
-  height: 36px;
-  text-align: center;
-  cursor: pointer;
-  background: $ever-background;
-  border-radius: 50px;
 }
 
 .offline-image {

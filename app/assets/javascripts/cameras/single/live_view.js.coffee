@@ -332,10 +332,12 @@ calculateHeight = ->
 handleResize = ->
   calculateHeight()
   getImageRealRatio()
+  centerDiv()
   $(window).resize ->
     calculateHeight()
     getImageRealRatio()
     turnOffZoomEffect()
+    centerDiv()
 
 handlePtzCommands = ->
   $(".ptz-controls").on 'click', 'i', ->
@@ -695,6 +697,12 @@ centerTabClick = ->
     if $(e.target).is('#ul-nav-tab li a,#ul-nav-tab li a span')
       turnOffZoomEffect()
 
+centerDiv = ->
+  messagebox_width = $("#offline_message").width()
+  screen_width = $(".offline-camera-placeholder").width()
+  offset = (screen_width - messagebox_width) / 2
+  $("#offline_message").css "right", offset
+
 hoverMouseOnFullscreen = ->
   $('#live-view-placeholder #fullscreen').hover (->
     $("#jpg-portion .play-options").css('opacity', '1')
@@ -777,6 +785,7 @@ window.initializeLiveTab = ->
   hoverMouseOnFullscreen()
   detectMobile()
   check_dunkettle_camera()
+  hidegif()
 
 ->
   calculateHeight()
