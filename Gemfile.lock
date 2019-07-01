@@ -25,9 +25,9 @@ GIT
 
 GIT
   remote: git://github.com/stripe/stripe-ruby.git
-  revision: f25d080e3b2765775c252b8f9cf3384cf2057676
+  revision: 431124356fbcd7d0d869ff9a8bb24f25b8a5a259
   specs:
-    stripe (4.19.0)
+    stripe (4.21.0)
       faraday (~> 0.13)
       net-http-persistent (~> 3.0)
 
@@ -224,7 +224,7 @@ GEM
     nenv (0.3.0)
     net-http-persistent (3.0.1)
       connection_pool (~> 2.2)
-    newrelic_rpm (6.4.0.356)
+    newrelic_rpm (6.5.0.357)
     nio4r (2.3.1)
     nokogiri (1.10.3)
       mini_portile2 (~> 2.4.0)
@@ -251,7 +251,8 @@ GEM
     pry-rails (0.3.9)
       pry (>= 0.10.4)
     public_suffix (3.1.0)
-    puma (3.12.1)
+    puma (4.0.0)
+      nio4r (~> 2.0)
     rack (2.0.7)
     rack-test (1.1.0)
       rack (>= 1.0, < 3)
