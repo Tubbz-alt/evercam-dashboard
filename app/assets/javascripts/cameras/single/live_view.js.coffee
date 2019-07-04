@@ -225,11 +225,13 @@ handleSaveSnapshot = ->
     saveAs(blob, "#{Evercam.Camera.id}-#{moment().toISOString()}.jpg")
 
   $('#save-offline-snapshot').on 'click', ->
+    NProgress.start()
     blob = $("#live .camera-thumbnail").attr('src')
     toDataURL blob, (dataUrl) ->
       console.log 'RESULT:', dataUrl
       blob = base64ToBlob(dataUrl)
       saveAs(blob, "#{Evercam.Camera.id}.png")
+      NProgress.done()
 
 toDataURL = (src, callback, outputFormat) ->
   img = new Image
