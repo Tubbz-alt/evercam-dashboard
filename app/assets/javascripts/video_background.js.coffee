@@ -41,31 +41,73 @@ validateUsernameEmail = (input_String, input_name) ->
   $.ajax(settings)
 
 getInputValue = ->
-  $('#user_username').focusout ->
-    input_value = $('#user_username').val()
-    user_name = 'username'
-    setTimeout (->
-      if $('#signup-username').hasClass('has-error')
-        hideUsernameValidationIcons()
-        $('#username-error-block').css 'display', 'none'
-      else
-        hideUsernameValidationIcons()
-        $('#signup-username .username-loading-icon').show()
-        validateUsernameEmail(input_value, user_name)
-    ), 100
+  $('#user_firstname').focusout ->
+    input_value = $('#user_firstname').val()
+    if !validateName(input_value)
+      $('#invalid-userfirst-name').css 'display', 'block'
+    else
+      $('#invalid-userfirst-name').css 'display', 'none'
 
+  $('#user_lastname').focusout ->
+    input_value = $('#user_lastname').val()
+    if !validateName(input_value)
+      $('#invalid-userlast-name').css 'display', 'block'
+    else
+      $('#invalid-userlast-name').css 'display', 'none'
+  
   $('#user_email').focusout ->
     input_value = $('#user_email').val()
     user_email = 'email'
-    setTimeout (->
-      if $('#signup-email').hasClass('has-error')
-        hideEmailValidationIcons()
-        $('#email-error-block').css 'display', 'none'
-      else
-        hideEmailValidationIcons()
-        $('#signup-email .email-loading-icon').show()
-        validateUsernameEmail(input_value, user_email)
-    ), 100
+    if !validateEmail(input_value)
+      $('#signup-email').addClass('has-error')
+      $('#incorrect-email-block').css 'display', 'block'
+      validateExistingEmailValue(input_value, user_email)
+    else
+      $('#signup-email').removeClass('has-error')
+      $('#incorrect-email-block').css 'display', 'none'
+      validateExistingEmailValue(input_value, user_email)
+
+  $('#user_password').focusout ->
+    input_value = $('#user_password').val()
+    if !validatePassword(input_value)
+      $('#invalid-password').css 'display', 'block'
+    else
+      $('#invalid-password').css 'display', 'none'
+
+validateExistingEmailValue = (input_value, user_email) ->
+  setTimeout (->
+    if $('#signup-email').hasClass('has-error')
+      hideEmailValidationIcons()
+      $('#email-error-block').css 'display', 'none'
+    else
+      hideEmailValidationIcons()
+      $('#signup-email .email-loading-icon').show()
+      validateUsernameEmail(input_value, user_email)
+  ), 100
+
+validateEmail = (email) ->
+  re = /^(?!.*\.{2})[a-zA-Z0-9!.#$%&'*+"/=?^_`{|}~-]+@[a-zA-Z\d\-]+(\.[a-zA-Z]+)*\.[a-zA-Z]+\z*$/
+  addresstrimed = email.replace(RegExp(' ', 'gi'), '')
+  if re.test(addresstrimed) == false
+    false
+  else
+    true
+
+validateName = (first_last_name) ->
+  re = /^[A-Za-z\/\s\']*$/
+  addresstrimed = first_last_name.replace(RegExp(' ', 'gi'), '')
+  if re.test(addresstrimed) == false
+    false
+  else
+    true
+
+validatePassword = (password) ->
+  re = /^.{6,}$/
+  addresstrimed = password.replace(RegExp(' ', 'gi'), '')
+  if re.test(addresstrimed) == false
+    false
+  else
+    true
 
 hideUsernameValidationIcons = ->
   $('#username-not-available').addClass('hide')

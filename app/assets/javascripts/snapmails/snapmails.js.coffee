@@ -261,7 +261,7 @@ clickOutsideTheEmailInputField = ->
       validateTagsEmails()
 
 validateEmailByVal = (email) ->
-  reg = /^(?!.*\.{2})[a-zA-Z0-9._%+"-]+@[a-zA-Z\d\-]+(\.[a-zA-Z]+)*\.[a-zA-Z]+\z*$/
+  reg = /^(?!.*\.{2})[a-zA-Z0-9!.#$%&'*+"/=?^_`{|}~-]+@[a-zA-Z\d\-]+(\.[a-zA-Z]+)*\.[a-zA-Z]+\z*$/
   addresstrimed = email.replace(RegExp(' ', 'gi'), '')
   if reg.test(addresstrimed) == false
     false

@@ -696,7 +696,7 @@ getFavicon = (email) ->
     "https://gravatar.com/avatar/#{signature}?d=#{favicon}"
 
 validateEmail = (email) ->
-  re = /^(?!.*\.{2})[a-zA-Z0-9._%+"-]+@[a-zA-Z\d\-]+(\.[a-zA-Z]+)*\.[a-zA-Z]+\z*$/
+  re = /^(?!.*\.{2})[a-zA-Z0-9!.#$%&'*+"/=?^_`{|}~-]+@[a-zA-Z\d\-]+(\.[a-zA-Z]+)*\.[a-zA-Z]+\z*$/
   addresstrimed = email.replace(RegExp(' ', 'gi'), '')
   if re.test(addresstrimed) == false
     false
