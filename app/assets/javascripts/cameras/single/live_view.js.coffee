@@ -223,7 +223,34 @@ handleSaveSnapshot = ->
   $('#save-live-snapshot').on 'click', ->
     blob = base64ToBlob($("#live-player-image").attr('src'))
     saveAs(blob, "#{Evercam.Camera.id}-#{moment().toISOString()}.jpg")
-    # download($("#live-player-image").attr('src'), "#{Evercam.Camera.id}-#{moment().toISOString()}.jpg", "image/jpg")
+
+  $('#save-offline-snapshot').on 'click', ->
+    blob = $("#live .camera-thumbnail").attr('src')
+    toDataURL blob, (dataUrl) ->
+      console.log 'RESULT:', dataUrl
+      blob = base64ToBlob(dataUrl)
+      saveAs(blob, "#{Evercam.Camera.id}.png")
+
+toDataURL = (src, callback, outputFormat) ->
+  img = new Image
+  img.crossOrigin = 'Anonymous'
+
+  img.onload = ->
+    canvas = document.createElement('CANVAS')
+    ctx = canvas.getContext('2d')
+    dataURL = undefined
+    canvas.height = @naturalHeight
+    canvas.width = @naturalWidth
+    ctx.drawImage this, 0, 0
+    dataURL = canvas.toDataURL(outputFormat)
+    callback dataURL
+    return
+
+  img.src = src
+  if img.complete or img.complete == undefined
+    img.src = 'data:image/png;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw=='
+    img.src = src
+  return
 
 getImageRealRatio = ->
   $('<img/>').attr('src', $("#live-player-image").attr('src')).load ->
@@ -618,6 +645,10 @@ ResetTimers = ->
           hideIcons()
         else
           showIcons()
+        if $("#offline-snapshot-magnifier").hasClass 'enabled'
+          hideOfflineIcons()
+        else
+          showOfflineIcons()
       when 'video'
         playInActiveVideoStream()
         turnOffZoomEffect()
@@ -676,9 +707,24 @@ onClickLiveSnapshotMagnifier = ->
       $(this).toggleClass 'enabled'
       $('.zoomContainer').hide()
       showIcons()
+  
+  $('#offline-snapshot-magnifier').on 'click', ->
+    $('.zoomContainer').remove()
+    if $('#offline-snapshot-magnifier.enabled').length == 0
+      initOfflineElevateZoom()
+      $(this).toggleClass 'enabled'
+    else
+      $(this).toggleClass 'enabled'
+      $('.zoomContainer').hide()
+      showOfflineIcons()
 
 turnOffZoomEffect = ->
   $('#live-snapshot-magnifier').removeClass 'enabled'
+  $('.zoomContainer').hide()
+  showIcons()
+
+turnOfflineZoomEffect = ->
+  $('#offline-snapshot-magnifier').removeClass 'enabled'
   $('.zoomContainer').hide()
   showIcons()
 
@@ -687,15 +733,27 @@ hideIcons = ->
     $(".play-options .hide-icon").hide()
     $(".play-options .ui-snapshot-magnifier").show()
 
+
+hideOfflineIcons = ->
+  if !mobile
+    $(".offline-play-icons .hide-icon").hide()
+    $(".offline-play-icons .ui-snapshot-magnifier").show()
+
 showIcons = ->
   if !mobile
     $(".play-options .hide-icon").show()
     $(".play-options .ui-snapshot-magnifier").show()
 
+showOfflineIcons = ->
+  if !mobile
+    $(".offline-play-icons  .hide-icon").show()
+    $(".offline-play-icons  .ui-snapshot-magnifier").show()
+
 centerTabClick = ->
   $(document).click (e) ->
     if $(e.target).is('#ul-nav-tab li a,#ul-nav-tab li a span')
       turnOffZoomEffect()
+      turnOfflineZoomEffect()
 
 centerDiv = ->
   messagebox_width = $("#offline_message").width()
@@ -711,12 +769,29 @@ hoverMouseOnFullscreen = ->
       $("#jpg-portion .play-options").css('opacity', '1')
     else
       $("#jpg-portion .play-options").css('opacity', '0')
+  
+  $('#live .offline-camera-placeholder').hover (->
+    $(".offline-image .offline-play-icons").css('opacity', '1')
+  ), ->
+    if $("#offline-snapshot-magnifier").hasClass 'enabled'
+      $(".offline-image .offline-play-icons").css('opacity', '1')
+    else
+      $(".offline-image .offline-play-icons").css('opacity', '0')
 
 initElevateZoom = ->
   hideIcons()
   $('#live-player-image').elevateZoom
     zoomType: 'lens',
-    responsive: 'true'
+    responsive: 'true',
+    scrollZoom: true,
+    lensShape: 'round',
+    lensSize: 230
+
+initOfflineElevateZoom = ->
+  hideOfflineIcons()
+  $('.offline-image .camera-thumbnail').elevateZoom
+    zoomType: 'lens',
+    responsive: 'true',
     scrollZoom: true,
     lensShape: 'round',
     lensSize: 230
@@ -725,10 +800,12 @@ removeMagnifierOnEsc = ->
   $(document).on 'keyup', (evt) ->
     if evt.keyCode = 27
       turnOffZoomEffect()
+      turnOfflineZoomEffect()
 
 detectMobile = ->
   if mobile
     $('#jpg-portion #live-snapshot-magnifier').hide()
+    $('.offline-camera-placeholder #offline-snapshot-magnifier').hide()
     $('#jpg-portion #edit-live-image').hide()
 
 check_dunkettle_camera = ->
