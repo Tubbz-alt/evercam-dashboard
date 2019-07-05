@@ -1121,15 +1121,16 @@ onClickSnapshotMagnifier = ->
     else
       $(this).toggleClass 'enabled'
       $('.zoomContainer').hide()
-      $("#fullscreen #snapshot-tab-save").show()
+      $("#fullscreen #snapshot-tab-save .hide-icon").show()
 
 turnOffZoomEffect = ->
   $('#snapshot-magnifier').removeClass 'enabled'
   $('.zoomContainer').hide()
-  $("#fullscreen #snapshot-tab-save").show()
+  $("#fullscreen #snapshot-tab-save .hide-icon").show()
 
 initElevateZoom = ->
-  $("#fullscreen #snapshot-tab-save").hide()
+  $("#fullscreen #snapshot-tab-save .hide-icon").hide()
+  $("#fullscreen #snapshot-tab-save").css "opacity", '1'
   $('#imgPlayback').elevateZoom
     zoomType: 'lens',
     responsive: 'true'
@@ -1175,9 +1176,9 @@ detectMobile = ->
 centerSaveIcon = ->
   tab_width = $("#recording-tab").width()
   offset = ($('#imgPlayback').height() - $('#save-recording-image').height()) / 2
-  $('#save-recording-image').css "margin-top", offset
-  $('#edit-recording-image').css "margin-top", offset
-  $('#recordings .play-options').css "top", "0"
+  $('#save-recording-image').css "top", offset
+  $('#edit-recording-image').css "top", offset
+  $('#snapshot-magnifier').css "top", offset
   if tab_width is 0
     setTimeout (-> centerSaveIcon()), 500
 
@@ -1191,6 +1192,15 @@ handle_info_submenu = ->
     else
       $(".m-menu__submenu").css("top", top - 190)
     $(".m-menu__submenu").toggle( "slow")
+
+hoverMouseOnFullscreen = ->
+  $('#recording-tab #fullscreen').hover (->
+    $("#snapshot-tab-save.play-options").css('opacity', '1')
+  ), ->
+    if $("#snapshot-magnifier").hasClass 'enabled'
+      $("#snapshot-tab-save.play-options").css('opacity', '1')
+    else
+      $("#snapshot-tab-save.play-options").css('opacity', '0')
 
 window.initializeRecordingsTab = ->
   initDatePicker()
@@ -1214,3 +1224,4 @@ window.initializeRecordingsTab = ->
   setCreateClipDate()
   detectMobile()
   handle_info_submenu()
+  hoverMouseOnFullscreen()

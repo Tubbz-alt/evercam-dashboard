@@ -98,19 +98,29 @@
       <div class="wrap">
         <div class="offline-image">
           <%= preview(@camera, true) %>
-          <div id="refresh-offline-camera" title="refresh" class="refresh-camera">
-            <i class="fas fa-sync icon-font fa-still"></i>
-            <i class='fas fa-sync fa-spin fa-1x fa-fw refresh-gif icon-font' aria-hidden='true'></i>
-          </div>
           <span id="offline_message" class="offline-message" style="display:none;">
             Camera is Offline<br>
             Cause: <%= @camera['offline_reason'] %>
           </span>
-          <% if @current_user %>
-          <div class="offline-edit">
-            <div class="edit-offline-image"><%= image_tag("edit-icon-white.svg", :class => "edit-image", title: "Edit Image") %></div>
+          <div class="offline-play-icons">
+            <% if @current_user %>
+            <div class="offline-edit hide-icon">
+              <div class="edit-offline-image"><%= image_tag("edit-icon-white.svg", :class => "edit-image", title: "Edit Image") %></div>
+            </div>
+            <% end %>
+            <div id="offline-snapshot-magnifier" type="button" class="btn-live-player ui-snapshot-magnifier">
+              <i class="fa fa-search magnifier-icon icon-font" aria-hidden="true" title="Magnifier"></i>
+            </div>
+            <div id="save-offline-snapshot" class="btn-live-player save-live hide-icon">
+              <i class="fa fa-download icon-font" aria-hidden="true" title="Download Image"></i>
+            </div>
+            <div id="refresh-offline-camera" title="refresh" class="refresh-camera hide-icon">
+              <div class="offline-refresh-icon">
+                <i class="fas fa-sync icon-font fa-still"></i>
+                <i class='fas fa-sync fa-spin fa-1x fa-fw refresh-gif icon-font' aria-hidden='true'></i>
+              </div>
+            </div>
           </div>
-          <% end %>
         </div>
       </div>
     </div>

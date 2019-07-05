@@ -12,7 +12,7 @@ updateCode = () ->
   api_credentials = if pre_auth == 'true' then "&api_id=#{window.api_credentials.api_id}&api_key=#{window.api_credentials.api_key}" else ''
 
   baseText = "<div id='ec-container-#{camera}' style='width:
-    #{width}#{option_width}'></div>
+    #{width}#{option_width};position:relative;padding-top:56.2%;'></div>
     <script src='#{url}/live.view.widget.js?refresh=#{refresh}&camera=#{camera}&private=#{priv}#{api_credentials}' async></script>"
   $('#code').val(baseText)
   document.removeEventListener("visibilitychange", window.ec_vis_handler, false);
@@ -33,7 +33,7 @@ updatePartialValues = ->
   api_credentials = if pre_auth == 'true' then "&api_id=#{window.api_credentials.api_id}&api_key=#{window.api_credentials.api_key}" else ''
 
   baseText = "<div id='ec-container-#{camera}' style='width:
-    #{width}#{option_width}'><div>
+    #{width}#{option_width};position:relative;padding-top:56.2%;'><div>
     <script src='#{url}/live.view.widget.js?refresh=#{refresh}&camera=#{camera}&private=#{priv}#{api_credentials}' async></script>"
   $('#code').val(baseText)
   $("#ec-container-#{camera}").width("#{width}#{option_width}")

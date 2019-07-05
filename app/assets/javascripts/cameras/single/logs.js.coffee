@@ -171,6 +171,26 @@ format = (row) ->
     else
       return "No data available."
 
+
+otherCameraSettings = (data) ->
+  if data.old.name
+    return "
+      <tr>
+        <td>Name</td>
+        #{loadTheChange(data.old.name, data.new.name)}
+      </tr>
+      <tr>
+        <td>Public</td>
+        #{loadTheChange(data.old.public, data.new.public)}
+      </tr>
+      <tr>
+        <td>Discoverable</td>
+        #{loadTheChange(data.old.discoverable, data.new.discoverable)}
+      </tr>
+    "
+  else
+    ""
+
 getCameraValues = (data) ->
   if data
     return "
@@ -180,6 +200,7 @@ getCameraValues = (data) ->
           <th style='background-color: #f1f1f1; font-size: 12px;'>Old</th>
           <th style='background-color: #f1f1f1; font-size: 12px;'>New</th>
         </tr>
+        #{otherCameraSettings(data)}
         <tr>
           <td>IP</td>
           #{loadTheChange(data.old.external_host, data.new.external_host)}

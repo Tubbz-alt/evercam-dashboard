@@ -18,28 +18,30 @@
 
             <div class="text-center">
               <div class="col-sm-12 no-padding margin-top-bottom-15 form-group<%= field_errors.include?("firstname") ? " has-error" : "" %>">
-                <%= f.text_field :firstname, value: params.fetch('user', {})[:firstname], class: "form-control", "required" => "", "data-validation" => "custom", "data-validation-regexp" => "^[A-Za-z\/\s\']*$", "data-validation-error-msg" => "First names can consist of alphabetical characters and spaces only" %>
+                <%= f.text_field :firstname, value: params.fetch('user', {})[:firstname], class: "form-control", "required" => "" %>
                 <% if field_errors.include?("firstname") %>
                   <span class="help-block arrow_box form-error text-left"><%= field_errors["firstname"] %></span>
                 <% end %>
                 <%= f.label :firstname, 'First Name', class: "float-label" %>
+                <span id="invalid-userfirst-name" class="username-error float-left">Last names can consist of alphabetical characters and spaces only.</span>
               </div>
             </div>
 
             <div class="text-center">
               <div class="col-sm-12 no-padding margin-top-bottom-15 form-group<%= field_errors.include?("lastname") ? " has-error" : "" %>">
-                <%= f.text_field :lastname, value: params.fetch('user', {})[:lastname], class: "form-control", "required" => "", "data-validation" => "custom", "data-validation-regexp" => "^[A-Za-z\/\s\']*$", "data-validation-error-msg" => "Last names can consist of alphabetical characters and spaces only" %>
+                <%= f.text_field :lastname, value: params.fetch('user', {})[:lastname], class: "form-control", "required" => "" %>
                 <% if field_errors.include?("lastname") %>
                   <span class="help-block arrow_box form-error text-left"><%= field_errors["lastname"] %></span>
                 <% end %>
                 <%= f.label :lastname, 'Last Name', class: "float-label" %>
+                <span id="invalid-userlast-name" class="username-error float-left">Last names can consist of alphabetical characters and spaces only.</span>
               </div>
             </div>
 
             <div class="text-center">
               <div id="signup-email" class="col-sm-12 no-padding margin-top-bottom-15 form-group<%= field_errors.include?("email") ? " has-error" : "" %>">
                 <% if @share_request.nil? %>
-                  <%= f.text_field :email, value: params.fetch('user', {})[:email], class: "form-control", "data-validation" => "email", "required" => "" %>
+                  <%= f.text_field :email, value: params.fetch('user', {})[:email], class: "form-control", "required" => "" %>
                   <%= f.label :email, 'Email', class: "float-label" %>
                 <% else %>
                   <%= f.text_field :email, value: @share_request.email, readonly: 'readonly', class: "form-control grey-background" %>
@@ -49,7 +51,8 @@
                   <%= f.label :email, 'Email', class: "float-label" %>
                 <% end %>
                 <img src="/assets/refresh.gif" class="refresh-gif icon-position email-loading-icon">
-                <span id="email-error-block" class="username-error float-left">Email has already been taken.</span>
+                <span id="email-error-block" class="username-error">Email has already been taken.</span>
+                <span id="incorrect-email-block" class="username-error">You have not type correct Email address.</span>
                 <span id="email-not-available" class="red hide"><i class="fa fa-times icon-position icon-font"></i></span>
                 <span id="email-available" class="green hide"><i class="fa fa-check icon-position icon-font"></i></span>
               </div>
@@ -57,11 +60,12 @@
 
             <div class="text-center">
               <div class="col-sm-12 no-padding margin-top-bottom-15 form-group<%= field_errors.include?("password") ? " has-error" : "" %>">
-                <%= f.password_field :password, autocomplete: "off", class: "form-control", "required" => "", "data-validation" => "custom", "data-validation-regexp" => "^.{6,}$", "data-validation-error-msg" => "Password should be at least 6 characters"%>
+                <%= f.password_field :password, autocomplete: "off", class: "form-control" %>
                 <% if field_errors.include?("password") %>
                   <span class="help-block form-error arrow_box text-left"><%= field_errors["password"] %></span>
                 <% end %>
                 <%= f.label :password, class: "float-label" %>
+                <span id="invalid-password" class="username-error">Password should be at least 6 characters.</span>
               </div>
             </div>
             <div class="col-sm-12 no-padding text-center">

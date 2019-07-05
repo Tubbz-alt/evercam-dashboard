@@ -85,9 +85,11 @@
             <i class="fa fa-cog icon-font"></i> Settings
           <% end %>
         </li>
-        <li role="presentation">
-          <a onclick='$zoho.salesiq.floatwindow.visible("show");'><i class="fa fa-comment icon-font"></i><span class="title"> Live Support</span></a>
-        </li>
+        <% if Evercam::Config.env == :production %>
+          <li role="presentation">
+            <a onclick='$zoho.salesiq.floatwindow.visible("show");'><i class="fa fa-comment icon-font"></i><span class="title"> Live Support</span></a>
+          </li>
+        <% end %>
         <li class="nprogCall">
           <a rel="nofollow" data-method="delete" href=<%= signout_path %>><i class="fas fa-sign-out-alt right-ajustment icon-font"></i><span class="title"> Sign out </span></a>
         </li>

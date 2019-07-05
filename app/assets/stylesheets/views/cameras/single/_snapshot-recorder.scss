@@ -21,27 +21,7 @@
       }
     }
 
-    .ui-snapshot-magnifier {
-      float: right;
-      right: 0%;
-      margin-right: 33px;
-      font-size: 20px;
-      width: 31px;
-      border: none;
-      background: $black-opacity-background;
-      position: absolute;
-      z-index: 999999999;
-      border-radius: 0px !important;
-
-      i {
-        color: $white;
-        margin-top: 0px;
-      }
-    }
-
-    .ui-snapshot-magnifier:active,
     .ui-datepicker-trigger:active,
-    .ui-snapshot-magnifier:focus,
     .ui-datepicker-trigger:focus {
       outline: none;
     }
@@ -668,10 +648,6 @@
 
       .ui-datepicker-trigger {
         display: none !important;
-      }
-
-      .ui-snapshot-magnifier {
-        margin-right: 3px;
       }
     }
   }
