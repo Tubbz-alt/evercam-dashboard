@@ -48,7 +48,6 @@ changeMonthFromArrow = (value) ->
   if $('#ui_date_picker_inline .datepicker-days').is(':visible')
     status_flag = false
     clearHourCalendar()
-    xhrRequestChangeMonth.abort()
     $("#ui_date_picker_inline").datepicker('fill')
     d = $("#ui_date_picker_inline").datepicker('getDate')
     month = d.getMonth()
@@ -76,6 +75,7 @@ changeMonthFromArrow = (value) ->
     BoldSnapshotHour(false)
 
 walkDaysInMonth = (year, month) ->
+  xhrRequestChangeMonth.abort() if xhrRequestChangeMonth
   showDaysLoadingAnimation()
   showHourLoadingAnimation()
   showLoader()
