@@ -1176,8 +1176,8 @@ setCreateClipDate = (hour_selected) ->
 detectMobile = ->
   mobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)
   if mobile
-    $('#recording-tab #snapshot-magnifier').hide()
-    $('#recording-tab #edit-recording-image').hide()
+    $('#snapshot-magnifier').hide()
+    $('#edit-recording-image').hide()
 
 centerSaveIcon = ->
   tab_width = $("#recording-tab").width()
