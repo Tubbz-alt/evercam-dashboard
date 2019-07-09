@@ -1147,6 +1147,7 @@ centerTabClick = ->
   $(document).click (e) ->
     if $(e.target).is('#ul-nav-tab li a,#ul-nav-tab li a span')
       turnOffZoomEffect()
+      detectMobile()
 
 setImageSource = ->
   data_image_src = $("#imgPlayback").attr('src')
@@ -1201,7 +1202,6 @@ handle_info_submenu = ->
 hoverMouseOnFullscreen = ->
   $('#recording-tab #fullscreen').hover (->
     $("#snapshot-tab-save.play-options").css('opacity', '1')
-    detectMobile()
   ), ->
     if $("#snapshot-magnifier").hasClass 'enabled'
       $("#snapshot-tab-save.play-options").css('opacity', '1')
