@@ -11,7 +11,6 @@ timoutWarning = 120000
 warningTimer = undefined
 timeoutTimer = undefined
 zoom_level = 0
-mobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)
 
 controlButtonEvents = ->
   $(".play-pause").on "click", ->
@@ -271,7 +270,6 @@ getImageRealRatio = ->
     play_options_position = $("#fullscreen").height() / 2
     play_options_left_position = ($("#fullscreen").width() - play_options_width) / 2
     $('#jpg-portion .play-options').css({"top": "#{play_options_position}px"})
-    $('#jpg-portion .play-options').css({"left": "#{play_options_left_position}px"})
     if $('.camera-preview-online').hasClass 'hide'
       if offline_img_height > offline_wrap_height ||
       offline_img_width < offline_wrap_width
@@ -731,25 +729,21 @@ turnOfflineZoomEffect = ->
   showIcons()
 
 hideIcons = ->
-  if !mobile
-    $(".play-options .hide-icon").hide()
-    $(".play-options .ui-snapshot-magnifier").show()
+  $(".play-options .hide-icon").hide()
+  $(".play-options .ui-snapshot-magnifier").show()
 
 
 hideOfflineIcons = ->
-  if !mobile
-    $(".offline-play-icons .hide-icon").hide()
-    $(".offline-play-icons .ui-snapshot-magnifier").show()
+  $(".offline-play-icons .hide-icon").hide()
+  $(".offline-play-icons .ui-snapshot-magnifier").show()
 
 showIcons = ->
-  if !mobile
-    $(".play-options .hide-icon").show()
-    $(".play-options .ui-snapshot-magnifier").show()
+  $(".play-options .hide-icon").show()
+  $(".play-options .ui-snapshot-magnifier").show()
 
 showOfflineIcons = ->
-  if !mobile
-    $(".offline-play-icons  .hide-icon").show()
-    $(".offline-play-icons  .ui-snapshot-magnifier").show()
+  $(".offline-play-icons  .hide-icon").show()
+  $(".offline-play-icons  .ui-snapshot-magnifier").show()
 
 centerTabClick = ->
   $(document).click (e) ->
@@ -804,12 +798,6 @@ removeMagnifierOnEsc = ->
       turnOffZoomEffect()
       turnOfflineZoomEffect()
 
-detectMobile = ->
-  if mobile
-    $('#jpg-portion #live-snapshot-magnifier').hide()
-    $('.offline-camera-placeholder #offline-snapshot-magnifier').hide()
-    $('#jpg-portion #edit-live-image').hide()
-
 check_dunkettle_camera = ->
   cameras = ["dunke-wqnzu", "dunke-ibcwt", "dunke-bnivp", "dunke-gqiwe", "camer-runah", "camer-sraxw", "camer-xeojc"]
   if cameras.indexOf("#{Evercam.Camera.id}") is -1
@@ -862,7 +850,6 @@ window.initializeLiveTab = ->
   removeMagnifierOnEsc()
   centerTabClick()
   hoverMouseOnFullscreen()
-  detectMobile()
   check_dunkettle_camera()
   hidegif()
 

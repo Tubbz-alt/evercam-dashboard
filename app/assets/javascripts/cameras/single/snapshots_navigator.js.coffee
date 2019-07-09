@@ -910,6 +910,10 @@ calculateWidth = ->
   is_widget = $('#snapshot-diff').val()
   tab_width = $("#recording-tab").width()
   right_column_width = $("#recording-tab .right-column").width()
+  play_options_width = $("#recording-tab .play-options").width()
+  play_options_position = $("#recording-tab #fullscreen").height() / 2
+  play_options_left_position = ($("#recording-tab #fullscreen").width() - play_options_width) / 2
+  $('#recording-tab .play-options').css({"left": "#{play_options_left_position}px"})
   if tab_width is 0
     width_add = if !is_widget then 10 else 30
     tab_width = $(".tab-content").width() + width_add
@@ -1170,8 +1174,8 @@ setCreateClipDate = (hour_selected) ->
 detectMobile = ->
   mobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)
   if mobile
-    $('#snapshot-magnifier').hide()
-    $('#edit-recording-image').hide()
+    $('#recording-tab #snapshot-magnifier').hide()
+    $('#recording-tab #edit-recording-image').hide()
 
 centerSaveIcon = ->
   tab_width = $("#recording-tab").width()
@@ -1196,6 +1200,7 @@ handle_info_submenu = ->
 hoverMouseOnFullscreen = ->
   $('#recording-tab #fullscreen').hover (->
     $("#snapshot-tab-save.play-options").css('opacity', '1')
+    detectMobile()
   ), ->
     if $("#snapshot-magnifier").hasClass 'enabled'
       $("#snapshot-tab-save.play-options").css('opacity', '1')

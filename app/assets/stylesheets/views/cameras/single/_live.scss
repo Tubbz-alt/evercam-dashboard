@@ -175,7 +175,6 @@
   position: absolute;
   opacity: 0;
   top: 50%;
-  left: 48%;
   transition: all .2s linear;
   z-index: 99998;
   margin-left: -18px;
@@ -183,8 +182,13 @@
   margin-top: -5px;
 }
 
+.play-options {
+  left: 40%;
+}
+
 .offline-play-icons {
   display: inline-flex;
+  left: 44%;
 }
 
 .btn-live-player,
@@ -359,6 +363,9 @@
     }
   }
 
+  .offline-play-icons {
+    left: 40%;
+  }
 }
 
 @media (max-width: 600px) {
@@ -649,6 +656,35 @@
     font-size: 12px;
   }
 
+  .play-options {
+    left: 35%;
+  }
+
+  .offline-play-icons {
+    left: 35%;
+  }
+}
+
+@media (max-width: 380px) {
+
+  .play-options {
+    left: 30%;
+  }
+
+  .offline-play-icons {
+    left: 30%;
+  }
+}
+
+@media (max-width: 320px) {
+
+  .play-options {
+    left: 23%;
+  }
+
+  .offline-play-icons {
+    left: 30%;
+  }
 }
 
 .offline-image {
