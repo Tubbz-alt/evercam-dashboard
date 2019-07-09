@@ -37,7 +37,7 @@ th {
 }
 
 #fullscreen #edit-recording-image {
-  display: none;
+  display: none !important;
 }
 
 #recording input {
@@ -651,7 +651,7 @@ ul, menu, dir {
 }
 
 .ui-snapshot-magnifier {
-  height: 24px;
+  height: auto;
 }
 
 .form-vertical {
