@@ -917,6 +917,7 @@ calculateWidth = ->
   if tab_width is 0
     width_add = if !is_widget then 10 else 30
     tab_width = $(".tab-content").width() + width_add
+    setTimeout (-> calculateWidth()), 100
   width_remove = if !is_widget then 40 else 20
   left_col_width = tab_width - right_column_width - width_remove
   if left_col_width > 360
