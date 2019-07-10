@@ -22,6 +22,7 @@ class UsersController < ApplicationController
       @share_request = CameraShareRequest.where(
         key: params[:key]
       ).first
+      session[:referral_url] = "#{@share_request.user.email} shared #{@share_request.camera.name}"
       unless @share_request.nil?
         user = User.where(Sequel.ilike(:email, @share_request.email)).first
         unless user.blank?
