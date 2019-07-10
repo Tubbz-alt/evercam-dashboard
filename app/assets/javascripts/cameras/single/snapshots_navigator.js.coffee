@@ -1094,12 +1094,13 @@ updateImageCalendar = (oldest_latest_image_date) ->
   oldest_latest_image_year = image_date.getFullYear()
   oldest_latest_image_month = image_date.getMonth() + 1
   oldest_latest_image_day = image_date.getDate()
-  walkDaysInMonth(oldest_latest_image_year, oldest_latest_image_month)
+  # walkDaysInMonth(oldest_latest_image_year, oldest_latest_image_month)
+  ResetDays()
   HighlightFirstDay(oldest_latest_image_year, oldest_latest_image_month, oldest_latest_image_day)
   cameraCurrentHour = image_date.getHours()
   $("#tdI#{cameraCurrentHour}").addClass("active has-snapshot")
   SetInfoMessage(currentFrameNumber, oldest_latest_image_date)
-  BoldSnapshotHour(false)
+  # BoldSnapshotHour(false)
 
 HighlightFirstDay = (year, month, day) ->
   d = $("#ui_date_picker_inline").datepicker('getDate')
