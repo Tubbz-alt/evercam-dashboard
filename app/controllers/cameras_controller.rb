@@ -226,8 +226,6 @@ class CamerasController < ApplicationController
       @camera_shares = nil
       @share_requests = nil
       @cloud_recording = @camera["cloud_recordings"] if @has_edit_rights
-      @timelapse_recording = @camera["timelapse_recordings"] if @has_edit_rights
-      @timelapse_recording = get_default_settings if @timelapse_recording.nil?
       @cr_status = nil
       if @cloud_recording.nil?
         @cr_status = true
