@@ -245,7 +245,7 @@ showLoader = ->
     $("#imgLoaderRec").show()
 
 SetInfoMessage = (currFrame, date_time) ->
-  snaptime = moment.tz(date_time, Evercam.Camera.timezone).format('MM/DD/YYYY HH:mm:ss')
+  snaptime = moment.tz(date_time, Evercam.Camera.timezone).format('DD/MM/YYYY HH:mm:ss')
   $("#divInfo").fadeIn()
   $("#snapshot-notes-text").show()
   $("#divInfo").html("<span class='snapshot-frame'>#{currFrame} of #{totalSnaps}</span> <span class='snapshot-date'>#{snaptime}</span>")
