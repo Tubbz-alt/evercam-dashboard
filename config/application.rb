@@ -49,8 +49,6 @@ module EvercamDashboard
       bare-bones.js
       good_bye.scss
       widgets.js
-      widgets/add_camera.js
-      widgets/localstorage_widget.js
       jquery.js
       phoenix.js
       widgets.scss

@@ -74,12 +74,6 @@
                 <a data-toggle="tab" data-target="#logs" class="nav-tab-logs"> Logs</a>
               </li>
             <% end %>
-
-            <% if @camera['vendor_name'] == 'Hikvision Digital Technology' %>
-              <li>
-                <a data-toggle="tab" data-target="#local-storage" class="nav-tab-local-storage">Local Storage</a>
-              </li>
-            <% end %>
             <% if current_user %>
               <li>
                 <a data-toggle="tab" data-target="#archives" class="nav-tab-archives">Archives</a>
@@ -272,12 +266,6 @@
           <% if has_edit_right %>
             <div id="logs" class="tab-pane">
               <%= render partial: "cameras/single/logs_tab" %>
-            </div>
-          <% end %>
-
-          <% if @camera['vendor_name'] == 'Hikvision Digital Technology' %>
-            <div id="local-storage" class="tab-pane">
-              <%= render partial: "cameras/single/local_storage_tab" %>
             </div>
           <% end %>
           <% if current_user %>
