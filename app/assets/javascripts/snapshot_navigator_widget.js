@@ -23,6 +23,7 @@
 //=
 
 //= require jquery.browser
+//= require jquery-ui.js
 //= require lib/shred.bundle
 //= require lib/jquery.slideto.min
 //= require lib/jquery.wiggle.min
@@ -42,3 +43,4 @@
 //= require util.js
 //= require image_editor_basic.js
 //= require FileSaver
+//= require imagexray.js

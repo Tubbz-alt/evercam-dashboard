@@ -24,6 +24,7 @@ $evercam-grey: #f3f3f3;
 $border-black: #ccc;
 $text-shadow: 0 1px 2px rgba(0, 0, 0, 0.15);
 $white-transparent-background: rgba(255, 255, 255, 0.85);
+$white-light-transparent-background: rgba(255, 255, 255, 0.45);
 $line-end-white-background: rgba(255, 255, 255, 0);
 $line-end-gredient-background: rgba(0, 0, 0, 0);
 $pop-up-text:#666;
@@ -40,6 +41,7 @@ $border-grey: rgba(16, 28, 39, 0.58);
 $help-block-color: #a94442;
 $error-border-color: rgb(185, 74, 72);
 $black-opacity-background: rgba(0, 0, 0, 0.2);
+$darker-black-opacity-background: rgba(0, 0, 0, 0.4);
 $card-box-shadow: rgba(173, 174, 175, 0.07);
 
 $regular-family:'proxima-nova-regular', "Open Sans", Arial, Helvetica, sans-serif;
@@ -52,6 +54,7 @@ $tag-text-color: #5f6368;
 $tag-border-color: #dadce0;
 $light-yellow: #ffff0052;
 $lighter-yellow: #ffff0000;
+$dark-yellow: #debd1b;
 
 .grey {
   color: $grey;

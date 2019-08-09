@@ -6,7 +6,7 @@ currentFrameNumber = 0
 cameraCurrentHour = 0
 PreviousImageHour = "tdI8"
 BoldDays = []
-ClearCalendarTimeOut = null
+ClearImageCalendarTimeOut = null
 isPlaying = false
 PauseAfterPlay = false
 playInterval = 250
@@ -28,6 +28,10 @@ is_logged_intercom = false
 query_value = undefined
 fist_image_date = null
 status_flag = true
+data_xray_value = null
+image_xray_date = null
+removeCalendarHighlightflag = false
+xhrChangeMonth = null
 mobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)
 
 initDatePicker = ->
@@ -45,7 +49,7 @@ initDatePicker = ->
     SetImageHour $(this).html(), "tdI#{$(this).html()}"
 
 changeMonthFromArrow = (value) ->
-  if $('#ui_date_picker_inline .datepicker-days').is(':visible')
+  if $("#ui_date_picker_inline .datepicker-days").is(':visible')
     status_flag = false
     clearHourCalendar()
     $("#ui_date_picker_inline").datepicker('fill')
@@ -90,11 +94,12 @@ walkDaysInMonth = (year, month) ->
 
   onSuccess = (response, status, jqXHR) ->
     if response.days.length is 0
+      $("#imgPlayback").attr("src", "/assets/nosnapshots.svg")
+      $('#snapshot-tab-save').hide()
       hideDaysLoadingAnimation()
       hideHourLoadingAnimation()
       HideLoader()
-      $("#imgPlayback").attr("src", "/assets/nosnapshots.svg")
-      $('#snapshot-tab-save').hide()
+      disableXray()
     else
       for day in response.days
         HighlightDay(year, month, day, true)
@@ -132,7 +137,11 @@ datePickerSelect = (value)->
   else
     NoRecordingDayOrHour()
 
-  ClearCalendarTimeOut = setTimeout(ResetDays, 100)
+  ClearImageCalendarTimeOut = setTimeout((->
+    ResetDays()
+    return
+  ), 100)
+  return
 
 datePickerChange=(value)->
   d = value.date
@@ -148,12 +157,14 @@ datePickerChange=(value)->
 clearHourCalendar = ->
   $("#hourCalendar td[class*='day']").removeClass("active")
   calDays = $("#hourCalendar td[class*='day']")
+  
   calDays.each ->
     calDay = $(this)
     calDay.removeClass('has-snapshot')
 
 ResetDays = ->
-  clearTimeout ClearCalendarTimeOut
+  clearTimeout ClearImageCalendarTimeOut
+
   return unless BoldDays.length > 0
   calDays = $("#ui_date_picker_inline table td[class*='day']")
   calDays.each (idx, el) ->
@@ -167,9 +178,9 @@ ResetDays = ->
           calDay.addClass('no-snapshot')
 
 selectCurrentDay = ->
-  $(".datepicker-days table td[class*='day']").removeClass('active')
+  $("#ui_date_picker_inline.datepicker-days table td[class*='day']").removeClass('active')
   dt = $("#ui_date_picker_inline").datepicker('getDate')
-  calDays = $(".datepicker-days table td[class*='day']")
+  calDays = $("#ui_date_picker_inline .datepicker-days table td[class*='day']")
   calDays.each (idx, el) ->
     calDay = $(this)
     if !calDay.hasClass('old') && !calDay.hasClass('new')
@@ -308,10 +319,10 @@ handleBodyLoadContent = ->
     cameraCurrentHour = currentDate.getHours()
     $("#ui_date_picker_inline").datepicker('update', currentDate)
 
-  $("#tdI#{cameraCurrentHour}").addClass("active")
-  PreviousImageHour = "tdI#{cameraCurrentHour}"
+  $("#hourCalendar #tdI#{cameraCurrentHour}").addClass("active")
+  PreviousImageHour = "hourCalendar #tdI#{cameraCurrentHour}"
   $("#ui_date_picker_inline").datepicker('setDate', currentDate)
-  selectCurrentDay()
+  selectCurrentDay("ui_date_picker_inline")
   $(".btn-group").tooltip()
 
   showLoader()
@@ -329,18 +340,18 @@ fullscreenImage = ->
       else
         $("#imgPlayback").css('width','100%')
 
-HighlightCurrentMonth = ->
+HighlightCurrentMonth = (calendar_type)->
   d = $("#ui_date_picker_inline").datepicker('getDate')
   year = d.getFullYear()
   month = d.getMonth() + 1
   walkDaysInMonth(year, month)
 
-HighlightDay = (year, month, day, exists) ->
+HighlightDay = (year, month, day, exists, calendar_type, calendar_name) ->
   d = $("#ui_date_picker_inline").datepicker('getDate')
   calendar_year = d.getFullYear()
   calendar_month = d.getMonth() + 1
   if year == calendar_year and month == calendar_month
-    calDays = $("#ui_date_picker_inline table td[class*='day']")
+    calDays = $("#ui_date_picker_inline table td[class*='day']") 
     calDays.each ->
       calDay = $(this)
       if !calDay.hasClass('old') && !calDay.hasClass('new')
@@ -355,11 +366,12 @@ HighlightDay = (year, month, day, exists) ->
             calDay.addClass('no-snapshot')
       else
         calDay.addClass('disabled')
-    hideDaysLoadingAnimation()
-    hideHourLoadingAnimation()
-    HideLoader()
+    
+  hideDaysLoadingAnimation()
+  hideHourLoadingAnimation()
+  HideLoader()
 
-BoldSnapshotHour = (callFromDt) ->
+BoldSnapshotHour = (callFromDt, calendar_type) ->
   showHourLoadingAnimation()
   $("#divDisableButtons").removeClass("hide").addClass("show")
   $("#divFrameMode").removeClass("show").addClass("hide")
@@ -373,6 +385,7 @@ BoldSnapshotHour = (callFromDt) ->
     $('#snapshot-tab-save').hide()
     $("#imgPlayback").attr("src", "/assets/nosnapshots.svg")
     $("#imgPlayback").removeAttr("data-timestamp")
+    disableXray()
 
   settings =
     cache: false
@@ -394,7 +407,7 @@ BoldSnapshotHourSuccess = (result, context) ->
   AssignedDate = $("#ui_date_picker_inline").datepicker('getDate')
   selected_hour = parseInt(AssignedDate.getHours())
   for hour in result.hours
-    $("#tdI#{hour}").addClass('has-snapshot')
+    $("#hourCalendar #tdI#{hour}").addClass('has-snapshot')
     if currentDate.getDate() isnt AssignedDate.getDate() ||
     currentDate.getMonth() isnt AssignedDate.getMonth()
       hasRecords = true
@@ -410,7 +423,7 @@ BoldSnapshotHourSuccess = (result, context) ->
   else
     if hasRecords
       if this.isCall
-        GetCameraInfo true
+        GetCameraInfo(true)
       else
         SetImageHour(cameraCurrentHour, "tdI#{cameraCurrentHour}")
     else
@@ -421,13 +434,13 @@ GetCameraInfo = (isShowLoader) ->
   $("#divDisableButtons").removeClass("hide").addClass("show")
   $("#divFrameMode").removeClass("show").addClass("hide")
   $("#divPlayMode").removeClass("show").addClass("hide")
+  hour = parseInt(cameraCurrentHour)
   if isShowLoader
     showLoader()
   date = $("#ui_date_picker_inline").datepicker('getDate')
   year = date.getFullYear()
   month = date.getMonth() + 1
   day = date.getDate()
-  hour = parseInt(cameraCurrentHour)
 
   data = {}
   data.api_id = Evercam.User.api_id
@@ -436,51 +449,53 @@ GetCameraInfo = (isShowLoader) ->
     NProgress.done()
 
   onSuccess = (response) ->
-    snapshotInfoIdx = 0
-    snapshotInfos = response.snapshots
-    totalFrames = response.snapshots.length
-    totalSnaps = response.snapshots.length
-    deviceAgent = navigator.userAgent.toLowerCase()
-    if totalSnaps is 1
-      $("#divPointer").hide()
-    else
-      $("#divPointer").show()
     if response == null || response.snapshots.length == 0
       NoRecordingDayOrHour()
     else
-      $("#divDisableButtons").removeClass("show").addClass("hide")
-      $("#divFrameMode").removeClass("hide").addClass("show")
-      iterations = Math.ceil(totalSnaps / ChunkSize)
-      sliderpercentage = Math.ceil(100 / iterations)
-
-      if sliderpercentage > 100
-        sliderpercentage = 100
-      $("#divSlider").width("#{sliderpercentage}%")
-      currentFrameNumber=1
-      frameDateTime = snapshotInfos[snapshotInfoIdx].created_at
+      snapshotInfoIdx = 0
+      snapshotInfos = response.snapshots
+      totalFrames = response.snapshots.length
+      totalSnaps = response.snapshots.length
+      deviceAgent = navigator.userAgent.toLowerCase()
       snapshotTimeStamp = snapshotInfos[snapshotInfoIdx].created_at
       snapshotNotes = snapshotInfos[snapshotInfoIdx].notes
-
-      if playFromDateTime isnt null
-        snapshotTimeStamp = SetPlayFromImage playFromTimeStamp
-        frameDateTime = snapshotTimeStamp
-        if currentFrameNumber isnt 1
-          playFromDateTime = null
-          playFromTimeStamp = null
-
-      currentDate = $("#camera_selected_time").val()
-      currentHour = parseInt($("#camera_current_time").val())
-      ImageHour = parseInt(cameraCurrentHour)
-      dt = $("#ui_date_picker_inline").datepicker('getDate')
-      current_camera_date = moment(dt).format('MM/DD/YYYY')
-      if currentDate == current_camera_date && currentHour == ImageHour
-        setLatestImage()
+      if totalSnaps is 1
+        $("#divPointer").hide()
       else
-        $("#snapshot-notes-text").text(snapshotInfos[snapshotInfoIdx].notes)
-        SetInfoMessage(currentFrameNumber, frameDateTime)
-        loadImage(snapshotTimeStamp, snapshotNotes)
-    NProgress.done()
-    hideHourLoadingAnimation()
+        $("#divPointer").show()
+      if response == null || response.snapshots.length == 0
+        NoRecordingDayOrHour("image_calendar")
+      else
+        $("#divDisableButtons").removeClass("show").addClass("hide")
+        $("#divFrameMode").removeClass("hide").addClass("show")
+        iterations = Math.ceil(totalSnaps / ChunkSize)
+        sliderpercentage = Math.ceil(100 / iterations)
+
+        if sliderpercentage > 100
+          sliderpercentage = 100
+        $("#divSlider").width("#{sliderpercentage}%")
+        currentFrameNumber=1
+        frameDateTime = snapshotInfos[snapshotInfoIdx].created_at
+
+        if playFromDateTime isnt null
+          snapshotTimeStamp = SetPlayFromImage playFromTimeStamp
+          frameDateTime = snapshotTimeStamp
+          if currentFrameNumber isnt 1
+            playFromDateTime = null
+            playFromTimeStamp = null
+
+        currentDate = $("#camera_selected_time").val()
+        currentHour = parseInt($("#camera_current_time").val())
+        ImageHour = parseInt(cameraCurrentHour)
+        dt = $("#ui_date_picker_inline").datepicker('getDate')
+        current_camera_date = moment(dt).format('MM/DD/YYYY')
+        if currentDate == current_camera_date && currentHour == ImageHour
+          setLatestImage()
+        else
+          $("#snapshot-notes-text").text(snapshotInfos[snapshotInfoIdx].notes)
+          SetInfoMessage(currentFrameNumber, frameDateTime)
+          loadImage(snapshotTimeStamp, snapshotNotes)
+          hideHourLoadingAnimation()
 
   settings =
     cache: false
@@ -503,18 +518,22 @@ loadImage = (timestamp, notes) ->
 
   onError = (jqXHR, status, error) ->
     checkCalendarDisplay()
+    NProgress.done()
 
   onSuccess = (response) ->
     if response.snapshots.length > 0
+      enableXray()
       $("#snapshot-tab-save").show()
+      $("#xray a").attr "data-toggle", "pill"
       $("#imgPlayback").attr("src", response.snapshots[0].data)
       $("#imgPlayback").attr("data-timestamp", response.snapshots[0].created_at)
       image_data = response.snapshots[0].data
       if $("#snapshot-magnifier").hasClass 'enabled'
         initElevateZoom()
+      window.estimateImageSize(image_data)
     HideLoader()
-    window.estimateImageSize(image_data)
     checkCalendarDisplay()
+    NProgress.done()
 
   settings =
     cache: false
@@ -612,7 +631,7 @@ FormatNumTo2 = (n) ->
   else
     n
 
-NoRecordingDayOrHour = ->
+NoRecordingDayOrHour = ()->
   showLoader()
   if status_flag is true
     query_string = "latest"
@@ -621,6 +640,7 @@ NoRecordingDayOrHour = ->
   else
     $("#imgPlayback").attr("src", "/assets/nosnapshots.svg")
     $("#imgPlayback").removeAttr("data-timestamp")
+    disableXray()
   $("#divRecent").show()
   $("#divInfo").fadeOut()
   $("#divPointer").width(0)
@@ -638,9 +658,9 @@ NoRecordingDayOrHour = ->
 
 SetImageHour = (hr, id) ->
   value = $("##{id}").html()
+  cameraCurrentHour = hr
   $("#ddlRecMinutes").val(0)
   $("#ddlRecSeconds").val(0)
-  cameraCurrentHour = hr
   $("##{PreviousImageHour}").removeClass("active")
   $("##{id}").addClass("active")
   PreviousImageHour = id
@@ -657,7 +677,7 @@ SetImageHour = (hr, id) ->
   if $("##{id}").hasClass('has-snapshot')
     $("#divSliderBackground").width("100%")
     $("#btnCreateHourMovie").removeAttr('disabled')
-    GetCameraInfo true
+    GetCameraInfo(true)
   else
     xhrRequestChangeMonth.abort()
 
@@ -672,6 +692,7 @@ SetImageHour = (hr, id) ->
     $("#imgPlayback").removeAttr("data-timestamp")
     $("#snapshot-tab-save").hide()
     HideLoader()
+    disableXray()
 
   hideHourLoadingAnimation()
 
@@ -913,7 +934,6 @@ calculateWidth = ->
   play_options_width = $("#recording-tab .play-options").width()
   play_options_position = $("#recording-tab #fullscreen").height() / 2
   play_options_left_position = ($("#recording-tab #fullscreen").width() - play_options_width) / 2
-  $('#recording-tab .play-options').css({"left": "#{play_options_left_position}px"})
   if tab_width is 0
     width_add = if !is_widget then 10 else 30
     tab_width = $(".tab-content").width() + width_add
@@ -929,10 +949,10 @@ calculateWidth = ->
   if (agentID)
     if tab_width > 480
       $("#recording-tab .left-column").css("width", "#{left_col_width}px")
-      $("#recording-tab .right-column").css("width", "220px")
+      $("#recording-tab .right-column").css("width", "310px")
     else
       $("#recording-tab .left-column").css("width", "100%")
-      $("#recording-tab .right-column").css("width", "220px")
+      $("#recording-tab .right-column").css("width", "310px")
       $("#snapshot-notes-text").show()
       $("#navbar-section .playback-info-bar").css("text-align", "center")
   else
@@ -943,10 +963,10 @@ calculateWidth = ->
             setTimeout(calculateWidth, 500)
           recodringSnapshotDivHeight()
           centerSaveIcon()
-      $("#recording-tab .right-column").css("width", "220px")
+      $("#recording-tab .right-column").css("width", "310px")
     else
       $("#recording-tab .left-column").css("width", "100%")
-      $("#recording-tab .right-column").css("width", "220px")
+      $("#recording-tab .right-column").css("width", "310px")
       $("#snapshot-notes-text").show()
       $("#navbar-section .playback-info-bar").css("text-align", "center")
 
@@ -956,25 +976,38 @@ recodringSnapshotDivHeight = ->
   if !(agentID)
     if $(window).width() >= 490
       tab_width = $("#recording-tab").width()
+      navigator_width = $("#imgPlayback").width()
+      navigator_height = $("#imgPlayback").height()
+      xray_lens_height = $("#fullscreen .img-comp-lens").height()
+      xray_lens_width = $("#fullscreen .img-comp-lens").width()
       calcuHeight = $(window).innerHeight() - $('.center-tabs').height() - $('div#navbar-section').height()
       if $('#fullscreen > img').height() < calcuHeight
         $('div#navbar-section').removeClass 'navbar-section'
         $('div#navbar-section').css 'width', $('.left-column').width()
         $('#recording-tab .left-column #calendar').css("display", "block")
+        $('#fullscreen .img-comp-lens').css "background-size", "#{navigator_width}px #{navigator_height}px"
+        $('#fullscreen .img-comp-lens').css "max-width", "#{navigator_width}px"
+        $('#fullscreen .img-comp-lens').css "max-height", "#{navigator_height}px"
       else
         $('div#navbar-section').addClass 'navbar-section'
         $('div#navbar-section').css 'width', $('.left-column').width()
+        $('#fullscreen .img-comp-lens').css "background-size", "#{tab_width}px #{calcuHeight}px"
+        $('#fullscreen .img-comp-lens').css "max-width", "#{navigator_width}px"
+        $('#fullscreen .img-comp-lens').css "max-height", "#{navigator_height}px"
     else
       $('div#navbar-section').removeClass 'navbar-section'
       $('div#navbar-section').css("width", "100%")
       $('#recording-tab .right-column').css("width", "99.4%")
+      $('#fullscreen .img-comp-lens').css "background-size", "#{tab_width}px #{calcuHeight}px"
+      $('#fullscreen .img-comp-lens').css "max-width", "#{navigator_width}px"
+      $('#fullscreen .img-comp-lens').css "max-height", "#{navigator_height}px"
   else
     $('#recording-tab .left-column #calendar').css("display", "none")
   if tab_width is 0
     setTimeout (-> recodringSnapshotDivHeight()), 500
 
 checkCalendarDisplay = ->
-  if $('#recording-tab .col-recording-right').css('display') == 'none'
+  if $('#recording-tab .right-column').css('display') == 'none'
     $('#recording-tab .left-column').animate { width: "99.4%" }, ->
       recodringSnapshotDivHeight()
       centerSaveIcon()
@@ -984,11 +1017,54 @@ checkCalendarDisplay = ->
 
 calendarShow = ->
   $('#recording-tab .ui-datepicker-trigger').on 'click', ->
-    $('#recording-tab .col-recording-right').toggle 'slow', ->
+    $('#recording-tab .right-column').toggle 'slow', ->
       $('#calendar .fas').css 'color', 'white'
       checkCalendarDisplay()
     $('#calendar .fas').css 'color', '#68a2d5'
     turnOffZoomEffect()
+    turnOffXrayEffect()
+    $("#pills-calendar-tab").tab('show')
+  
+  $("#recording-tab ").off('click', '.ui-xray-trigger').on 'click', '.ui-xray-trigger', (e) ->
+    if $('#xray.enabled').length == 0
+      imageComp("imgPlayback","#{data_xray_value}")
+      $(this).toggleClass 'enabled'
+      initXrayCalendar()
+      $('#snapshot-tab-save').hide()
+      if image_xray_date isnt null
+        image_xray_date_value = moment.tz(image_xray_date, Evercam.Camera.timezone).format('DD/MM/YYYY HH:mm:ss')
+        $(".img-comp-lens .date-value").text("#{image_xray_date_value}")
+    else
+      $(this).toggleClass 'enabled'
+      turnOffXrayEffect()
+      $("#fullscreen #snapshot-tab-save .save-live").show()
+
+loadXrayImage = ->
+  data =
+    api_id: Evercam.User.api_id
+    api_key: Evercam.User.api_key
+
+  onError = (jqXHR, status, error) ->
+
+  onSuccess = (response, status, jqXHR) ->
+    data_xray_value = response.data
+    snapshot = response
+    image_xray_date = moment(snapshot.created_at)
+    if snapshot.data isnt undefined
+      camera_created_date = moment(Evercam.Camera.created_at)
+      camera_created_year = camera_created_date.format('YYYY')
+      camera_created_at = camera_created_date.format("YYYY/M/D")
+      $('#fullscreen #xray-calendar').datetimepicker({value: image_xray_date._d, minDate: camera_created_at, yearStart: camera_created_year})
+
+  settings =
+    data: data
+    dataType: 'json'
+    error: onError
+    success: onSuccess
+    contentType: "application/json charset=utf-8"
+    type: 'GET'
+    url: "#{Evercam.API_URL}cameras/#{Evercam.Camera.id}/recordings/snapshots/oldest"
+  sendAJAXRequest(settings)
 
 showDaysLoadingAnimation = ->
   $('#img-days-loader').removeClass 'hide'
@@ -1012,7 +1088,6 @@ handleResize = ->
   centerSaveIcon()
   $(window).resize ->
     checkCalendarDisplay()
-    turnOffZoomEffect()
     centerSaveIcon()
 
 logCameraViewed = ->
@@ -1085,25 +1160,22 @@ setLatestImage = ->
   $("#divPointer").width("100%")
   UpdateSnapshotRec snapshotInfos[snapshotInfoIdx]
 
-updateImageCalendar = (oldest_latest_image_date) ->
+updateImageCalendar = (oldest_latest_image_date, calendar_type) ->
+  image_date = new Date(moment.tz(oldest_latest_image_date, Evercam.Camera.timezone).format("YYYY/MM/DD HH:mm:ss"))
+  cameraCurrentHour = image_date.getHours()
   currentFrameNumber = 1
   $("#hourCalendar td[class*='day']").removeClass("active")
-  image_date = new Date(moment.tz(oldest_latest_image_date, Evercam.Camera.timezone).format("YYYY/MM/DD HH:mm:ss"))
   $("#ui_date_picker_inline").datepicker('update', image_date)
   $("#ui_date_picker_inline").datepicker('setDate', image_date)
   oldest_latest_image_year = image_date.getFullYear()
   oldest_latest_image_month = image_date.getMonth() + 1
   oldest_latest_image_day = image_date.getDate()
-  # walkDaysInMonth(oldest_latest_image_year, oldest_latest_image_month)
-  ResetDays()
-  HighlightFirstDay(oldest_latest_image_year, oldest_latest_image_month, oldest_latest_image_day)
-  cameraCurrentHour = image_date.getHours()
   $("#tdI#{cameraCurrentHour}").addClass("active has-snapshot")
+  ResetDays()
+  HighlightFirstDay(oldest_latest_image_year, oldest_latest_image_month, oldest_latest_image_day, calendar_type)
   SetInfoMessage(currentFrameNumber, oldest_latest_image_date)
-  # BoldSnapshotHour(false)
 
 HighlightFirstDay = (year, month, day) ->
-  d = $("#ui_date_picker_inline").datepicker('getDate')
   calendar_year = d.getFullYear()
   calendar_month = d.getMonth() + 1
   calendar_day = d.getDate()
@@ -1134,6 +1206,13 @@ turnOffZoomEffect = ->
   $('.zoomContainer').hide()
   $("#fullscreen #snapshot-tab-save .hide-icon").show()
 
+turnOffXrayEffect = ->
+  $('.img-comp-lens').hide()
+  $("#fullscreen #snapshot-tab-save .save-live").show()
+  $('#xray').removeClass 'enabled'
+  $("#xray-calendar-div").hide()
+  $("#snapshot-tab-save").show()
+
 initElevateZoom = ->
   $("#fullscreen #snapshot-tab-save .hide-icon").hide()
   $("#fullscreen #snapshot-tab-save").css "opacity", '1'
@@ -1148,7 +1227,12 @@ centerTabClick = ->
   $(document).click (e) ->
     if $(e.target).is('#ul-nav-tab li a,#ul-nav-tab li a span')
       turnOffZoomEffect()
+      $("#pills-calendar-tab").tab('show')
       detectMobile()
+      turnOffXrayEffect()
+
+  $(document).ready ->
+    $("#pills-calendar-tab").tab('show')
 
 setImageSource = ->
   data_image_src = $("#imgPlayback").attr('src')
@@ -1158,6 +1242,7 @@ removeMagnifierOnEsc = ->
   $(document).on 'keyup', (evt) ->
     if evt.keyCode = 27
       turnOffZoomEffect()
+      turnOffXrayEffect()
 
 setCreateClipDate = (hour_selected) ->
   $("#recording-tab #recording-archive-button").on "click", ->
@@ -1179,6 +1264,9 @@ detectMobile = ->
   if mobile
     $('#snapshot-magnifier').hide()
     $('#edit-recording-image').hide()
+    $("#recording-tab .ui-xray-trigger").css 'margin-right', '1px'
+  else
+    $("#recording-tab .ui-xray-trigger").css 'margin-right', '33px'
 
 centerSaveIcon = ->
   tab_width = $("#recording-tab").width()
@@ -1197,7 +1285,7 @@ handle_info_submenu = ->
     if view_height - archive_height > 245
       $(".m-menu__submenu").css("top", top - 10)
     else
-      $(".m-menu__submenu").css("top", top - 190)
+      $(".m-menu__submenu").css("top", top + 30)
     $(".m-menu__submenu").toggle( "slow")
 
 hoverMouseOnFullscreen = ->
@@ -1208,6 +1296,191 @@ hoverMouseOnFullscreen = ->
       $("#snapshot-tab-save.play-options").css('opacity', '1')
     else
       $("#snapshot-tab-save.play-options").css('opacity', '0')
+
+getFirstLastImages = (image_id, query_string, reload, setDate) ->
+  data =
+    api_id: Evercam.User.api_id
+    api_key: Evercam.User.api_key
+
+  onError = (jqXHR, status, error) ->
+    false
+
+  onSuccess = (response, status, jqXHR) ->
+    snapshot = response
+    if query_string.indexOf("nearest") > 0 && response.snapshots.length > 0
+      snapshot = response.snapshots[0]
+    if snapshot.data isnt undefined
+      data_xray_value = snapshot.data
+      xray_created_at = snapshot.created_at
+      $('.img-comp-lens').css 'background-image', 'url(' + data_xray_value + ')'
+      image_xray_date = moment.tz(xray_created_at, Evercam.Camera.timezone).format('DD/MM/YYYY HH:mm:ss')
+      $(".img-comp-lens .date-value").text("#{image_xray_date}")
+      NProgress.done()
+    else
+      Notification.error("No image found")
+
+  settings =
+    cache: false
+    data: data
+    dataType: 'json'
+    error: onError
+    success: onSuccess
+    type: 'GET'
+    url: "#{Evercam.API_URL}cameras/#{Evercam.Camera.id}/recordings/snapshots#{query_string}"
+  sendAJAXRequest(settings)
+
+recheckDataXrayValue = ->
+  if data_xray_value is null
+    disableXray()
+    setTimeout (-> recheckDataXrayValue()), 500
+  else
+    enableXray()
+
+disableXray = ->
+  $("#xray").attr "disabled", "disabled"
+  $("#xray").css "opacity", "0.6"
+
+enableXray = ->
+  $("#xray").removeAttr "disabled", "disabled"
+  $("#xray").css "opacity", "1"
+
+HighlightDaysInMonth = (query_string, year, month) ->
+  data = {}
+  data.api_id = Evercam.User.api_id
+  data.api_key = Evercam.User.api_key
+
+  onError = (response, status, error) ->
+    false
+
+  onSuccess = (response, status, jqXHR) ->
+    if removeCalendarHighlightflag is true
+      removeCurrentDateHighlight(query_string)
+      removeCurrentHourHighlight(query_string)
+    hideBeforeAfterLoadingAnimation(query_string)
+    for day in response.days
+      HighlightBeforeAfterDay(query_string, year, month, day)
+
+  settings =
+    cache: true
+    data: data
+    dataType: 'json'
+    error: onError
+    success: onSuccess
+    contentType: "application/json charset=utf-8"
+    type: 'GET'
+    url: "#{Evercam.MEDIA_API_URL}cameras/#{Evercam.Camera.id}/recordings/snapshots/#{year}/#{month}/days"
+
+  xhrChangeMonth = sendAJAXRequest(settings)
+
+HighlightSnapshotHour = (query_string, year, month, date) ->
+  data = {}
+  data.api_id = Evercam.User.api_id
+  data.api_key = Evercam.User.api_key
+
+  onError = (jqXHR, status, error) ->
+    false
+
+  onSuccess = (response, status, jqXHR) ->
+    if removeCalendarHighlightflag is true
+      removeCurrentHourHighlight(query_string)
+    hideBeforeAfterLoadingAnimation(query_string)
+    for hour in response.hours
+      HighlightBeforeAfterHour(query_string, year, month, date, hour)
+
+  settings =
+    cache: false
+    data: data
+    dataType: 'json'
+    error: onError
+    success: onSuccess
+    contentType: "application/json charset=utf-8"
+    type: 'GET'
+    timeout: 15000
+    url: "#{Evercam.MEDIA_API_URL}cameras/#{Evercam.Camera.id}/recordings/snapshots/#{year}/#{(month)}/#{date}/hours"
+
+  xhrChangeMonth = sendAJAXRequest(settings)
+
+HighlightBeforeAfterDay = (query_string, before_year, before_month, before_day) ->
+  beforeDays = $("##{query_string} .xdsoft_datepicker table td[class*='xdsoft_date'] div")
+  beforeDays.each ->
+    beforeDay = $(this)
+    if !beforeDay.parent().hasClass('xdsoft_other_month')
+      iDay = parseInt(beforeDay.text())
+      if before_day == iDay
+        beforeDay.parent().addClass 'active-class-css'
+
+HighlightBeforeAfterHour = (query_string, before_year, before_month, before_day, before_hour) ->
+  beforeHours = $("##{query_string} .xdsoft_timepicker [class*='xdsoft_time']")
+  beforeHours.each ->
+    beforeHour = $(this)
+    iHour = parseInt(beforeHour.text())
+    if before_hour == iHour
+      beforeHour.addClass 'active-class-css'
+
+removeCurrentHourHighlight = (query_string) ->
+  beforeHours = $("##{query_string} .xdsoft_timepicker div[class*='xdsoft_time']")
+  beforeHours.removeClass 'xdsoft_current'
+
+removeCurrentDateHighlight = (query_string) ->
+  beforeDays = $("##{query_string} .xdsoft_calendar table td[class*='xdsoft_date']")
+  beforeDays.removeClass 'xdsoft_current'
+
+showBeforeAfterLoadingAnimation = (query_string) ->
+  $("##{query_string} .xdsoft_datepicker").addClass 'opacitypoint5'
+  $("##{query_string} .xdsoft_timepicker").addClass 'opacitypoint5'
+
+hideBeforeAfterLoadingAnimation = (query_string) ->
+  $("##{query_string} .xdsoft_datepicker").removeClass 'opacitypoint5'
+  $("##{query_string} .xdsoft_timepicker").removeClass 'opacitypoint5'
+
+initXrayCalendar = ->
+  $("#fullscreen .img-comp-lens").resizable()
+
+  $('#fullscreen .img-comp-lens #xray-calendar').datetimepicker
+    format: 'm/d/Y H:m'
+    inline: false
+    id: 'calendar-xray'
+    onGenerate: (current_time,$input) ->
+      month = current_time.getMonth() + 1
+      year = current_time.getFullYear()
+      date = current_time.getDate()
+      removeCalendarHighlightflag = false
+      HighlightDaysInMonth("calendar-xray", year, month)
+      HighlightSnapshotHour("calendar-xray", year, month, date)
+      showBeforeAfterLoadingAnimation("calendar-xray")
+    onSelectTime: (dp, $input) ->
+      $("#txtbefore").val($input.val())
+      iso_datetime = toISOString(moment.tz($input.val(), "MM/DD/YYYY hh:mm", Evercam.Camera.timezone))
+      NProgress.start()
+      getFirstLastImages("calendar-xray", "/#{iso_datetime}/nearest", true, false)
+    onChangeMonth: (dp, $input) ->
+      if xhrChangeMonth isnt null
+        xhrChangeMonth.abort()
+      month = dp.getMonth() + 1
+      year = dp.getFullYear()
+      removeCalendarHighlightflag = true
+      HighlightDaysInMonth("calendar-xray", year, month)
+      showBeforeAfterLoadingAnimation("calendar-xray")
+    onSelectDate: (ct, $i) ->
+      month = ct.getMonth() + 1
+      year = ct.getFullYear()
+      date = ct.getDate()
+      removeCalendarHighlightflag = true
+      HighlightSnapshotHour("calendar-xray", year, month, date)
+      HighlightDaysInMonth("calendar-xray", year, month)
+      showBeforeAfterLoadingAnimation("calendar-xray")
+    onShow: (current_time, $input) ->
+      month = current_time.getMonth() + 1
+      year = current_time.getFullYear()
+      date = current_time.getDate()
+      removeCalendarHighlightflag = false
+      HighlightDaysInMonth("calendar-xray", year, month)
+      HighlightSnapshotHour("calendar-xray", year, month, date)
+      showBeforeAfterLoadingAnimation("calendar-xray")
+      camera_created_date = moment(Evercam.Camera.created_at)
+      camera_created_year = camera_created_date.format('YYYY')
+      camera_created_at = camera_created_date.format("YYYY/M/D")
+      $('#fullscreen #xray-calendar').datetimepicker({value: image_xray_date._d, minDate: camera_created_at, yearStart: camera_created_year})
 
 window.initializeRecordingsTab = ->
   initDatePicker()
@@ -1232,3 +1505,5 @@ window.initializeRecordingsTab = ->
   detectMobile()
   handle_info_submenu()
   hoverMouseOnFullscreen()
+  loadXrayImage()
+  recheckDataXrayValue()

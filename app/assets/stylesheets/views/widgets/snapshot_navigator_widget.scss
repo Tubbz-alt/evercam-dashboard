@@ -434,9 +434,10 @@ ul, menu, dir {
 }
 
 .datepicker-bg{
-    background-color: #fff;
-    width: 220px;
+  background-color: #fff;
+  width: 100%;
 }
+
 @media (max-width: 845px) {
     .datepicker-bg {
       background-color: #fff;
@@ -446,11 +447,13 @@ ul, menu, dir {
       width: 99%;
     }
 }
+
 @media (max-width: 480px) {
   .datepicker-inline {
     display: block;
   }
 }
+
 .datepicker{
     border: 1px solid #efefef;
     font-size: 12px;
@@ -652,6 +655,10 @@ ul, menu, dir {
 
 .ui-snapshot-magnifier {
   height: auto;
+}
+
+#xray {
+  display: none;
 }
 
 .form-vertical {

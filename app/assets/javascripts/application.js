@@ -7,6 +7,7 @@
 //= require jquery.uniform
 //= require datetimepicker
 //= require jquery-cookie
+//= require jquery-ui.js
 //= require jquery.nicescroll/jquery.nicescroll.min.js
 //= require metronic/jquery.slimscroll.min
 //= require jquery-form-validator
@@ -54,6 +55,8 @@
 //= require ua-parser.js
 //= require FileSaver
 //= require js-base64
+//= require imagexray.js
+//= require jqueryui-touch-punch.js
 
 //=
 //= require alerts
