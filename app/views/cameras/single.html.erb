@@ -79,9 +79,6 @@
                 <a data-toggle="tab" data-target="#archives" class="nav-tab-archives">Archives</a>
               </li>
               <li>
-                <a data-toggle="tab" data-target="#snapmail" class="nav-tab-snapmail">Snapmail</a>
-              </li>
-              <li>
                 <a data-toggle="tab" data-target="#compare" class="nav-tab-compare">Compare</a>
               </li>
               <% if ["marco@evercam.io", "vq@evercam.io", "oldconstruction", "construction@evercam.io", "azhar@evercam.io", "lauranela"].include?(current_user.username) && @camera["vendor_id"].eql?("hikvision") %>
@@ -251,12 +248,6 @@
           <div id="recordings" class="tab-pane">
             <%= render partial: "cameras/single/snapshots_navigator_tab" %>
           </div>
-
-          <% if current_user %>
-            <div id="snapmail" class="tab-pane">
-              <%= render partial: "cameras/single/snapmail_tab" %>
-            </div>
-          <% end %>
 
           <% if has_edit_right || @camera["rights"].include?("share") %>
             <div id="shares" class="tab-pane shares_tab">

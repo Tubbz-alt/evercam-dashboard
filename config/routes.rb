@@ -18,7 +18,7 @@ Rails.application.routes.draw do
   root to: redirect('/v2/cameras'), as: :root
   get '/v2/cameras' => 'cameras#index', as: :cameras_index
   get '/v1/cameras' => 'cameras#index'  # temporary route
-  get '/v2/cameras/new' => 'cameras#new', as: :cameras_new
+  get '/add' => 'cameras#new', as: :cameras_new
   post '/v2/cameras/new' => 'cameras#create'
   get '/cameras/transfer' => 'cameras#transfer'
   get '/status' => 'cameras#online_offline'

@@ -9,7 +9,6 @@
 #= require cameras/single/settings.js.coffee
 #= require cameras/single/testsnapshot.js.coffee
 #= require cameras/single/archives.js.coffee
-#= require cameras/single/single_snapmail.js.coffee
 #= require cameras/single/compare.js.coffee
 #= require cameras/single/image_editor.js.coffee
 #= require jquery.thumbhover.js
