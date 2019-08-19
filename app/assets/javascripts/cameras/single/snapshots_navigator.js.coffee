@@ -1022,22 +1022,21 @@ calendarShow = ->
       checkCalendarDisplay()
     $('#calendar .fas').css 'color', '#68a2d5'
     turnOffZoomEffect()
-    turnOffXrayEffect()
-    $("#pills-calendar-tab").tab('show')
+    # turnOffXrayEffect()
   
-  $("#recording-tab ").off('click', '.ui-xray-trigger').on 'click', '.ui-xray-trigger', (e) ->
-    if $('#xray.enabled').length == 0
-      imageComp("imgPlayback","#{data_xray_value}")
-      $(this).toggleClass 'enabled'
-      initXrayCalendar()
-      $('#snapshot-tab-save').hide()
-      if image_xray_date isnt null
-        image_xray_date_value = moment.tz(image_xray_date, Evercam.Camera.timezone).format('DD/MM/YYYY HH:mm:ss')
-        $(".img-comp-lens .date-value").text("#{image_xray_date_value}")
-    else
-      $(this).toggleClass 'enabled'
-      turnOffXrayEffect()
-      $("#fullscreen #snapshot-tab-save .save-live").show()
+  # $("#recording-tab ").off('click', '.ui-xray-trigger').on 'click', '.ui-xray-trigger', (e) ->
+  #   if $('#xray.enabled').length == 0
+  #     imageComp("imgPlayback","#{data_xray_value}")
+  #     $(this).toggleClass 'enabled'
+  #     initXrayCalendar()
+  #     $('#snapshot-tab-save').hide()
+  #     if image_xray_date isnt null
+  #       image_xray_date_value = moment.tz(image_xray_date, Evercam.Camera.timezone).format('DD/MM/YYYY HH:mm:ss')
+  #       $(".img-comp-lens .date-value").text("#{image_xray_date_value}")
+  #   else
+  #     $(this).toggleClass 'enabled'
+  #     turnOffXrayEffect()
+  #     $("#fullscreen #snapshot-tab-save .save-live").show()
 
 loadXrayImage = ->
   data =
@@ -1227,9 +1226,8 @@ centerTabClick = ->
   $(document).click (e) ->
     if $(e.target).is('#ul-nav-tab li a,#ul-nav-tab li a span')
       turnOffZoomEffect()
-      $("#pills-calendar-tab").tab('show')
       detectMobile()
-      turnOffXrayEffect()
+      # turnOffXrayEffect()
 
   $(document).ready ->
     $("#pills-calendar-tab").tab('show')
@@ -1242,7 +1240,7 @@ removeMagnifierOnEsc = ->
   $(document).on 'keyup', (evt) ->
     if evt.keyCode = 27
       turnOffZoomEffect()
-      turnOffXrayEffect()
+      # turnOffXrayEffect()
 
 setCreateClipDate = (hour_selected) ->
   $("#recording-tab #recording-archive-button").on "click", ->
@@ -1505,5 +1503,5 @@ window.initializeRecordingsTab = ->
   detectMobile()
   handle_info_submenu()
   hoverMouseOnFullscreen()
-  loadXrayImage()
-  recheckDataXrayValue()
+  # loadXrayImage()
+  # recheckDataXrayValue()
