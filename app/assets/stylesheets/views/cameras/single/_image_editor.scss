@@ -116,11 +116,6 @@
 
   .tui-image-editor-canvas-container {
     margin: 0 auto;
-    top: 260px;
-    transform: translateY(-50%);
-    -ms-transform: translateY(-50%);
-    -moz-transform: translateY(-50%);
-    -webkit-transform: translateY(-50%);
     border: 1px dashed $black;
     overflow: hidden;
     background-image: asset-url("evercam-loading-gif.gif");
