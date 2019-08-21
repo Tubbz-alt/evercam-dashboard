@@ -18,7 +18,7 @@ Rails.application.routes.draw do
   root to: redirect('/v2/cameras'), as: :root
   get '/v2/cameras' => 'cameras#index', as: :cameras_index
   get '/v1/cameras' => 'cameras#index'  # temporary route
-  get '/add' => 'cameras#new', as: :cameras_new
+  get '/v2/cameras/new' => 'cameras#new', as: :cameras_new
   post '/v2/cameras/new' => 'cameras#create'
   get '/cameras/transfer' => 'cameras#transfer'
   get '/status' => 'cameras#online_offline'
@@ -47,6 +47,7 @@ Rails.application.routes.draw do
   get '/v2/snapmails/:id/unsubscribe' => 'pages#unsubscribe'
   post '/v2/snapmails/:id/unsubscribe' => 'pages#unsubscribed', as: :unsubscribed_snapmail
 
+  get '/add' => redirect('/v2/cameras/new')
   get '/v2/public/cameras' => redirect('https://evercam.io/public/cameras/')
   get '/v2/public/cameras/:id' => redirect('https://evercam.io/public/cameras/')
 
