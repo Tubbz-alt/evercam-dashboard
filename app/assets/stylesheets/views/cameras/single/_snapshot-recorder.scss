@@ -95,6 +95,14 @@
       padding: 1px;
     }
 
+    .ui-resizable-s {
+      height: 25px;
+    }
+
+    .ui-resizable-e {
+      width: 25px;
+    }
+
     .date-value {
       font-size: 14px;
       font-weight: bold;
@@ -768,6 +776,14 @@
       .date-value {
         font-size: 12px;
       }
+
+      // .ui-resizable-handle {
+      //   width: 20px;
+      // }
+
+      // .ui-resizable-s {
+      //   width: 20px;
+      // }
     }
   }
 

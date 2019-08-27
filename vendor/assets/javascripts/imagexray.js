@@ -84,12 +84,7 @@ function imageComp(imgID, img2Path) {
   img.addEventListener("touchmove", moveLens);
 	
 
-  function moveLens(e) {
-      //debugger;
-    // if (clicked == 0) {
-    //   return false;
-    // }
-    
+  function moveLens(e) {  
     var pos, x, y;
 
     e.preventDefault();
@@ -108,10 +103,10 @@ function imageComp(imgID, img2Path) {
 
     var l = lens.getBoundingClientRect();
     
-    var mouseBmax = parseInt(pos.mouseBottom) + 10;
-    var mouseBmin = parseInt(pos.mouseBottom) - 10;
-    var mouseRmax = parseInt(pos.mouseRight) + 10;
-    var mouseRmin = parseInt(pos.mouseRight) - 10;
+    var mouseBmax = parseInt(pos.mouseBottom) + 30;
+    var mouseBmin = parseInt(pos.mouseBottom) - 30;
+    var mouseRmax = parseInt(pos.mouseRight) + 30;
+    var mouseRmin = parseInt(pos.mouseRight) - 30;
     if (parseInt(pos.lensBottom) <= mouseBmax && parseInt(pos.lensBottom) >= mouseBmin) {
       return false;
     } else if (parseInt(pos.lensRight) <= mouseRmax && parseInt(pos.lensRight) >= mouseRmin) {
