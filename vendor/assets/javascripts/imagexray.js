@@ -103,10 +103,10 @@ function imageComp(imgID, img2Path) {
 
     var l = lens.getBoundingClientRect();
     
-    var mouseBmax = parseInt(pos.mouseBottom) + 30;
-    var mouseBmin = parseInt(pos.mouseBottom) - 30;
-    var mouseRmax = parseInt(pos.mouseRight) + 30;
-    var mouseRmin = parseInt(pos.mouseRight) - 30;
+    var mouseBmax = parseInt(pos.mouseBottom) + 50;
+    var mouseBmin = parseInt(pos.mouseBottom) - 50;
+    var mouseRmax = parseInt(pos.mouseRight) + 50;
+    var mouseRmin = parseInt(pos.mouseRight) - 50;
     if (parseInt(pos.lensBottom) <= mouseBmax && parseInt(pos.lensBottom) >= mouseBmin) {
       return false;
     } else if (parseInt(pos.lensRight) <= mouseRmax && parseInt(pos.lensRight) >= mouseRmin) {

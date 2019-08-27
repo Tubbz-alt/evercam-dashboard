@@ -882,7 +882,7 @@ body .ui-tooltip {
 }
 /* Component containers
 ----------------------------------*/
-.ui-widget {
+/* .ui-widget {
 	font-family: Arial,Helvetica,sans-serif;
 	font-size: 1em;
 }
@@ -915,7 +915,7 @@ body .ui-tooltip {
 }
 .ui-widget-header a {
 	color: #333333;
-}
+} */
 
 /* Interaction states
 ----------------------------------*/

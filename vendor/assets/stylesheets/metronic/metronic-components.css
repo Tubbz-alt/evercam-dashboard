@@ -1737,7 +1737,7 @@ Dropdown Menu
   font-size: 14px;
   right: 7px;
   top: 7px;
-  font-family: FontAwesome;
+  font-family: Font Awesome 5 Free;
   height: auto;
   content: "\f105";
   font-weight: 300;
@@ -4803,7 +4803,7 @@ Tiles(new in v1.1.1)
 }
 .tiles .tile.selected .check:after {
   content: "";
-  font-family: FontAwesome;
+  font-family: Font Awesome 5 Free;
   font-size: 13px;
   content: "\f00c";
   display: inline-block;
