@@ -77,7 +77,7 @@ source 'http://insecure.rails-assets.org' do
   gem 'rails-assets-fullcalendar'
   gem 'rails-assets-iCheck'
   gem 'rails-assets-jquery-cookie'
-  gem 'rails-assets-moment', '~> 2.12.0'
+  gem 'rails-assets-moment', '~> 2.24.0'
   gem 'rails-assets-jquery-form-validator'
   gem 'rails-assets-jquery.browser'
   gem 'rails-assets-jquery.nicescroll'
