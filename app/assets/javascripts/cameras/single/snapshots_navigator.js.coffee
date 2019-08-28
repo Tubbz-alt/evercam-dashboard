@@ -1175,6 +1175,7 @@ updateImageCalendar = (oldest_latest_image_date, calendar_type) ->
   SetInfoMessage(currentFrameNumber, oldest_latest_image_date)
 
 HighlightFirstDay = (year, month, day) ->
+  d = $("#ui_date_picker_inline").datepicker('getDate')
   calendar_year = d.getFullYear()
   calendar_month = d.getMonth() + 1
   calendar_day = d.getDate()
