@@ -277,7 +277,7 @@ GEM
       rails-assets-bootstrap (>= 3.0.0)
     rails-assets-bootstrap (3.3.7)
       rails-assets-jquery (>= 1.9.1, < 4)
-    rails-assets-bootstrap-datepicker (1.7.1)
+    rails-assets-bootstrap-datepicker (1.9.0)
       rails-assets-jquery (>= 1.7.1, < 4.0.0)
     rails-assets-bootstrap-tabdrop (1.0.0)
     rails-assets-bootstrap-toggle (2.2.2)
