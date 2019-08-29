@@ -280,7 +280,7 @@ getArchivesHtml = (archives) ->
       hide_dates = "hide"
       css_class = "fa-upload"
     fa_class = "<i class='fa #{css_class} type-icon type-icon-url'></i>"
-  else
+  else if archives.media_url isnt null
     arr_host = getHostName(archives.media_url).split('.')
     domain = arr_host.shift()
     url = archives.media_url
@@ -570,8 +570,7 @@ getTitle = (row, type, set, meta) ->
   query_string = row.embed_code.substring(start_index, end_index) if row.embed_code
 
   archive_inputs = "<input id='txtArchiveThumb#{row.id}' type='hidden' value='#{row.thumbnail_url}'><input id='txtArchiveTitle#{row.id}' type='hidden' value='#{row.title}'>"
-
-  if row.type is "url"
+  if row.type is "url" and row.media_url isnt null
     arr_host = getHostName(row.media_url).split('.')
     domain = arr_host.shift()
     return "<div class='gravatar-placeholder'><div class='social-media-icon'><i class='fab fa-#{domain} #{domain}'></i></div><div class='type-icon-alignment'><i class='fa fa-link type-icon type-icon-url'></i></div></div>

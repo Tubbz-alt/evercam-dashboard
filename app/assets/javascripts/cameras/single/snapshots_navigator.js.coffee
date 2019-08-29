@@ -32,6 +32,7 @@ data_xray_value = null
 image_xray_date = null
 removeCalendarHighlightflag = false
 xhrChangeMonth = null
+boldlatestoldestflag = true
 mobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)
 
 initDatePicker = ->
@@ -76,6 +77,7 @@ changeMonthFromArrow = (value) ->
     snapshotInfos = null
     snapshotInfoIdx = 1
     currentFrameNumber = 0
+    boldlatestoldestflag = true
     BoldSnapshotHour(false)
 
 walkDaysInMonth = (year, month) ->
@@ -133,6 +135,7 @@ datePickerSelect = (value)->
 
   clearHourCalendar()
   if hasDayRecord
+    boldlatestoldestflag = true
     BoldSnapshotHour(false)
   else
     NoRecordingDayOrHour()
@@ -152,6 +155,7 @@ datePickerChange=(value)->
   snapshotInfos = null
   snapshotInfoIdx = 1
   currentFrameNumber = 0
+  boldlatestoldestflag = true
   BoldSnapshotHour(false)
 
 clearHourCalendar = ->
@@ -260,7 +264,7 @@ SetInfoMessage = (currFrame, date_time) ->
   $("#divInfo").fadeIn()
   $("#snapshot-notes-text").show()
   $("#divInfo").html("<span class='snapshot-frame'>#{currFrame} of #{totalSnaps}</span> <span class='snapshot-date'>#{snaptime}</span>")
-  if snapshotInfoIdx
+  if snapshotInfoIdx && snapshotInfos
     snapshot = snapshotInfos[snapshotInfoIdx]
     $('#snapshot-notes-text').text snapshotInfos[snapshotInfoIdx].notes
 
@@ -327,6 +331,7 @@ handleBodyLoadContent = ->
 
   showLoader()
   HighlightCurrentMonth()
+  boldlatestoldestflag = true
   BoldSnapshotHour(false)
 
 fullscreenImage = ->
@@ -340,13 +345,13 @@ fullscreenImage = ->
       else
         $("#imgPlayback").css('width','100%')
 
-HighlightCurrentMonth = (calendar_type)->
+HighlightCurrentMonth = ->
   d = $("#ui_date_picker_inline").datepicker('getDate')
   year = d.getFullYear()
   month = d.getMonth() + 1
   walkDaysInMonth(year, month)
 
-HighlightDay = (year, month, day, exists, calendar_type, calendar_name) ->
+HighlightDay = (year, month, day, exists) ->
   d = $("#ui_date_picker_inline").datepicker('getDate')
   calendar_year = d.getFullYear()
   calendar_month = d.getMonth() + 1
@@ -371,7 +376,7 @@ HighlightDay = (year, month, day, exists, calendar_type, calendar_name) ->
   hideHourLoadingAnimation()
   HideLoader()
 
-BoldSnapshotHour = (callFromDt, calendar_type) ->
+BoldSnapshotHour = (callFromDt) ->
   showHourLoadingAnimation()
   $("#divDisableButtons").removeClass("hide").addClass("show")
   $("#divFrameMode").removeClass("show").addClass("hide")
@@ -491,7 +496,10 @@ GetCameraInfo = (isShowLoader) ->
         current_camera_date = moment(dt).format('MM/DD/YYYY')
         if currentDate == current_camera_date && currentHour == ImageHour
           setLatestImage()
-        else
+        else if boldlatestoldestflag is false
+          HideLoader()
+          NProgress.done()
+        else if boldlatestoldestflag is true
           $("#snapshot-notes-text").text(snapshotInfos[snapshotInfoIdx].notes)
           SetInfoMessage(currentFrameNumber, frameDateTime)
           loadImage(snapshotTimeStamp, snapshotNotes)
@@ -1159,7 +1167,8 @@ setLatestImage = ->
   $("#divPointer").width("100%")
   UpdateSnapshotRec snapshotInfos[snapshotInfoIdx]
 
-updateImageCalendar = (oldest_latest_image_date, calendar_type) ->
+updateImageCalendar = (oldest_latest_image_date) ->
+  ResetDays()
   image_date = new Date(moment.tz(oldest_latest_image_date, Evercam.Camera.timezone).format("YYYY/MM/DD HH:mm:ss"))
   cameraCurrentHour = image_date.getHours()
   currentFrameNumber = 1
@@ -1170,9 +1179,11 @@ updateImageCalendar = (oldest_latest_image_date, calendar_type) ->
   oldest_latest_image_month = image_date.getMonth() + 1
   oldest_latest_image_day = image_date.getDate()
   $("#tdI#{cameraCurrentHour}").addClass("active has-snapshot")
-  ResetDays()
-  HighlightFirstDay(oldest_latest_image_year, oldest_latest_image_month, oldest_latest_image_day, calendar_type)
+  HighlightFirstDay(oldest_latest_image_year, oldest_latest_image_month, oldest_latest_image_day)
   SetInfoMessage(currentFrameNumber, oldest_latest_image_date)
+  walkDaysInMonth(oldest_latest_image_year, oldest_latest_image_month)
+  boldlatestoldestflag = false
+  BoldSnapshotHour(false)
 
 HighlightFirstDay = (year, month, day) ->
   d = $("#ui_date_picker_inline").datepicker('getDate')
