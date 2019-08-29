@@ -498,6 +498,7 @@ GetCameraInfo = (isShowLoader) ->
           setLatestImage()
         else if boldlatestoldestflag is false
           HideLoader()
+          NProgress.done()
         else if boldlatestoldestflag is true
           $("#snapshot-notes-text").text(snapshotInfos[snapshotInfoIdx].notes)
           SetInfoMessage(currentFrameNumber, frameDateTime)
