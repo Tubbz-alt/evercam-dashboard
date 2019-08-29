@@ -69,14 +69,14 @@
       <tr>
         <td>Status:</td>
         <td>
-          <% if @camera['is_online'] %>
+          <% if @camera['status'] == "online" %>
             <div class="status green">Online</div>
           <% else %>
             <div class="status red">Offline (Cause: <%= @camera['offline_reason'] %>)</div>
           <% end %>
         </td>
       </tr>
-      <% unless @camera['is_online'] %>
+      <% if @camera['status'] == "offline" %>
       <tr>
         <td>Last Online</td>
         <td>

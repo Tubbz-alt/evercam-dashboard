@@ -63,7 +63,7 @@ class CamerasController < ApplicationController
       body[:internal_host] = params['local-ip'] unless params['local-ip'].blank?
       body[:location_lat] = params['camera-lat'] unless params['camera-lat'].blank?
       body[:location_lng] = params['camera-lng'] unless params['camera-lng'].blank?
-      body[:is_online] = true
+      body[:status] = "online"
       tzc = TZInfo::Country.get(@current_user.country.iso3166_a2.upcase)
       timezone = Timezone::Zone.new zone:tzc.zone_names.first
       body[:timezone] = timezone.name[:zone]
@@ -208,7 +208,7 @@ class CamerasController < ApplicationController
         end
       else
         @camera = api.get_camera(params[:id], true) if @camera.nil?
-        @camera['is_online'] = false if @camera['is_online'].blank?
+        @camera['status'] = "offline" if @camera['status'].blank?
         @has_edit_rights = @camera["rights"].split(",").include?("edit") if @camera["rights"]
         time = ActiveSupport::TimeZone.new(@camera['timezone'])
         @camera['timezone'] = 'Etc/UTC' unless time.utc_offset % 3600 == 0
@@ -255,7 +255,7 @@ class CamerasController < ApplicationController
         name: camera["name"],
         id: camera["id"],
         owner: camera["owner"],
-        is_online: camera["is_online"],
+        status: camera["status"],
         is_public: camera["is_public"],
         vendor_id: camera["vendor_id"],
         location: camera["location"],
@@ -297,7 +297,7 @@ class CamerasController < ApplicationController
   end
 
   def humanize_status(status)
-    if status == "true"
+    if status == "online"
       true
     else
       false
@@ -308,7 +308,7 @@ class CamerasController < ApplicationController
     days = if params[:history_days].to_i != 0 then params[:history_days].to_i else 7 end
     initial_cameras = load_user_cameras(true, false)
     if params["offline_only"] == "true" || params["offline_only"] == true
-      @cameras = initial_cameras.reject {|cam| cam["is_online"] == true }
+      @cameras = initial_cameras.reject {|cam| cam["status"] == "online" }
     else
       @cameras = initial_cameras
     end
@@ -333,7 +333,7 @@ class CamerasController < ApplicationController
     @camera_logs = @cameras.map do |camera|
       {
         camera_name: camera["name"],
-        status: camera["is_online"],
+        status: camera["status"],
         created_at: Time.iso8601(camera["created_at"]).utc,
         logs: map_logs(all_logs, camera["id"])
       }

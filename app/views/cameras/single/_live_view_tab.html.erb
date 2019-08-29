@@ -1,5 +1,5 @@
 <div class="camera-preview">
-  <div class="camera-preview-online <%= 'hide' unless @camera['is_online'] %>" id="camera-preview">
+  <div class="camera-preview-online <%= 'hide' if @camera['status'] == "offline" %>" id="camera-preview">
     <div id="flash-message" class="flash-error-message">Flash Plugin status could not be determined, please verify the installation if the content does not load, <a class="message" href="https://get.adobe.com/flashplayer/">Click here to install</a></div>
     <% has_edit_right = @camera["rights"].split(",").include?("edit") %>
     <% port = @camera.deep_fetch('external', 'rtsp', 'port') {} %>
@@ -93,7 +93,7 @@
     </div>
   </div>
 
-  <div class="camera-preview-offline <%= 'hide' if @camera['is_online'] %>">
+  <div class="camera-preview-offline <%= 'hide' if @camera['status'] == "online" %>">
     <div class="offline-camera-placeholder">
       <div class="wrap">
         <div class="offline-image">

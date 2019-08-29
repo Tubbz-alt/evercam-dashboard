@@ -2,8 +2,8 @@
 <div class="page-content-wrapper">
   <div class="page-content" id="camera-index">
     <% @cameras.each do |camera| %>
-      <div class="col-lg-6 camera-index-height col-md-6 col-sm-6 col-xs-12 camera-index camera-<%= camera['id'] %> <%= "camera-offline" unless camera['is_online'] %>">
-        <% unless camera['is_online'] %>
+      <div class="col-lg-6 camera-index-height col-md-6 col-sm-6 col-xs-12 camera-index camera-<%= camera['id'] %> <%= "camera-offline" if camera['status'] == "offline" %>">
+        <% if camera['status'] == "offline" %>
           <div id= "<%= camera['id'] %>" class="refresh-camera-thumbnail"><i class="fas fa-sync icon-font fav-icon-still"></i>
             <i class='fas fa-sync fa-spin icon-font fa-1x fa-fw refresh-gif-thumbnail' aria-hidden='true'></i>
           </div>

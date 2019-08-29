@@ -12,7 +12,7 @@
     request_ip = '<%= request.ip %>',
     denied = false,
     priv = <%= !@camera['is_public'] %>,
-    offline_camera = <%= !@camera['is_online'] %>;
+    offline_camera = <%= @camera['status'] == "online" ? false : true %>;
 
   if (!window.Evercam) {
     window.Evercam = {};

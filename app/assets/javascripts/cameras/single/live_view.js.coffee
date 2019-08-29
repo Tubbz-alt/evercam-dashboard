@@ -576,7 +576,7 @@ flashDetection = ->
     if navigator.mimeTypes and navigator.mimeTypes['application/x-shockwave-flash'] != undefined and navigator.mimeTypes['application/x-shockwave-flash'].enabledPlugin
       hasFlash = true
 
-  if hasFlash is false and Evercam.Camera.is_online and $('#select-stream-type').val() is "video"
+  if hasFlash is false and Evercam.Camera.status == "online" and $('#select-stream-type').val() is "video"
     $('.vjs-error-display').hide()
     $('.flash-error-message').show()
 

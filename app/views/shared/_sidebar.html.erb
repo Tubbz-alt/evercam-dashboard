@@ -22,7 +22,7 @@
         <ul class="sub-menu sidebar-cameras-list">
           <% if @cameras %>
             <% @cameras.each do |camera| %>
-              <li class="sub-menu-item camera-<%= camera['id'] %> <%= is_active?("/cameras/#{camera['id']}") %> <% unless camera['is_online'] %>sidebar-offline<% end %>" <% unless camera['is_online'] %>title="Offline Cause: <%= camera['offline_reason'] %>"<% end %>>
+              <li class="sub-menu-item camera-<%= camera['id'] %> <%= is_active?("/cameras/#{camera['id']}") %> <% if camera['status'] == "offline" %>sidebar-offline<% end %>" <% if camera['status'] == "offline" %>title="Offline Cause: <%= camera['offline_reason'] %>"<% end %>>
                 <% if camera['cloud_recordings'] %>
                   <% recording_status = camera['cloud_recordings'].fetch('status') %>
                   <% recording_duration = camera['cloud_recordings'].fetch('storage_duration') %>
@@ -41,7 +41,7 @@
             <% end %>
           <% else %>
             <% if @camera %>
-            <li class="sub-menu-item public-active-list camera-<%= @camera['id'] %> <%= is_active?("/cameras/#{@camera['id']}") %> <% unless @camera['is_online'] %>sidebar-offline<% end %>">
+            <li class="sub-menu-item public-active-list camera-<%= @camera['id'] %> <%= is_active?("/cameras/#{@camera['id']}") %> <% if @camera['status'] == "offline" %>sidebar-offline<% end %>">
               <span class="title"> <%= @camera['name'] %></span>
               <i class="red header-sidebar fa fa-unlink"></i>
             </li>

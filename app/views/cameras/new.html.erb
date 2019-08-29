@@ -40,7 +40,7 @@
                             <ul class="dropdown-menu scroll-menu" role="menu">
                               <% @cameras.each do |camera| %>
                               <% if camera["rights"].split(",").include?("edit") %>
-                                <li class="sub-menu-item <%= is_active?("/cameras/#{camera['id']}") %> <% unless camera['is_online'] %>sidebar-offline<% end %>">
+                                <li class="sub-menu-item <%= is_active?("/cameras/#{camera['id']}") %> <% if camera['status'] == "offline" %>sidebar-offline<% end %>">
                                 <%= image_tag("#{EVERCAM_MEDIA_API}cameras/#{camera['id']}/thumbnail?api_id=#{current_user.api_id}&api_key=#{current_user.api_key}", :class => 'thumbnail-img') %>
                                 <%= link_to camera['name'], cameras_clone_path(camera['id']) %>
                               </li>

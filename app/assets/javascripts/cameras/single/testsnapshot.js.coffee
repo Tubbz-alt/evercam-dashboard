@@ -95,7 +95,7 @@ $ ->
           $('#testimg').removeClass 'hide'
           $('.img-holder-text').addClass 'hide'
           $('#testimg').attr('src', result.data)
-          if window.Evercam.Camera.is_online isnt undefined && !window.Evercam.Camera.is_online
+          if window.Evercam.Camera.status isnt undefined && !(window.Evercam.Camera.status == "online")
             location.reload()
       loader.stop()
       NProgress.done()
