@@ -46,11 +46,13 @@
       <div class="tabbable tabbable-custom">
         <div class="center-tabs">
           <ul id="ul-nav-tab" class="nav nav-tabs ul-nav-tab-single">
-            <li id="live-view-tab" class="active">
-              <a data-toggle="tab" data-target="#live" class="nav-tab-live nav-tab-"><span>Live View</span></a>
-            </li>
+            <% if @camera["status"] != "project_finished" %>
+              <li id="live-view-tab" class="active">
+                <a data-toggle="tab" data-target="#live" class="nav-tab-live nav-tab-"><span>Live View</span></a>
+              </li>
+            <% end %>
             <% if current_user %>
-              <li>
+              <li class="<%= 'active'if @camera["status"] == 'project_finished' %>">
                 <a data-toggle="tab" data-target="#recordings" class="nav-tab-recordings"></i>Recordings</a>
               </li>
               <% if !has_edit_right && !@camera["rights"].include?("share") %>
@@ -239,13 +241,15 @@
 
         </div>
         <div class="tab-content">
-          <div id="live" class="tab-pane active">
-            <%= render partial: "cameras/single/live_view_tab" %>
-          </div>
+          <% if @camera["status"] != "project_finished" %>
+            <div id="live" class="tab-pane active">
+              <%= render partial: "cameras/single/live_view_tab" %>
+            </div>
+          <% end %>
           <div id="details" class="tab-pane">
             <%= render partial: "cameras/single/info_tab" %>
           </div>
-          <div id="recordings" class="tab-pane">
+          <div id="recordings" class="tab-pane <%= 'active' if @camera['status'] == 'project_finished' %>">
             <%= render partial: "cameras/single/snapshots_navigator_tab" %>
           </div>
 
