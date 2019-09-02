@@ -20,10 +20,14 @@ var SaveImage = (function() {
     if (!window.ActiveXObject) {
         var save = document.createElement('a');
         save.href = fileURL;
-        save.target = '_blank';
-        if (!isNativeApp()) {
-            save.download = fileName || 'unknown';
-        }
+        // save.target = '_blank';
+        // debugBase64(fileURL);
+        console.log(fileURL)
+        // if (!isNativeApp()) {
+        console.log("!native app")
+        save.download = fileName || 'unknown';
+        // }
+        console.log("non IE")
         var event = document.createEvent("MouseEvents");
         event.initMouseEvent("click", true, false, window, 0, 0, 0, 0, 0,
           false, false, false, false, 0, null);
@@ -31,6 +35,7 @@ var SaveImage = (function() {
     }
     // for IE
     else if (!!window.ActiveXObject && document.execCommand) {
+        console.log("IE")
         var _window = window.open(fileURL, '_blank');
         _window.document.close();
         _window.document.execCommand('SaveAs', true, fileName || fileURL);
