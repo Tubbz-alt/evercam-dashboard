@@ -24,14 +24,6 @@ GIT
       sort_alphabetical (~> 1.0)
 
 GIT
-  remote: git://github.com/stripe/stripe-ruby.git
-  revision: 8b45b1d98039808adba67df8985c7de4eedfcbc9
-  specs:
-    stripe (4.24.0)
-      faraday (~> 0.13)
-      net-http-persistent (~> 3.0)
-
-GIT
   remote: git://github.com/westonganger/protected_attributes_continued.git
   revision: 4b0c06de2fdf025e63244a81bff4c8b5ad192b30
   specs:
@@ -402,6 +394,9 @@ GEM
       actionpack (>= 4.0)
       activesupport (>= 4.0)
       sprockets (>= 3.0.0)
+    stripe (4.24.0)
+      faraday (~> 0.13)
+      net-http-persistent (~> 3.0)
     stripe_event (2.2.0)
       activesupport (>= 3.1)
       stripe (>= 2.8, < 5.0)
@@ -501,7 +496,7 @@ DEPENDENCIES
   spirit_hands (~> 2.1.4)
   sprockets
   sprockets-rails (~> 3.2.1)
-  stripe!
+  stripe (~> 4.24)
   stripe_event
   timezone
   turbolinks
