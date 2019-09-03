@@ -32,7 +32,7 @@
                           <% has_edit_right = camera["rights"].split(",").include?("edit") %>
                           <% if camera['vendor_name'] == 'Hikvision Digital Technology' && has_edit_right %>
                             <option value="<%= camera['id'] %>">
-                              <%= camera['name'] %> <% unless camera['is_online'] %>(Offline)<% end %> <% unless camera['is_public'] %>(Private)<% end %>
+                              <%= camera['name'] %> <% if camera['status'] == "offline" %>(Offline)<% end %> <% unless camera['is_public'] %>(Private)<% end %>
                             </option>
                           <% end %>
                         <% end %>

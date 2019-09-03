@@ -32,7 +32,7 @@ class Camera < Sequel::Model
   def self.nearest(location)
     query = "ST_Distance(location, ST_SetSRID(ST_Point(#{location[:longitude]}, #{location[:latitude]}), 4326)::geography)"
     zero_point = "ST_DWithin(location, ST_SetSRID(ST_Point(0, 0), 4326)::geography, 0)"
-    where(is_online: true, is_public: true, discoverable: true)
+    where(status: "online", is_public: true, discoverable: true)
       .exclude(Sequel.lit(zero_point))
       .order(Sequel.lit(query))
   end

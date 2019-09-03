@@ -11,7 +11,7 @@
     <div class="menu-toggler sidebar-toggler"></div>
     <a href="javascript:;" class="pull-left menu-toggler responsive-toggler" data-toggle="collapse" data-target=".navbar-collapse"></a>
     <% if params[:controller] == 'cameras' and params[:action] == 'single' %>
-      <div class="camera-switch <% unless @camera['is_online'] %>camera-offline<% end %>">
+      <div class="camera-switch <% if @camera['status'] == "offline" %>camera-offline<% end %>">
         <a class="dropdown-toggle" data-toggle="dropdown">
           <span class="status-circle"></span>
           <span class="camera-name"><%= @camera['name'] %></span>
@@ -20,13 +20,13 @@
         <ul class="dropdown-menu scroll-menu" role="menu">
           <% if @cameras %>
             <% @cameras.each do |camera| %>
-              <li class="sub-menu-item camera-<%= camera['id'] %> <%= is_active?("/cameras/#{camera['id']}") %> <% unless camera['is_online'] %>sidebar-offline<% end %>">
+              <li class="sub-menu-item camera-<%= camera['id'] %> <%= is_active?("/cameras/#{camera['id']}") %> <% if camera['status'] == "offline" %>sidebar-offline<% end %>">
                 <%= link_to camera['name'] , cameras_single_path(camera['id'])%>
                 <i class="red header-sidebar fa fa-unlink"></i>
               </li>
             <% end %>
           <% else %>
-          <li class="sub-menu-item camera-<%= @camera['id'] %> <%= is_active?("/cameras/#{@camera['id']}") %> <% unless @camera['is_online'] %>sidebar-offline<% end %>">
+          <li class="sub-menu-item camera-<%= @camera['id'] %> <%= is_active?("/cameras/#{@camera['id']}") %> <% if @camera['status'] == "offline" %>sidebar-offline<% end %>">
             <%= link_to @camera['name'] , cameras_single_path(@camera['id'])%>
             <i class="red header-sidebar fa fa-unlink"></i>
           </li>

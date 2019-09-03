@@ -30,7 +30,7 @@
   <% params_subpath = "#{params_subpath}.#{params_format}" unless params_format.blank? %>
   window.Evercam.Camera = {
     id: '<%= @camera['id'] %>',
-    is_online: <%= @camera['is_online'] %>,
+    status: <%= @camera['status'] %>,
     vendor_id: '<%= @camera['vendor_id'] %>',
     model_name: '<%= @camera['model_name'] %>',
     location: {

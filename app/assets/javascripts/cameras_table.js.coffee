@@ -13,7 +13,7 @@ initializeCamerasDataTable = ->
     },
     columns: [
       {data: (row, type, set, meta ) ->
-        if row.is_online
+        if row.status == "online"
           return "
           <a href='/v2/cameras/#{row.id}' target='_blank'>#{row.name}</a>"
         else

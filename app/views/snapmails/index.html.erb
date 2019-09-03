@@ -43,7 +43,7 @@
                                       <% @cameras.each do |camera| %>
                                         <% css = "onlinec"
                                            thumbnail_url = "#{EVERCAM_MEDIA_API}cameras/#{camera['id']}/thumbnail?api_id=#{current_user.api_id}&api_key=#{current_user.api_key}"
-                                           unless !camera['is_online']
+                                           if camera['status'] == "offline"
                                              css = "offlinec"
                                            end
                                         %>

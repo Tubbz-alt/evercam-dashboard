@@ -20,7 +20,7 @@
                             <select id="timelapse-camera" class="form-control" style="width: 100%;height: 40px;">
                               <option value="">Select Camera</option>
                               <% @cameras.each do |camera| %>
-                                <option value="<%= camera['id'] %>" status="<%= camera['is_online'] %>" thumbnail="<%= "#{EVERCAM_MEDIA_API}cameras/#{camera['id']}/thumbnail?api_id=#{current_user.api_id}&api_key=#{current_user.api_key}" %>">
+                                <option value="<%= camera['id'] %>" status="<%= camera['status'] == "online" ? true : false %>" thumbnail="<%= "#{EVERCAM_MEDIA_API}cameras/#{camera['id']}/thumbnail?api_id=#{current_user.api_id}&api_key=#{current_user.api_key}" %>">
                                   <%= camera["name"] %>
                                 </option>
                                 <% end %>
