@@ -123,6 +123,8 @@ updateSchedule = ->
     switch data.status
       when 403
         showFeedback("You aren't authorized to change the scheduling for camera '#{Evercam.Camera.id}'.")
+      when 410
+        showFeedback("You cannot update recording settings. Project has been finished for camera '#{Evercam.Camera.id}'.")
       else
         showFeedback("Updating recording settings has failed. Please contact support.")
     NProgress.done()
