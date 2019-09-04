@@ -79,7 +79,7 @@ update_cameras = (camera) ->
       return false
 
 updateCameraStatus = (camera_id, status) ->
-  if status
+  if status == "online"
     $(".sidebar-cameras-list .camera-#{camera_id}").removeClass("sidebar-offline")
     $(".page-header.camera-#{camera_id} .camera-switch").removeClass("camera-offline")
     $(".page-content .camera-index.camera-#{camera_id}").removeClass("camera-offline")

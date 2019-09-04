@@ -406,7 +406,7 @@ showStatusBar = (from, to) ->
   data.from = from
   data.camera_id = Evercam.Camera.id
   data.camera_name = Evercam.Camera.name
-  data.camera_status = Evercam.Camera.is_online
+  data.camera_status = Evercam.Camera.status
   data.created_at = moment(Evercam.Camera.created_at).unix()
   data.timezone = Evercam.Camera.timezone
 

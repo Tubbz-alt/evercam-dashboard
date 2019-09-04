@@ -20,12 +20,12 @@
                 <% port = camera.deep_fetch('external', 'rtsp', 'port') {} %>
                  <% css = "onlinec"
                      thumbnail_url = "https://media.evercam.io/v2/cameras/#{camera['id']}/thumbnail?api_id=#{current_user.api_id}&api_key=#{current_user.api_key}"
-                     unless !camera['is_online']
+                     if camera['status'] == "offline"
                        css = "offlinec"
                      end
                   %>
                   <option class="<%= css %>" value="<%= camera['id'] %>" data-val="<%= thumbnail_url %>">
-                    <%= camera['name'] %> <% unless camera['is_online'] %>(Offline)<% end %> <% unless camera['is_public'] %>(Private)<% end %>
+                    <%= camera['name'] %> <% if camera['status'] == "offline" %>(Offline)<% end %> <% unless camera['is_public'] %>(Private)<% end %>
                   </option>
               <% end %>
             </select>

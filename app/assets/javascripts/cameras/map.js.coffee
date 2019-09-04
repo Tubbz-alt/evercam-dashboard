@@ -13,7 +13,7 @@ loadMap = ->
     marker = new google.maps.Marker({
       position: new google.maps.LatLng(camera.location.lat, camera.location.lng),
       map: map,
-      icon: iconBase(camera.is_online),
+      icon: iconBase(camera.status),
       title: camera.name
     })
     bounds.extend marker.getPosition()
@@ -68,7 +68,7 @@ vendorLogo = (vendorId) ->
     "<img width='60' src='https://evercam-public-assets.s3.amazonaws.com/#{vendorId}/logo.jpg' />"
 
 iconBase = (status) ->
-  if status == false
+  if status == "offline"
     'https://chart.apis.google.com/chart?chst=d_map_pin_letter&chld=%E2%80%A2|808080'
   else
     ''
