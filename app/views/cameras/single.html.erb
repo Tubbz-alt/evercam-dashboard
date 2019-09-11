@@ -52,7 +52,7 @@
               </li>
             <% end %>
             <% if current_user %>
-              <li class="<%= 'active'if @camera["status"] == 'project_finished' %>">
+              <li id="recording-list" class="<%= 'active'if @camera["status"] == 'project_finished' %>">
                 <a data-toggle="tab" data-target="#recordings" class="nav-tab-recordings"></i>Recordings</a>
               </li>
               <% if !has_edit_right && !@camera["rights"].include?("share") %>
