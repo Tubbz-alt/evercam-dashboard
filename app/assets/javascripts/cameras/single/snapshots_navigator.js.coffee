@@ -1492,6 +1492,16 @@ initXrayCalendar = ->
       camera_created_at = camera_created_date.format("YYYY/M/D")
       $('#fullscreen #xray-calendar').datetimepicker({value: image_xray_date._d, minDate: camera_created_at, yearStart: camera_created_year})
 
+handleProjectFinishDialogueBox = ->
+  if Evercam.Camera.status is "project_finished" && $('#ul-nav-tab #recording-list').hasClass 'active'
+    $("#project-finished-div .project-finished-span").removeClass "hide"
+
+  $(document).mouseup (e) ->
+    container = $("#project-finished-div .project-finished-span")
+    if !container.is(e.target) and container.has(e.target).length == 0
+      container.fadeOut()
+    return
+
 window.initializeRecordingsTab = ->
   initDatePicker()
   handleSlider()
@@ -1516,4 +1526,5 @@ window.initializeRecordingsTab = ->
   handle_info_submenu()
   hoverMouseOnFullscreen()
   loadXrayImage()
+  handleProjectFinishDialogueBox()
   recheckDataXrayValue()
