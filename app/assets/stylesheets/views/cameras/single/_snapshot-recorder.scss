@@ -1,6 +1,10 @@
-  .tab-content #recordings {
-    margin: 0px -15px;
-  }
+.tab-content #recordings {
+  margin: 0px -15px;
+}
+
+.project-finished-span {
+  top: 36px;
+}
 
   #recording-tab {
     .ui-datepicker-trigger {
@@ -277,7 +281,7 @@
 
     float: left;
     vertical-align: top;
-    width: 220px;
+    width: 310px;
 
     .datepicker-bg {
       background-color: $calendar-background;
