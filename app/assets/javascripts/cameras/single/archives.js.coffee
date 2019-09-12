@@ -280,7 +280,7 @@ getArchivesHtml = (archives) ->
       hide_dates = "hide"
       css_class = "fa-upload"
     fa_class = "<i class='fa #{css_class} type-icon type-icon-url'></i>"
-  else if archives.media_url isnt null
+  else if archives.media_url
     arr_host = getHostName(archives.media_url).split('.')
     domain = arr_host.shift()
     url = archives.media_url
